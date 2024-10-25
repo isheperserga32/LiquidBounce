@@ -35,23 +35,9 @@ import net.minecraft.client.gui.screen.SplashOverlay
 @Suppress("UNUSED_PARAMETER")
 fun getVirtualScreenInfo(requestObject: RequestObject): FullHttpResponse {
     return httpOk(JsonObject().apply {
-        addProperty("name", IntegrationHandler.momentaryVirtualScreen?.type?.routeName)
+        addProperty("name", IntegrationHandler.route.type?.routeName ?: "none")
         addProperty("showingSplash", mc.overlay is SplashOverlay)
     })
-}
-
-// POST /api/v1/client/virtualScreen
-fun postVirtualScreen(requestObject: RequestObject): FullHttpResponse {
-    val body = requestObject.asJson<JsonObject>()
-    val name = body["name"]?.asString ?: return httpForbidden("No name")
-
-    val virtualScreen = IntegrationHandler.momentaryVirtualScreen
-    if ((virtualScreen?.type?.routeName ?: "none") != name) {
-        return httpForbidden("Wrong virtual screen")
-    }
-
-    IntegrationHandler.acknowledgement.confirm()
-    return httpOk(JsonObject())
 }
 
 // GET /api/v1/client/screen

@@ -21,14 +21,14 @@ package net.ccbluex.liquidbounce.integration.browser.supports
 import com.mojang.blaze3d.systems.RenderSystem
 import net.ccbluex.liquidbounce.config.ConfigSystem
 import net.ccbluex.liquidbounce.event.Listenable
+import net.ccbluex.liquidbounce.integration.browser.BrowserType
+import net.ccbluex.liquidbounce.integration.browser.supports.tab.JcefTab
+import net.ccbluex.liquidbounce.integration.browser.supports.tab.TabPosition
 import net.ccbluex.liquidbounce.mcef.MCEF
 import net.ccbluex.liquidbounce.utils.client.ErrorHandler
 import net.ccbluex.liquidbounce.utils.client.logger
 import net.ccbluex.liquidbounce.utils.io.HttpClient
 import net.ccbluex.liquidbounce.utils.validation.HashValidator
-import net.ccbluex.liquidbounce.integration.browser.BrowserType
-import net.ccbluex.liquidbounce.integration.browser.supports.tab.JcefTab
-import net.ccbluex.liquidbounce.integration.browser.supports.tab.TabPosition
 import kotlin.concurrent.thread
 
 /**
@@ -88,17 +88,7 @@ class JcefBrowser : IBrowser, Listenable {
 
     override fun isInitialized() = MCEF.INSTANCE.isInitialized
 
-    override fun createTab(url: String, position: TabPosition, frameRate: Int) =
-        JcefTab(this, url, position, frameRate) { false }.apply {
-            synchronized(tabs) {
-                tabs += this
-
-                // Sort tabs by preferOnTop
-                tabs.sortBy { it.preferOnTop }
-            }
-        }
-
-    override fun createInputAwareTab(url: String, position: TabPosition, frameRate: Int, takesInput: () -> Boolean) =
+    override fun createTab(url: String, position: TabPosition, frameRate: Int, takesInput: () -> Boolean) =
         JcefTab(this, url, position, frameRate, takesInput = takesInput).apply {
             synchronized(tabs) {
                 tabs += this

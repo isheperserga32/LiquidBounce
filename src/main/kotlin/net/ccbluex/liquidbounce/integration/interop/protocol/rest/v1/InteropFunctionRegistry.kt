@@ -24,127 +24,141 @@ import net.ccbluex.liquidbounce.integration.interop.protocol.rest.v1.features.*
 import net.ccbluex.liquidbounce.integration.interop.protocol.rest.v1.game.*
 import net.ccbluex.netty.http.rest.Node
 
-internal fun registerInteropFunctions(node: Node) = node.withPath("/api/v1/client") {
+internal fun registerInteropFunctions(node: Node) = node.run {
     // Client Functions
-    get("/info", ::getClientInfo)
-    get("/update", ::getUpdateInfo)
-    post("/exit", ::postExit)
-    get("/window", ::getWindowInfo)
-    post("/browse", ::postBrowse)
+    get("/api/v1/client/info", ::getClientInfo)
+    get("/api/v1/client/update", ::getUpdateInfo)
+    post("/api/v1/client/exit", ::postExit)
+    get("/api/v1/client/window", ::getWindowInfo)
+    post("/api/v1/client/browse", ::postBrowse)
 
     // LocalStorage Functions
-    get("/localStorage/all", ::getAllLocalStorage)
-    put("/localStorage/all", ::putAllLocalStorage)
-    get("/localStorage", ::getLocalStorage)
-    put("/localStorage", ::putLocalStorage)
-    delete("/localStorage", ::deleteLocalStorage)
+    get("/api/v1/client/localStorage/all", ::getAllLocalStorage)
+    put("/api/v1/client/localStorage/all", ::putAllLocalStorage)
+    get("/api/v1/client/localStorage", ::getLocalStorage)
+    put("/api/v1/client/localStorage", ::putLocalStorage)
+    delete("/api/v1/client/localStorage", ::deleteLocalStorage)
 
     // Theme Functions
-    get("/theme", ::getThemeInfo)
-    post("/shader", ::postToggleShader)
+    get("/api/v1/client/theme", ::getThemeInfo)
+
+    // Wallpaper Functions
+    get("/api/v1/client/wallpaper", ::getWallpaper)
+    put("/api/v1/client/wallpaper/:theme/:name", ::putWallpaper)
 
     // VirtualScreen Functions
-    get("/virtualScreen", ::getVirtualScreenInfo)
-    get("/screen", ::getScreenInfo)
-    get("/screen/size", ::getScreenSize)
-    put("/screen", ::putScreen)
+    get("/api/v1/client/virtualScreen", ::getVirtualScreenInfo)
+    get("/api/v1/client/screen", ::getScreenInfo)
+    get("/api/v1/client/screen/size", ::getScreenSize)
+    put("/api/v1/client/screen", ::putScreen)
 
     // Module Functions
-    get("/modules", ::getModules)
-    put("/modules/toggle", ::toggleModule)
-    delete("/modules/toggle", ::toggleModule)
-    post("/modules/toggle", ::toggleModule)
-    get("/modules/settings", ::getSettings)
-    put("/modules/settings", ::putSettings)
-    post("/modules/panic", ::postPanic)
+    get("/api/v1/client/modules", ::getModules)
+    put("/api/v1/client/modules/toggle", ::toggleModule)
+    delete("/api/v1/client/modules/toggle", ::toggleModule)
+    post("/api/v1/client/modules/toggle", ::toggleModule)
+    get("/api/v1/client/modules/settings", ::getSettings)
+    put("/api/v1/client/modules/settings", ::putSettings)
+    post("/api/v1/client/modules/panic", ::postPanic)
 
     // Component Functions
-    get("/components", ::getComponents)
+    get("/api/v1/client/components", ::getAllComponents)
+    delete("/api/v1/client/component/:index", ::deleteComponent)
+
+
+    get("/api/v1/client/components/:name", ::getComponents)
+    post("/api/v1/client/components/:name/:componentName", ::createComponent)
+    patch("/api/v1/client/components/:name/:index", ::moveComponent)
+    put("/api/v1/client/components/:name/:index", ::updateComponentSettings)
+    get("/api/v1/client/components/:name/:index", ::getComponentSettings)
+
+    get("/api/v1/client/componentFactories", ::getComponentFactories)
+
 
     // Session Functions
-    get("/session", ::getSessionInfo)
-    get("/location", ::getLocationInfo)
+    get("/api/v1/client/session", ::getSessionInfo)
+    get("/api/v1/client/location", ::getLocationInfo)
 
     // Account Functions
-    get("/accounts", ::getAccounts)
-    post("/accounts/new/microsoft", ::postNewMicrosoftAccount)
-    post("/accounts/new/microsoft/clipboard", ::postClipboardMicrosoftAccount)
-    post("/accounts/new/cracked", ::postNewCrackedAccount)
-    post("/accounts/new/session", ::postNewSessionAccount)
-    post("/accounts/new/altening", ::postNewAlteningAccount)
-    post("/accounts/new/altening/generate", ::postGenerateAlteningAccount)
-    post("/accounts/swap", ::postSwapAccounts)
-    post("/accounts/order", ::postOrderAccounts)
-    delete("/account", ::deleteAccount)
-    post("/account/login", ::postLoginAccount)
-    post("/account/login/cracked", ::postLoginCrackedAccount)
-    post("/account/login/session", ::postLoginSessionAccount)
-    post("/account/restore", ::postRestoreInitial)
-    put("/account/favorite", ::putFavoriteAccount)
-    delete("/account/favorite", ::deleteFavoriteAccount)
+    get("/api/v1/client/accounts", ::getAccounts)
+    post("/api/v1/client/accounts/new/microsoft", ::postNewMicrosoftAccount)
+    post("/api/v1/client/accounts/new/microsoft/clipboard", ::postClipboardMicrosoftAccount)
+    post("/api/v1/client/accounts/new/cracked", ::postNewCrackedAccount)
+    post("/api/v1/client/accounts/new/session", ::postNewSessionAccount)
+    post("/api/v1/client/accounts/new/altening", ::postNewAlteningAccount)
+    post("/api/v1/client/accounts/new/altening/generate", ::postGenerateAlteningAccount)
+    post("/api/v1/client/accounts/swap", ::postSwapAccounts)
+    post("/api/v1/client/accounts/order", ::postOrderAccounts)
+    delete("/api/v1/client/account", ::deleteAccount)
+    post("/api/v1/client/account/login", ::postLoginAccount)
+    post("/api/v1/client/account/login/cracked", ::postLoginCrackedAccount)
+    post("/api/v1/client/account/login/session", ::postLoginSessionAccount)
+    post("/api/v1/client/account/restore", ::postRestoreInitial)
+    put("/api/v1/client/account/favorite", ::putFavoriteAccount)
+    delete("/api/v1/client/account/favorite", ::deleteFavoriteAccount)
 
     // Proxy Functions
-    get("/proxy", ::getProxyInfo)
-    post("/proxy", ::postProxy)
-    delete("/proxy", ::deleteProxy)
-    get("/proxies", ::getProxies)
-    post("/proxies/add", ::postAddProxy)
-    post("/proxies/clipboard", ::postClipboardProxy)
-    post("/proxies/edit", ::postEditProxy)
-    post("/proxies/check", ::postCheckProxy)
-    delete("/proxies/remove", ::deleteRemoveProxy)
-    put("/proxies/favorite", ::putFavoriteProxy)
-    delete("/proxies/favorite", ::deleteFavoriteProxy)
+    get("/api/v1/client/proxy", ::getProxyInfo)
+    post("/api/v1/client/proxy", ::postProxy)
+    delete("/api/v1/client/proxy", ::deleteProxy)
+    get("/api/v1/client/proxies", ::getProxies)
+    post("/api/v1/client/proxies/add", ::postAddProxy)
+    post("/api/v1/client/proxies/clipboard", ::postClipboardProxy)
+    post("/api/v1/client/proxies/edit", ::postEditProxy)
+    post("/api/v1/client/proxies/check", ::postCheckProxy)
+    delete("/api/v1/client/proxies/remove", ::deleteRemoveProxy)
+    put("/api/v1/client/proxies/favorite", ::putFavoriteProxy)
+    delete("/api/v1/client/proxies/favorite", ::deleteFavoriteProxy)
 
     // Browser Functions
-    get("/browser", ::getBrowserInfo)
-    post("/browser/navigate", ::postBrowserNavigate)
-    post("/browser/close", ::postBrowserClose)
-    post("/browser/reload", ::postBrowserReload)
-    post("/browser/forceReload", ::postBrowserForceReload)
-    post("/browser/forward", ::postBrowserForward)
-    post("/browser/back", ::postBrowserBack)
-    post("/browser/closeTab", ::postBrowserCloseTab)
+    get("/api/v1/client/browser", ::getBrowserInfo)
+    post("/api/v1/client/browser/navigate", ::postBrowserNavigate)
+    post("/api/v1/client/browser/close", ::postBrowserClose)
+    post("/api/v1/client/browser/reload", ::postBrowserReload)
+    post("/api/v1/client/browser/forceReload", ::postBrowserForceReload)
+    post("/api/v1/client/browser/forward", ::postBrowserForward)
+    post("/api/v1/client/browser/back", ::postBrowserBack)
+    post("/api/v1/client/browser/closeTab", ::postBrowserCloseTab)
 
     // Container Functions
     // TODO: Not being used but should be re-implemented in the future
 
     // Protocol Functions
-    get("/protocols", ::getProtocols)
-    get("/protocol", ::getProtocol)
-    put("/protocol", ::putProtocol)
-    delete("/protocol", ::deleteProtocol)
+    get("/api/v1/client/protocols", ::getProtocols)
+    get("/api/v1/client/protocol", ::getProtocol)
+    put("/api/v1/client/protocol", ::putProtocol)
+    delete("/api/v1/client/protocol", ::deleteProtocol)
 
     // Reconnect Functions
-    post("/reconnect", ::postReconnect)
+    post("/api/v1/client/reconnect", ::postReconnect)
 
     // Input Functions
-    get("/input", ::getInputInfo)
-    get("/keybinds", ::getKeybinds)
+    get("/api/v1/client/input", ::getInputInfo)
+    get("/api/v1/client/keybinds", ::getKeybinds)
 
     // Player Functions
-    get("/player", ::getPlayerData)
+    get("/api/v1/client/player", ::getPlayerData)
 
     // Registry Functions
-    get("/registries", ::getRegistries)
+    get("/api/v1/client/registries", ::getRegistries)
 
     // ServerList Functions
-    get("/servers", ::getServers)
-    put("/servers/add", ::putAddServer)
-    delete("/servers/remove", ::deleteServer)
-    put("/servers/edit", ::putEditServer)
-    post("/servers/swap", ::postSwapServers)
-    post("/servers/order", ::postOrderServers)
-    post("/servers/connect", ::postConnect)
+    get("/api/v1/client/servers", ::getServers)
+    put("/api/v1/client/servers/add", ::putAddServer)
+    delete("/api/v1/client/servers/remove", ::deleteServer)
+    put("/api/v1/client/servers/edit", ::putEditServer)
+    post("/api/v1/client/servers/swap", ::postSwapServers)
+    post("/api/v1/client/servers/order", ::postOrderServers)
+    post("/api/v1/client/servers/connect", ::postConnect)
 
     // Texture Functions
-    get("/resource", ::getResource)
-    get("/itemTexture", ::getItemTexture)
-    get("/skin", ::getSkin)
+    get("/api/v1/client/resource", ::getResource)
+    get("/api/v1/client/itemTexture", ::getItemTexture)
+    get("/api/v1/client/skin", ::getSkin)
 
     // World Functions
-    get("/worlds", ::getWorlds)
-    post("/worlds/join", ::postJoinWorld)
-    post("/worlds/edit", ::postEditWorld)
-    post("/worlds/delete", ::postDeleteWorld)
+    get("/api/v1/client/worlds", ::getWorlds)
+    post("/api/v1/client/worlds/join", ::postJoinWorld)
+    post("/api/v1/client/worlds/edit", ::postEditWorld)
+    post("/api/v1/client/worlds/delete", ::postDeleteWorld)
 }

@@ -16,16 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
  */
-package net.ccbluex.liquidbounce.integration
+package net.ccbluex.liquidbounce.integration.browser
 
 import net.ccbluex.liquidbounce.event.EventManager
 import net.ccbluex.liquidbounce.event.events.BrowserUrlChangeEvent
+import net.ccbluex.liquidbounce.integration.browser.supports.tab.ITab
+import net.ccbluex.liquidbounce.integration.browser.supports.tab.TabPosition
 import net.ccbluex.liquidbounce.utils.client.asText
 import net.ccbluex.liquidbounce.utils.client.mc
 import net.ccbluex.liquidbounce.utils.render.refreshRate
-import net.ccbluex.liquidbounce.integration.browser.BrowserManager
-import net.ccbluex.liquidbounce.integration.browser.supports.tab.ITab
-import net.ccbluex.liquidbounce.integration.browser.supports.tab.TabPosition
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.text.Text
@@ -52,7 +51,7 @@ class BrowserScreen(val url: String, title: Text = "".asText()) : Screen(title) 
         if (browserTabs.isEmpty()) {
             val browser = BrowserManager.browser ?: return
 
-            browser.createInputAwareTab(url, position, refreshRate) { mc.currentScreen == this }
+            browser.createTab(url, position, refreshRate) { mc.currentScreen == this }
                 .preferOnTop()
                 .also { browserTabs.add(it) }
             return

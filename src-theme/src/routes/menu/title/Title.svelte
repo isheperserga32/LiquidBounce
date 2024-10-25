@@ -8,18 +8,24 @@
         browse,
         exitClient,
         getClientUpdate,
+        getWallpaper,
         openScreen,
-        toggleBackgroundShaderEnabled
+        putWallpaper
     } from "../../../integration/rest";
     import Menu from "../common/Menu.svelte";
     import {fly} from "svelte/transition";
     import {onMount} from "svelte";
     import {notification} from "../common/header/notification_store";
+    import SingleSelect from "../common/setting/select/SingleSelect.svelte";
+    import type {Wallpaper} from "../../../integration/types";
 
     let regularButtonsShown = true;
     let clientButtonsShown = false;
+    let wallpaper: Wallpaper | null = null;
 
-    onMount(() => {
+    onMount(async () => {
+        wallpaper = await getWallpaper();
+
         setTimeout(async () => {
             const update = await getClientUpdate();
 
@@ -45,6 +51,16 @@
             setTimeout(() => {
                 clientButtonsShown = true;
             }, 750);
+        }
+    }
+
+    async function changeWallpaper(e: CustomEvent<{ value: string }>) {
+        if (wallpaper) {
+            // todo: use theme name as well ...
+            const w = wallpaper.available.find(w => w.name === e.detail.value);
+            if (!w) return
+
+            await putWallpaper(w.theme, w.name);
         }
     }
 </script>
@@ -75,8 +91,11 @@
         <div class="additional-buttons" transition:fly|global={{duration: 700, y: 100}}>
             <ButtonContainer>
                 <IconTextButton icon="icon-exit.svg" title="Exit" on:click={exitClient}/>
-                <IconTextButton icon="icon-change-background.svg" title="Toggle Shader"
-                                on:click={toggleBackgroundShaderEnabled}/>
+                {#if wallpaper}
+                    <SingleSelect title="Wallpaper" value={wallpaper.active?.name ?? ""} options={wallpaper.available.map(w => w.name)}
+                                  on:change={changeWallpaper} />
+                {/if}
+<!--                <IconTextButton icon="icon-change-background.svg" title="Toggle Shader"/>-->
             </ButtonContainer>
         </div>
 
@@ -84,6 +103,7 @@
             <ButtonContainer>
                 <IconButton title="Forum" icon="nodebb" on:click={() => browse("MAINTAINER_FORUM")}/>
                 <IconButton title="GitHub" icon="github" on:click={() => browse("MAINTAINER_GITHUB")}/>
+                <IconButton title="Guilded" icon="guilded" on:click={() => browse("MAINTAINER_GUILDED")}/>
                 <IconButton title="Discord" icon="discord" on:click={() => browse("MAINTAINER_DISCORD")}/>
                 <IconButton title="Twitter" icon="twitter" on:click={() => browse("MAINTAINER_TWITTER")}/>
                 <IconButton title="YouTube" icon="youtube" on:click={() => browse("MAINTAINER_YOUTUBE")}/>

@@ -23,20 +23,22 @@ package net.ccbluex.liquidbounce.integration.theme.component
 
 import net.ccbluex.liquidbounce.config.Configurable
 import net.ccbluex.liquidbounce.config.ToggleableConfigurable
+import net.ccbluex.liquidbounce.config.ValueType
+import net.ccbluex.liquidbounce.integration.theme.type.Theme
 import net.ccbluex.liquidbounce.utils.render.Alignment
 
 /**
  * Represents a HUD component
  */
-abstract class Component(name: String, enabled: Boolean)
-    : ToggleableConfigurable(parent = ComponentOverlay, name = name, enabled = enabled) {
+open class Component(
+    val theme: Theme,
+    name: String,
+    enabled: Boolean,
+    alignment: Alignment,
+    val tweaks: Array<ComponentTweak> = emptyArray()
+) : ToggleableConfigurable(parent = ComponentOverlay, name = name, enabled = enabled) {
 
-    val alignment = tree(Alignment(
-        Alignment.ScreenAxisX.CENTER,
-        0,
-        Alignment.ScreenAxisY.CENTER,
-        0
-    ))
+    var alignment by value("Alignment", alignment, valueType = ValueType.ALIGNMENT)
 
     protected fun registerComponentListen(cfg: Configurable = this) {
         for (v in cfg.inner) {
