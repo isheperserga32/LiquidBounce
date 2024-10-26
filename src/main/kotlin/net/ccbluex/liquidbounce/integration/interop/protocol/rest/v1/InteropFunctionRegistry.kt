@@ -63,21 +63,17 @@ internal fun registerInteropFunctions(node: Node) = node.withPath("/api/v1/clien
         post("/panic", ::postPanic)
     }
 
-    // Component Functions
+    // Component Array Functions
     get("/components", ::getAllComponents)
-    delete("/component/:index", ::deleteComponent)
-
-
     get("/components/:name", ::getComponents)
     post("/components/:name/:componentName", ::createComponent)
-    patch("/components/:name/:index", ::moveComponent)
-    put("/components/:name/:index", ::updateComponentSettings)
-    get("/components/:name/:index", ::getComponentSettings)
-
     get("/componentFactories", ::getComponentFactories)
 
     // Component Functions
-    get("/components", ::getComponents)
+    patch("/component/:id", ::moveComponent)
+    put("/component/:id", ::updateComponentSettings)
+    get("/component/:id", ::getComponentSettings)
+    delete("/component/:id", ::deleteComponent)
 
     // Session Functions
     get("/session", ::getSessionInfo)

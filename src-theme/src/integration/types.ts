@@ -362,7 +362,7 @@ export interface ComponentFactories {
 }
 
 export interface Component {
-    id: number;
+    id: string;
     name: string;
     settings: { [name: string]: any };
 }

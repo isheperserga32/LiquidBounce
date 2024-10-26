@@ -24,8 +24,15 @@ class WebTheme(val folder: File) : Theme {
     override val name: String
         get() = metadata.name
 
-    override val components: List<ComponentFactory>
-        get() = metadata.components
+    override val components: List<ComponentFactory.JsonComponentFactory> = folder.resolve("components")
+        .listFiles()
+        ?.mapNotNull { file ->
+            runCatching {
+                protocolGson.fromJson(file.readText(), ComponentFactory.JsonComponentFactory::class.java)
+            }.onFailure { error ->
+                logger.error("Failed to load $name component factory from file ${file.name}", error)
+            }.getOrNull()
+        } ?: emptyList()
 
     private val url: String
         get() = "${ClientInteropServer.url}/${folder.name}/#/"

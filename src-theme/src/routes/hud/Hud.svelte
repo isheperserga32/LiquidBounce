@@ -16,6 +16,7 @@
     import Effects from "./elements/Effects.svelte";
     import {VerticalAlignment} from "../../integration/types.js";
     import BlockCounter from "./elements/BlockCounter.svelte";
+    import Text from "./elements/Text.svelte";
 
     let zoom = 100;
     let components: Component[] = [];
@@ -141,7 +142,7 @@
             {:else if c.name === "Effects"}
                 <Effects />
             {:else if c.name === "Text"}
-                <p>{c.settings.text}</p>
+                <Text settings={c.settings} />
             {:else if c.name === "Image"}
                 <img alt="" src={c.settings.src} style="scale: {c.settings.scale};">
             {/if}

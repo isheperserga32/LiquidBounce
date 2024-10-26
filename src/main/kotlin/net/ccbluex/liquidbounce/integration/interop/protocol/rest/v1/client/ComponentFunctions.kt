@@ -26,6 +26,7 @@ import com.google.gson.JsonPrimitive
 import com.mojang.blaze3d.systems.RenderSystem
 import io.netty.handler.codec.http.FullHttpResponse
 import net.ccbluex.liquidbounce.config.ConfigSystem
+import net.ccbluex.liquidbounce.integration.interop.protocol.genericProtocolGson
 import net.ccbluex.liquidbounce.integration.interop.protocol.protocolGson
 import net.ccbluex.liquidbounce.integration.theme.ThemeManager
 import net.ccbluex.liquidbounce.integration.theme.ThemeManager.activeComponents
@@ -36,6 +37,7 @@ import net.ccbluex.netty.http.model.RequestObject
 import net.ccbluex.netty.http.util.httpBadRequest
 import net.ccbluex.netty.http.util.httpOk
 import java.io.StringReader
+import java.util.*
 
 // GET /api/v1/client/componentFactories
 @Suppress("UNUSED_PARAMETER")
@@ -58,9 +60,9 @@ fun getComponentFactories(requestObject: RequestObject): FullHttpResponse {
 // GET /api/v1/client/components
 @Suppress("UNUSED_PARAMETER")
 fun getAllComponents(requestObject: RequestObject) = httpOk(JsonArray().apply {
-    for ((index, component) in activeComponents.withIndex()) {
+    for (component in activeComponents) {
         add(JsonObject().apply {
-            addProperty("id", index)
+            addProperty("id", component.id.toString())
             addProperty("name", component.name)
             add("settings", JsonObject().apply {
                 for (v in component.inner) {
@@ -77,9 +79,9 @@ fun getComponents(requestObject: RequestObject): FullHttpResponse {
     val components = activeComponents.filter { theme -> theme.theme.name.equals(name, true) }
 
     return httpOk(JsonArray().apply {
-        for ((index, component) in components.withIndex()) {
+        for (component in components) {
             add(JsonObject().apply {
-                addProperty("id", index)
+                addProperty("id", component.id.toString())
                 addProperty("name", component.name)
                 add("settings", JsonObject().apply {
                     for (v in component.inner) {
@@ -91,25 +93,27 @@ fun getComponents(requestObject: RequestObject): FullHttpResponse {
     })
 }
 
-// GET /api/v1/client/component/:name/:index
+// GET /api/v1/client/component/:id
 fun getComponentSettings(requestObject: RequestObject): FullHttpResponse {
-    val name = requestObject.params["name"]
-    val index = requestObject.params["index"]?.toInt() ?: return httpBadRequest("No index provided")
+    val id = requestObject.params["id"]?.let { UUID.fromString(it) }
+        ?: return httpBadRequest("No ID provided")
 
-    val component = activeComponents.filter { it.theme.name == name }[index]
-    val json = ConfigSystem.serializeConfigurable(component)
+    val component = activeComponents
+        .find { it.id == id } ?: return httpBadRequest("No component found")
+    val json = ConfigSystem.serializeConfigurable(component, gson = genericProtocolGson)
 
     ComponentOverlay.fireComponentsUpdate()
 
     return httpOk(json)
 }
 
-// PUT /api/v1/client/component/:name/:index
+// PUT /api/v1/client/component/:id
 fun updateComponentSettings(requestObject: RequestObject): FullHttpResponse {
-    val name = requestObject.params["name"]
-    val index = requestObject.params["index"]?.toInt() ?: return httpBadRequest("No index provided")
+    val id = requestObject.params["id"]?.let { UUID.fromString(it) }
+        ?: return httpBadRequest("No ID provided")
 
-    val component = activeComponents.filter { it.theme.name == name }[index]
+    val component = activeComponents
+        .find { it.id == id } ?: return httpBadRequest("No component found")
     ConfigSystem.deserializeConfigurable(component, StringReader(requestObject.body), gson = protocolGson)
 
     ComponentOverlay.fireComponentsUpdate()
@@ -117,12 +121,13 @@ fun updateComponentSettings(requestObject: RequestObject): FullHttpResponse {
     return httpOk(JsonObject())
 }
 
-// PATCH /api/v1/client/component/:name/:index
+// PATCH /api/v1/client/component/:id
 fun moveComponent(requestObject: RequestObject): FullHttpResponse {
-    val name = requestObject.params["name"]
-    val index = requestObject.params["index"]?.toInt() ?: return httpBadRequest("No index provided")
+    val id = requestObject.params["id"]?.let { UUID.fromString(it) }
+        ?: return httpBadRequest("No ID provided")
 
-    val component = activeComponents.filter { it.theme.name.equals(name, true) }[index]
+    val component = activeComponents
+        .find { it.id == id } ?: return httpBadRequest("No component found")
 
     // We copy the alignment to the existing because we do not want to replace the instance
     val newAlignment = protocolGson.fromJson(requestObject.body, Alignment::class.java)
@@ -156,13 +161,14 @@ fun createComponent(requestObject: RequestObject): FullHttpResponse {
     return httpOk(JsonObject())
 }
 
-// DELETE /api/v1/client/component/:index
+// DELETE /api/v1/client/components/:id
 fun deleteComponent(requestObject: RequestObject): FullHttpResponse {
-    val index = requestObject.params["index"]?.toInt() ?: return httpBadRequest("No index provided")
+    val id = requestObject.params["id"]?.let { UUID.fromString(it) }
+        ?: return httpBadRequest("No ID provided")
 
     RenderSystem.recordRenderCall {
         runCatching {
-            activeComponents.removeAt(index)
+            activeComponents.removeIf { it.id == id }
             ComponentOverlay.update()
             ComponentOverlay.fireComponentsUpdate()
         }.onFailure {

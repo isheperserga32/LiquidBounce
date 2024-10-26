@@ -1,13 +1,11 @@
 package net.ccbluex.liquidbounce.integration.theme.type.web
 
-import net.ccbluex.liquidbounce.integration.theme.component.ComponentFactory
-
 data class ThemeMetadata(
     val name: String,
     val authors: List<String>,
     val version: String,
     val supports: List<String>,
     val overlays: List<String>,
-    val wallpaper: String,
-    val components: List<ComponentFactory.JsonComponentFactory>
+    // If null, there is no default wallpaper for this theme assigned
+    val wallpaper: String? = null
 )

@@ -23,10 +23,8 @@ import com.google.gson.*
 import net.ccbluex.liquidbounce.api.ClientApi.formatAvatarUrl
 import net.ccbluex.liquidbounce.config.ConfigSystem.registerCommonTypeAdapters
 import net.ccbluex.liquidbounce.config.Configurable
-import net.ccbluex.liquidbounce.utils.client.convertToString
-import net.ccbluex.liquidbounce.utils.client.isPremium
-import net.ccbluex.liquidbounce.utils.client.mc
-import net.ccbluex.liquidbounce.utils.client.processContent
+import net.ccbluex.liquidbounce.integration.theme.component.Component
+import net.ccbluex.liquidbounce.utils.client.*
 import net.minecraft.SharedConstants
 import net.minecraft.client.network.ServerInfo
 import net.minecraft.client.session.Session
@@ -56,6 +54,10 @@ object ProtocolConfigurableWithComponentSerializer : JsonSerializer<Configurable
         typeOfSrc: Type,
         context: JsonSerializationContext
     ): JsonElement {
+        if (src is Component) {
+            return ComponentSerializer.serialize(src, typeOfSrc, context)
+        }
+
         return JsonObject().apply {
             addProperty("name", src.name)
             add("value", context.serialize(src.inner.filter {
@@ -200,6 +202,31 @@ class TextSerializer : JsonSerializer<Text> {
     }
 }
 
+object ComponentSerializer : JsonSerializer<Component> {
+
+    override fun serialize(
+        src: Component,
+        typeOfSrc: Type,
+        context: JsonSerializationContext
+    ) = JsonObject().apply {
+        addProperty("name", src.name)
+        add("settings", serializeReadOnly(src, context))
+    }
+
+    private fun serializeReadOnly(
+        configurable: Configurable,
+        context: JsonSerializationContext
+    ): JsonObject = JsonObject().apply {
+        for (v in configurable.inner) {
+            add(v.name.toLowerCamelCase(), when (v) {
+                is Configurable -> serializeReadOnly(v, context)
+                else -> context.serialize(v.inner)
+            })
+        }
+    }
+
+}
+
 internal val genericProtocolGson = GsonBuilder()
     .addSerializationExclusionStrategy(ProtocolExclusionStrategy())
     .registerCommonTypeAdapters()
@@ -209,7 +236,7 @@ internal val genericProtocolGson = GsonBuilder()
 internal val protocolGson = GsonBuilder()
     .addSerializationExclusionStrategy(ProtocolExclusionStrategy())
     .registerCommonTypeAdapters()
-    .registerTypeHierarchyAdapter(Configurable::class.javaObjectType, ProtocolConfigurableSerializer)
+    .registerTypeHierarchyAdapter(Configurable::class.javaObjectType, ProtocolConfigurableWithComponentSerializer)
     .registerTypeHierarchyAdapter(Text::class.java, TextSerializer())
     .registerTypeAdapter(Session::class.java, SessionSerializer())
     .registerTypeAdapter(ServerInfo::class.java, ServerInfoSerializer())

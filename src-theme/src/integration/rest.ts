@@ -529,26 +529,20 @@ export async function getComponents(): Promise<Component[]> {
     return await response.json();
 }
 
-export async function getComponent(index: number): Promise<ConfigurableSetting> {
-    const response = await fetch(`${API_BASE}/client/components/${THEME_NAME}/${index}`);
-    return await response.json();
-}
-
 export async function createComponent(theme: string, name: string) {
     await fetch(`${API_BASE}/client/components/${theme}/${name}`, {
         method: "POST"
     });
 }
 
-// todo: use index of get all components
-export async function deleteComponent(index: number) {
-    await fetch(`${API_BASE}/client/component/${index}`, {
+export async function deleteComponent(id: string) {
+    await fetch(`${API_BASE}/client/component/${id}`, {
         method: "DELETE"
     });
 }
 
-export async function moveComponent(index: number, alignment: AlignmentSetting) {
-    await fetch(`${API_BASE}/client/components/${THEME_NAME}/${index}`, {
+export async function moveComponent(id: string, alignment: AlignmentSetting) {
+    await fetch(`${API_BASE}/client/component/${id}`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json"
@@ -557,8 +551,13 @@ export async function moveComponent(index: number, alignment: AlignmentSetting) 
     });
 }
 
-export async function updateComponent(index: number, settings: ConfigurableSetting) {
-    await fetch(`${API_BASE}/client/components/${THEME_NAME}/${index}`, {
+export async function getComponent(id: string): Promise<ConfigurableSetting> {
+    const response = await fetch(`${API_BASE}/client/component/${id}`);
+    return await response.json();
+}
+
+export async function updateComponent(id: string, settings: ConfigurableSetting) {
+    await fetch(`${API_BASE}/client/component/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"

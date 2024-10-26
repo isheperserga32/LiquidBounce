@@ -1,15 +1,10 @@
 <script lang="ts">
     import {onMount} from "svelte";
-    import {
-        createComponent,
-        deleteComponent,
-        getAllComponents,
-        getComponentFactories,
-        getGameWindow
-    } from "../../integration/rest";
+    import {createComponent, getAllComponents, getComponentFactories, getGameWindow} from "../../integration/rest";
     import {listen} from "../../integration/ws";
     import type {Component, ComponentFactories} from "../../integration/types";
     import type {ScaleFactorChangeEvent} from "../../integration/events";
+    import ComponentEditor from "./ComponentEditor.svelte";
 
     let zoom = 100;
     let components: Component[] = [];
@@ -79,10 +74,7 @@
         <h3>Existing Components</h3>
         <ul>
             {#each components as component}
-                <li>
-                    {component.name}
-                    <button on:click={() => deleteComponent(component.id)}>-</button>
-                </li>
+                <li><ComponentEditor name={component.name} id={component.id} /></li>
             {/each}
         </ul>
     </div>

@@ -26,6 +26,7 @@ import net.ccbluex.liquidbounce.config.ToggleableConfigurable
 import net.ccbluex.liquidbounce.config.ValueType
 import net.ccbluex.liquidbounce.integration.theme.type.Theme
 import net.ccbluex.liquidbounce.utils.render.Alignment
+import java.util.*
 
 /**
  * Represents a HUD component
@@ -37,6 +38,12 @@ open class Component(
     alignment: Alignment,
     val tweaks: Array<ComponentTweak> = emptyArray()
 ) : ToggleableConfigurable(parent = ComponentOverlay, name = name, enabled = enabled) {
+
+    /**
+     * Identifier of the component. Instead of using indexes, we use UUIDs to make sure we work with
+     * the correct component
+     */
+    val id = UUID.randomUUID()
 
     var alignment by value("Alignment", alignment, valueType = ValueType.ALIGNMENT)
 
