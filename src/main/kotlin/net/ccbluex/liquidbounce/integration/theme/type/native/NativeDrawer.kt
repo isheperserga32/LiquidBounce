@@ -4,36 +4,47 @@ import net.ccbluex.liquidbounce.event.EventManager
 import net.ccbluex.liquidbounce.event.Listenable
 import net.ccbluex.liquidbounce.event.events.*
 import net.ccbluex.liquidbounce.event.handler
+import net.ccbluex.liquidbounce.integration.DrawingStage
 import net.ccbluex.liquidbounce.utils.client.mc
 import net.ccbluex.liquidbounce.utils.kotlin.EventPriorityConvention
 import org.lwjgl.glfw.GLFW
 
 class NativeDrawer(
     var route: NativeDrawableRoute?,
+    val stage: DrawingStage = DrawingStage.OVERLAY,
     val takesInput: () -> Boolean = { false }
 ) : Listenable, AutoCloseable {
 
-    private var hasDrawn = false
+    private var drawn = false
 
     @Suppress
     val gameTickHandler = handler<GameTickEvent> {
-        hasDrawn = false
+        drawn = false
     }
 
     @Suppress("unused")
     val onScreenRender = handler<ScreenRenderEvent> {
-        if (!hasDrawn) {
-            hasDrawn = true
+        if (drawn) {
+            return@handler
         }
+
         route?.render(it.context, it.partialTicks)
+        drawn = true
     }
 
     @Suppress("unused")
     val onOverlayRender = handler<OverlayRenderEvent>(priority = EventPriorityConvention.READ_FINAL_STATE) {
-        if (!hasDrawn) {
-            hasDrawn = true
+        if (drawn) {
+            return@handler
         }
+
+        if (stage == DrawingStage.SCREEN && mc.currentScreen != null) {
+            // We will draw this layer later on the screen render event
+            return@handler
+        }
+
         route?.render(it.context, it.tickDelta)
+        drawn = true
     }
 
     private var mouseX: Double = 0.0

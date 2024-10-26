@@ -18,9 +18,10 @@
  */
 package net.ccbluex.liquidbounce.integration.browser.supports.tab
 
+import net.ccbluex.liquidbounce.integration.DrawingStage
+import net.ccbluex.liquidbounce.integration.browser.supports.JcefBrowser
 import net.ccbluex.liquidbounce.mcef.MCEF
 import net.ccbluex.liquidbounce.mcef.MCEFBrowser
-import net.ccbluex.liquidbounce.integration.browser.supports.JcefBrowser
 
 @Suppress("TooManyFunctions")
 class JcefTab(
@@ -54,7 +55,7 @@ class JcefTab(
     }
 
     override var drawn = false
-    override var preferOnTop = false
+    override var drawingStage = DrawingStage.SCREEN
 
     override fun forceReload() {
         mcefBrowser.reloadIgnoreCache()

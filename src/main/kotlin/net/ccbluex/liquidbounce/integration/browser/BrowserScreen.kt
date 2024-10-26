@@ -20,6 +20,7 @@ package net.ccbluex.liquidbounce.integration.browser
 
 import net.ccbluex.liquidbounce.event.EventManager
 import net.ccbluex.liquidbounce.event.events.BrowserUrlChangeEvent
+import net.ccbluex.liquidbounce.integration.DrawingStage
 import net.ccbluex.liquidbounce.integration.browser.supports.tab.ITab
 import net.ccbluex.liquidbounce.integration.browser.supports.tab.TabPosition
 import net.ccbluex.liquidbounce.utils.client.asText
@@ -52,7 +53,7 @@ class BrowserScreen(val url: String, title: Text = "".asText()) : Screen(title) 
             val browser = BrowserManager.browser ?: return
 
             browser.createTab(url, position, refreshRate) { mc.currentScreen == this }
-                .preferOnTop()
+                .stage(DrawingStage.SCREEN)
                 .also { browserTabs.add(it) }
             return
         }

@@ -94,7 +94,7 @@ class JcefBrowser : IBrowser, Listenable {
                 tabs += this
 
                 // Sort tabs by preferOnTop
-                tabs.sortBy { it.preferOnTop }
+                tabs.sortBy { tab -> tab.drawingStage }
             }
         }
 

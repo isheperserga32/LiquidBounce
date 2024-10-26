@@ -28,32 +28,32 @@ sealed class DrawerReference : AutoCloseable {
         private val takesInputOnEditor: () -> Boolean
             get() = { IntegrationHandler.route.type == VirtualScreenType.EDITOR  }
 
-        fun newComponentRef(route: RouteType) =
+        fun newComponentRef(route: RouteType, stage: DrawingStage = DrawingStage.OVERLAY) =
             when (route) {
                 is RouteType.Web -> Web(
                     BrowserManager.browser?.createTab(
                         route.url,
                         frameRate = 60,
                         takesInput = takesInputOnEditor
-                    ) ?: error("Browser is not initialized"),
+                    )?.stage(stage) ?: error("Browser is not initialized"),
                     route
                 )
 
-                is RouteType.Native -> Native(NativeDrawer(route.drawableRoute, takesInputOnEditor), route)
+                is RouteType.Native -> Native(NativeDrawer(route.drawableRoute, stage, takesInputOnEditor), route)
             }
 
-        fun newInputRef(route: RouteType) =
+        fun newInputRef(route: RouteType, stage: DrawingStage = DrawingStage.SCREEN) =
             when (route) {
                 is RouteType.Web -> Web(
                     BrowserManager.browser?.createTab(
                         route.url,
                         frameRate = refreshRate,
                         takesInput = takesInputHandler
-                    ) ?: error("Browser is not initialized"),
+                    )?.stage(stage) ?: error("Browser is not initialized"),
                     route
                 )
 
-                is RouteType.Native -> Native(NativeDrawer(route.drawableRoute, takesInputHandler), route)
+                is RouteType.Native -> Native(NativeDrawer(route.drawableRoute, stage, takesInputHandler), route)
             }
 
     }
@@ -128,4 +128,9 @@ sealed class DrawerReference : AutoCloseable {
         is Native -> drawer.close()
     }
 
+}
+
+enum class DrawingStage {
+    OVERLAY,
+    SCREEN
 }
