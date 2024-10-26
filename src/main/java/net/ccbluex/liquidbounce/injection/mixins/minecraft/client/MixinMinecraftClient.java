@@ -32,6 +32,7 @@ import net.ccbluex.liquidbounce.features.module.modules.render.ModuleXRay;
 import net.ccbluex.liquidbounce.integration.VirtualDisplayScreen;
 import net.ccbluex.liquidbounce.integration.browser.BrowserScreen;
 import net.ccbluex.liquidbounce.render.engine.RenderingFlags;
+import net.ccbluex.liquidbounce.utils.client.vfp.VfpCompatibility;
 import net.ccbluex.liquidbounce.utils.combat.CombatManager;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
@@ -61,6 +62,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
+
+import static net.ccbluex.liquidbounce.utils.client.ProtocolUtilKt.getHasProtocolTranslator;
 
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {
@@ -176,7 +179,19 @@ public abstract class MixinMinecraftClient {
         titleBuilder.append(LiquidBounce.INSTANCE.getClientCommit());
 
         titleBuilder.append(" | ");
-        titleBuilder.append(SharedConstants.getGameVersion().getName());
+
+        // ViaFabricPlus compatibility
+        if (getHasProtocolTranslator()) {
+            var protocolVersion = VfpCompatibility.INSTANCE.unsafeGetProtocolVersion();
+
+            if (protocolVersion != null) {
+                titleBuilder.append(protocolVersion.getName());
+            } else {
+                titleBuilder.append(SharedConstants.getGameVersion().getName());
+            }
+        } else {
+            titleBuilder.append(SharedConstants.getGameVersion().getName());
+        }
 
         ClientPlayNetworkHandler clientPlayNetworkHandler = this.getNetworkHandler();
         if (clientPlayNetworkHandler != null && clientPlayNetworkHandler.getConnection().isOpen()) {

@@ -192,6 +192,8 @@ export interface Scoreboard {
 export interface PlayerData {
     username: string;
     uuid: string;
+    position: Vec3;
+    velocity: Vec3;
     selectedSlot: number;
     gameMode: string;
     health: number,
@@ -221,6 +223,12 @@ export interface StatusEffect {
     visible: boolean;
     showIcon: boolean;
     color: number;
+}
+
+export interface Vec3 {
+    x: number;
+    y: number;
+    z: number;
 }
 
 export interface ItemStack {

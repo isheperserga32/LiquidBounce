@@ -18,7 +18,7 @@
  *
  *
  */
-package net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap
+package net.ccbluex.liquidbounce.integration.theme.component.types.minimap
 
 import net.ccbluex.liquidbounce.render.engine.Color4b
 import net.ccbluex.liquidbounce.render.engine.font.BoundingBox2f
@@ -26,6 +26,7 @@ import net.ccbluex.liquidbounce.utils.math.Vec2i
 import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.util.math.ChunkPos
+import java.util.concurrent.ConcurrentSkipListSet
 
 /**
  * Size of the texture atlas in chunks (size x size)
@@ -37,33 +38,24 @@ private const val ATLAS_SIZE: Int = 64
  */
 private const val FULL_UPLOAD_THRESHOLD: Int = 15
 
-private val NOT_LOADED_ATLAS_POSITION =
-    _root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.MinimapTextureAtlasManager.AtlasPosition(
-        0,
-        0
-    )
+private val NOT_LOADED_ATLAS_POSITION = MinimapTextureAtlasManager.AtlasPosition(0, 0)
 
 class MinimapTextureAtlasManager {
-    private val texture = NativeImageBackedTexture(_root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.ATLAS_SIZE * 16, _root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.ATLAS_SIZE * 16, false)
-    private val availableAtlasPositions = mutableListOf<net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.MinimapTextureAtlasManager.AtlasPosition>()
-    private val dirtyAtlasPositions = hashSetOf<_root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.MinimapTextureAtlasManager.AtlasPosition>()
-    private val chunkPosAtlasPosMap = hashMapOf<ChunkPos, _root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.MinimapTextureAtlasManager.AtlasPosition>()
+    private val texture = NativeImageBackedTexture(ATLAS_SIZE * 16, ATLAS_SIZE * 16, false)
+    private val availableAtlasPositions = ArrayList<AtlasPosition>(ATLAS_SIZE * ATLAS_SIZE - 1)
+    private val dirtyAtlasPositions = ConcurrentSkipListSet<AtlasPosition>()
+    private val chunkPosAtlasPosMap = hashMapOf<ChunkPos, AtlasPosition>()
 
     private var allocated = false
 
     init {
-        for (x in 0 until _root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.ATLAS_SIZE) {
-            for (y in 0 until _root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.ATLAS_SIZE) {
+        for (x in 0 until ATLAS_SIZE) {
+            for (y in 0 until ATLAS_SIZE) {
                 if (x == 0 && y == 0) {
                     continue
                 }
 
-                availableAtlasPositions.add(
-                    _root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.MinimapTextureAtlasManager.AtlasPosition(
-                        x,
-                        y
-                    )
-                )
+                availableAtlasPositions.add(AtlasPosition(x, y))
             }
         }
 
@@ -75,10 +67,10 @@ class MinimapTextureAtlasManager {
             }
         }
 
-        this.dirtyAtlasPositions.add(_root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.NOT_LOADED_ATLAS_POSITION)
+        this.dirtyAtlasPositions.add(NOT_LOADED_ATLAS_POSITION)
     }
 
-    private fun allocate(chunkPos: ChunkPos): _root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.MinimapTextureAtlasManager.AtlasPosition {
+    private fun allocate(chunkPos: ChunkPos): AtlasPosition {
         val atlasPosition = availableAtlasPositions.removeLastOrNull() ?: error("No more space in the texture atlas!")
 
         chunkPosAtlasPosMap[chunkPos] = atlasPosition
@@ -98,30 +90,25 @@ class MinimapTextureAtlasManager {
         dirtyAtlasPositions.clear()
     }
 
-    fun getOrNotLoadedTexture(chunkPos: ChunkPos): _root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.MinimapTextureAtlasManager.AtlasPosition {
-        return chunkPosAtlasPosMap[chunkPos] ?: _root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.NOT_LOADED_ATLAS_POSITION
+    fun getOrNotLoadedTexture(chunkPos: ChunkPos): AtlasPosition {
+        return chunkPosAtlasPosMap[chunkPos] ?: NOT_LOADED_ATLAS_POSITION
     }
 
-    fun get(chunkPos: ChunkPos): _root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.MinimapTextureAtlasManager.AtlasPosition? {
+    fun get(chunkPos: ChunkPos): AtlasPosition? {
         return chunkPosAtlasPosMap[chunkPos]
     }
 
-    private fun getOrAllocate(chunkPos: ChunkPos): _root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.MinimapTextureAtlasManager.AtlasPosition {
+    private fun getOrAllocate(chunkPos: ChunkPos): AtlasPosition {
         return get(chunkPos) ?: allocate(chunkPos)
     }
 
     fun editChunk(
         chunkPos: ChunkPos,
-        editor: (NativeImageBackedTexture, _root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.MinimapTextureAtlasManager.AtlasPosition) -> Unit,
+        editor: (NativeImageBackedTexture, AtlasPosition) -> Unit,
     ) {
-        val atlasPosition =
-            synchronized(this) {
-                val atlasPosition = getOrAllocate(chunkPos)
+        val atlasPosition = getOrAllocate(chunkPos)
 
-                dirtyAtlasPositions.add(atlasPosition)
-
-                atlasPosition
-            }
+        dirtyAtlasPositions.add(atlasPosition)
 
         editor(texture, atlasPosition)
     }
@@ -132,20 +119,20 @@ class MinimapTextureAtlasManager {
      * @return the GLid of the texture
      */
     fun prepareRendering(): Int {
+        if (this.dirtyAtlasPositions.isEmpty()) {
+            return this.texture.glId
+        }
+
         this.texture.bindTexture()
 
-        synchronized(this) {
-            val dirtyChunks = this.dirtyAtlasPositions.size
+        val dirtyChunks = this.dirtyAtlasPositions.size
 
-            when {
-                !this.allocated -> uploadFullTexture()
-                dirtyChunks == 0 -> {}
-                dirtyChunks < _root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.FULL_UPLOAD_THRESHOLD -> uploadOnlyDirtyPositions()
-                else -> uploadFullTexture()
-            }
-
-            this.dirtyAtlasPositions.clear()
+        when {
+            !this.allocated || dirtyChunks >= FULL_UPLOAD_THRESHOLD -> uploadFullTexture()
+            else -> uploadOnlyDirtyPositions()
         }
+
+        this.dirtyAtlasPositions.clear()
 
         return this.texture.glId
     }
@@ -176,20 +163,19 @@ class MinimapTextureAtlasManager {
                     dirtyAtlasPosition.baseXOnAtlas, dirtyAtlasPosition.baseYOnAtlas,
                     0, 0,
                     16, 16,
-                    false, false)
+                    false, false
+                )
             }
         }
     }
 
-    data class AtlasPosition(private val x: Int, private val y: Int) {
-        val baseXOnAtlas: Int
-            get() = x * 16
-        val baseYOnAtlas: Int
-            get() = y * 16
+    data class AtlasPosition(private val x: Int, private val y: Int) : Comparable<AtlasPosition> {
+        val baseXOnAtlas: Int = x shl 4
+        val baseYOnAtlas: Int = y shl 4
 
         val uv: BoundingBox2f
             get() {
-                val pixelSize = _root_ide_package_.net.ccbluex.liquidbounce.integration.theme.type.native.components.minimap.ATLAS_SIZE * 16.0F
+                val pixelSize = ATLAS_SIZE * 16.0F
 
                 return BoundingBox2f(
                     baseXOnAtlas / pixelSize,
@@ -209,5 +195,8 @@ class MinimapTextureAtlasManager {
         ): Vec2i {
             return Vec2i(baseXOnAtlas + chunkX, baseYOnAtlas + chunkY)
         }
+
+        override fun compareTo(other: AtlasPosition): Int =
+            compareValuesBy(this, other, AtlasPosition::x, AtlasPosition::y)
     }
 }

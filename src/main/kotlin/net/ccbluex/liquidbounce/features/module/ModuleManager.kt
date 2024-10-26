@@ -62,6 +62,7 @@ import net.ccbluex.liquidbounce.features.module.modules.player.autoshop.ModuleAu
 import net.ccbluex.liquidbounce.features.module.modules.player.cheststealer.ModuleChestStealer
 import net.ccbluex.liquidbounce.features.module.modules.player.invcleaner.ModuleInventoryCleaner
 import net.ccbluex.liquidbounce.features.module.modules.player.nofall.ModuleNoFall
+import net.ccbluex.liquidbounce.features.module.modules.player.offhand.ModuleOffhand
 import net.ccbluex.liquidbounce.features.module.modules.render.*
 import net.ccbluex.liquidbounce.features.module.modules.render.murdermystery.ModuleMurderMystery
 import net.ccbluex.liquidbounce.features.module.modules.render.nametags.ModuleNametags
@@ -193,6 +194,7 @@ object ModuleManager : Listenable, Iterable<Module> by modules {
             ModuleDerp,
             ModuleSkinDerp,
             ModuleHandDerp,
+            ModuleTwerk,
             ModuleVomit,
 
             // Misc
@@ -251,7 +253,7 @@ object ModuleManager : Listenable, Iterable<Module> by modules {
             ModuleAutoBreak,
             ModuleAutoFish,
             ModuleAutoRespawn,
-            ModuleAutoTotem,
+            ModuleOffhand,
             ModuleAutoShop,
             ModuleAutoWalk,
             ModuleBlink,
