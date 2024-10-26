@@ -17,13 +17,13 @@ class NativeDrawer(
 
     private var drawn = false
 
-    @Suppress
-    val gameTickHandler = handler<GameTickEvent> {
+    @Suppress("unused")
+    private val gameRenderHandler = handler<GameRenderEvent> {
         drawn = false
     }
 
     @Suppress("unused")
-    val onScreenRender = handler<ScreenRenderEvent> {
+    private val onScreenRender = handler<ScreenRenderEvent> {
         if (drawn) {
             return@handler
         }
@@ -33,7 +33,9 @@ class NativeDrawer(
     }
 
     @Suppress("unused")
-    val onOverlayRender = handler<OverlayRenderEvent>(priority = EventPriorityConvention.READ_FINAL_STATE) {
+    private val onOverlayRender = handler<OverlayRenderEvent>(
+        priority = EventPriorityConvention.READ_FINAL_STATE
+    ) {
         if (drawn) {
             return@handler
         }
@@ -51,7 +53,7 @@ class NativeDrawer(
     private var mouseY: Double = 0.0
 
     @Suppress("unused")
-    val mouseButtonHandler = handler<MouseButtonEvent> { event ->
+    private val mouseButtonHandler = handler<MouseButtonEvent> { event ->
         if (!takesInput()) return@handler
 
         if (event.action == GLFW.GLFW_PRESS) {
@@ -62,12 +64,12 @@ class NativeDrawer(
     }
 
     @Suppress("unused")
-    val mouseScrollHandler = handler<MouseScrollEvent> {
+    private val mouseScrollHandler = handler<MouseScrollEvent> {
         route?.mouseScrolled(it.horizontal, it.vertical)
     }
 
     @Suppress("unused")
-    val mouseCursorHandler = handler<MouseCursorEvent> { event ->
+    private val mouseCursorHandler = handler<MouseCursorEvent> { event ->
         val factorW = mc.window.scaledWidth.toDouble() / mc.window.width.toDouble()
         val factorV = mc.window.scaledHeight.toDouble() / mc.window.height.toDouble()
         val mouseX = event.x * factorW
@@ -80,7 +82,7 @@ class NativeDrawer(
     }
 
     @Suppress("unused")
-    val keyboardKeyHandler = handler<KeyboardKeyEvent> { event ->
+    private val keyboardKeyHandler = handler<KeyboardKeyEvent> { event ->
         if (!takesInput()) return@handler
 
         val action = event.action
@@ -96,7 +98,7 @@ class NativeDrawer(
     }
 
     @Suppress("unused")
-    val keyboardCharHandler = handler<KeyboardCharEvent> { event ->
+    private val keyboardCharHandler = handler<KeyboardCharEvent> { event ->
         if (!takesInput()) return@handler
 
         route?.charTyped(event.codePoint.toChar(), event.modifiers)

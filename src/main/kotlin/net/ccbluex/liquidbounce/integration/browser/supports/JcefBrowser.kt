@@ -93,7 +93,7 @@ class JcefBrowser : IBrowser, Listenable {
             synchronized(tabs) {
                 tabs += this
 
-                // Sort tabs by preferOnTop
+                // Sort tabs by drawing stage
                 tabs.sortBy { tab -> tab.drawingStage }
             }
         }
