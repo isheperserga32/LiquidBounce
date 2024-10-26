@@ -61,15 +61,7 @@ fun getComponentFactories(requestObject: RequestObject): FullHttpResponse {
 @Suppress("UNUSED_PARAMETER")
 fun getAllComponents(requestObject: RequestObject) = httpOk(JsonArray().apply {
     for (component in activeComponents) {
-        add(JsonObject().apply {
-            addProperty("id", component.id.toString())
-            addProperty("name", component.name)
-            add("settings", JsonObject().apply {
-                for (v in component.inner) {
-                    add(v.name.lowercase(), protocolGson.toJsonTree(v.inner))
-                }
-            })
-        })
+        add(protocolGson.toJsonTree(component))
     }
 })
 
@@ -80,15 +72,7 @@ fun getComponents(requestObject: RequestObject): FullHttpResponse {
 
     return httpOk(JsonArray().apply {
         for (component in components) {
-            add(JsonObject().apply {
-                addProperty("id", component.id.toString())
-                addProperty("name", component.name)
-                add("settings", JsonObject().apply {
-                    for (v in component.inner) {
-                        add(v.name.lowercase(), protocolGson.toJsonTree(v.inner))
-                    }
-                })
-            })
+            add(protocolGson.toJsonTree(component))
         }
     })
 }

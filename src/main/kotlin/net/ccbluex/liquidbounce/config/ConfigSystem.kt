@@ -126,7 +126,6 @@ object ConfigSystem {
             .registerTypeHierarchyAdapter(MinecraftAccount::class.javaObjectType, MinecraftAccountSerializer)
             .registerTypeAdapter(Alignment::class.java, AlignmentSerializer)
 
-
     /**
      * Create new root configurable
      */

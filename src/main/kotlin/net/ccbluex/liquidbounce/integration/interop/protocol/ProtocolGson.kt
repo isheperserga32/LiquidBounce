@@ -210,6 +210,7 @@ object ComponentSerializer : JsonSerializer<Component> {
         context: JsonSerializationContext
     ) = JsonObject().apply {
         addProperty("name", src.name)
+        addProperty("id", src.id.toString())
         add("settings", serializeReadOnly(src, context))
     }
 
@@ -236,7 +237,8 @@ internal val genericProtocolGson = GsonBuilder()
 internal val protocolGson = GsonBuilder()
     .addSerializationExclusionStrategy(ProtocolExclusionStrategy())
     .registerCommonTypeAdapters()
-    .registerTypeHierarchyAdapter(Configurable::class.javaObjectType, ProtocolConfigurableWithComponentSerializer)
+    .registerTypeHierarchyAdapter(Configurable::class.javaObjectType, ProtocolConfigurableSerializer)
+    .registerTypeHierarchyAdapter(Component::class.javaObjectType, ComponentSerializer)
     .registerTypeHierarchyAdapter(Text::class.java, TextSerializer())
     .registerTypeAdapter(Session::class.java, SessionSerializer())
     .registerTypeAdapter(ServerInfo::class.java, ServerInfoSerializer())
