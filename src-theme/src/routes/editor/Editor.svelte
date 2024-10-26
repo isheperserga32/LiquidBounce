@@ -73,7 +73,7 @@
     <div class="existing-components">
         <h3>Existing Components</h3>
         <ul>
-            {#each components as component}
+            {#each components as component (component.id)}
                 <li><ComponentEditor name={component.name} id={component.id} /></li>
             {/each}
         </ul>

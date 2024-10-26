@@ -43,9 +43,10 @@ open class Component(
      * Identifier of the component. Instead of using indexes, we use UUIDs to make sure we work with
      * the correct component
      */
-    val id = UUID.randomUUID()
+    val id: UUID = UUID.randomUUID()
 
     var alignment by value("Alignment", alignment, valueType = ValueType.ALIGNMENT)
+        .notAnOption()
 
     protected fun registerComponentListen(cfg: Configurable = this) {
         for (v in cfg.inner) {

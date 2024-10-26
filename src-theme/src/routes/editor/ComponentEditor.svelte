@@ -32,7 +32,7 @@
     {#if configurable}
         <div class="settings">
             {#each configurable.value as setting (setting.name)}
-                {#if setting.valueType && setting.valueType !== "ALIGNMENT"}
+                {#if setting.valueType}
                     <GenericSetting skipAnimationDelay={true} {path} bind:setting on:change={updateComponentSettings}/>
                 {/if}
             {/each}

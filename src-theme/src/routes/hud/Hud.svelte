@@ -115,7 +115,7 @@
 </script>
 
 <div class="hud" style="zoom: {zoom}%">
-    {#each components as c}
+    {#each components as c (c.id)}
         <div class="component"
              style="border: {editor ? '4px solid white' : 'none'}; {toStyle(c.settings.alignment)}"
              on:mousedown={(event) => startDrag(c, event)}>
