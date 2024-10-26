@@ -1,6 +1,6 @@
 <script lang="ts">
     import {onMount} from "svelte";
-    import {getGameWindow, getModules, getModuleSettings} from "../../integration/rest";
+    import {getGameWindow, getModules, getModuleSettings, openScreen} from "../../integration/rest";
     import {groupByCategory} from "../../integration/util";
     import type {GroupedModules, Module} from "../../integration/types";
     import Panel from "./Panel.svelte";
@@ -10,6 +10,7 @@
     import {listen} from "../../integration/ws";
     import type {ClickGuiScaleChangeEvent, ScaleFactorChangeEvent} from "../../integration/events";
     import {scaleFactor} from "./clickgui_store";
+    import IconTextButton from "../menu/common/buttons/IconTextButton.svelte";
 
     let categories: GroupedModules = {};
     let modules: Module[] = [];
@@ -47,6 +48,8 @@
     {#each Object.entries(categories) as [category, modules], panelIndex}
         <Panel {category} {modules} {panelIndex}/>
     {/each}
+
+    <IconTextButton title="Editor" icon="pen" on:click={() => openScreen("editor")} />
 </div>
 
 <style lang="scss">
