@@ -249,7 +249,7 @@ open class Value<T : Any>(
                     try {
                         r = gson.fromJson(element, clazz) as T?
                         break
-                    } catch (classCast: ClassCastException) {
+                    } catch (@Suppress("SwallowedException") e: ClassCastException) {
                         clazz = clazz.superclass
                     }
                 }
