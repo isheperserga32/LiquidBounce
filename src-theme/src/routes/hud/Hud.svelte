@@ -115,6 +115,7 @@
 <div class="hud" style="zoom: {zoom}%">
     {#each components as c (c.id)}
         {#if c.settings.enabled}
+            <!-- svelte-ignore a11y-no-static-element-interactions -->
             <div class="component"
                  style="border: {editor ? '4px solid white' : 'none'}; {toStyle(c.settings.alignment)}"
                  on:mousedown={(event) => startDrag(c, event)}>
