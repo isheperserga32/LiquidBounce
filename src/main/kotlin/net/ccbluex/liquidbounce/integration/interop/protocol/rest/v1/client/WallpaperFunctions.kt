@@ -23,6 +23,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.mojang.blaze3d.systems.RenderSystem
 import io.netty.handler.codec.http.FullHttpResponse
+import net.ccbluex.liquidbounce.config.ConfigSystem
 import net.ccbluex.liquidbounce.integration.theme.ThemeManager
 import net.ccbluex.netty.http.model.RequestObject
 import net.ccbluex.netty.http.util.httpBadRequest
@@ -33,20 +34,24 @@ import net.ccbluex.netty.http.util.httpOk
 fun getWallpaper(requestObject: RequestObject): FullHttpResponse =
     httpOk(JsonObject().apply {
         add("active", JsonObject().apply {
-            val activeWallpaper = ThemeManager.activeWallpaper ?: return@apply
-
+            val activeWallpaper = ThemeManager.activeWallpaper
             addProperty("name", activeWallpaper.name)
             addProperty("theme", activeWallpaper.theme.name)
         })
+
         add("available", JsonArray().apply {
-            ThemeManager.availableThemes.forEach { theme ->
-                theme.wallpapers.forEach { wallpaper ->
-                    add(JsonObject().apply {
-                        addProperty("name", wallpaper.name)
-                        addProperty("theme", theme.name)
-                    })
+            ThemeManager.availableWallpapers.groupBy { wallpaper ->
+                    wallpaper.theme.name
+                }.forEach { (name, wallpapers) ->
+                    // TODO: Might be sub-optimal to specify the theme name for each wallpaper
+                    //  but it is easier to deserialize on the browser side
+                    wallpapers.forEach { wallpaper ->
+                        add(JsonObject().apply {
+                            addProperty("theme", name)
+                            addProperty("name", wallpaper.name)
+                        })
+                    }
                 }
-            }
         })
     })
 
@@ -55,14 +60,13 @@ fun putWallpaper(requestObject: RequestObject): FullHttpResponse {
     val theme = requestObject.params["theme"] ?: return httpBadRequest("Missing theme")
     val name = requestObject.params["name"] ?: return httpBadRequest("Missing name")
 
-    val wallpaper = ThemeManager.availableThemes
-        .firstOrNull { it.name == theme }
-        ?.wallpapers
-        ?.firstOrNull { it.name == name }
-        ?: return httpBadRequest("Invalid theme or wallpaper")
+    val wallpaper =
+        ThemeManager.availableWallpapers.find { wallpaper -> wallpaper.name == name && wallpaper.theme.name == theme }
+            ?: return httpBadRequest("Invalid theme or wallpaper")
 
     ThemeManager.activeWallpaper = wallpaper
     RenderSystem.recordRenderCall(wallpaper::load)
+    ConfigSystem.storeConfigurable(ThemeManager)
 
     return httpOk(JsonObject())
 }

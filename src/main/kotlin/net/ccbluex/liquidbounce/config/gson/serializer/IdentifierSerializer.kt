@@ -25,7 +25,7 @@ import com.google.gson.JsonSerializer
 import net.minecraft.util.Identifier
 import java.lang.reflect.Type
 
-class IdentifierSerializer : JsonSerializer<Identifier> {
+object IdentifierSerializer : JsonSerializer<Identifier> {
     override fun serialize(src: Identifier?, typeOfSrc: Type, context: JsonSerializationContext) =
         src?.let { JsonPrimitive(it.toString()) }
 }

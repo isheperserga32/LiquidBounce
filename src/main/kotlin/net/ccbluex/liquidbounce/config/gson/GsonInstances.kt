@@ -25,12 +25,14 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import net.ccbluex.liquidbounce.authlib.account.MinecraftAccount
 import net.ccbluex.liquidbounce.config.gson.adapter.*
+import net.ccbluex.liquidbounce.config.gson.adapter.lookup.WallpaperLookupAdapter
 import net.ccbluex.liquidbounce.config.gson.serializer.*
 import net.ccbluex.liquidbounce.config.gson.stategies.ExcludeStrategy
 import net.ccbluex.liquidbounce.config.gson.stategies.ProtocolExclusionStrategy
 import net.ccbluex.liquidbounce.config.types.ChoiceConfigurable
 import net.ccbluex.liquidbounce.config.types.Configurable
 import net.ccbluex.liquidbounce.config.types.NamedChoice
+import net.ccbluex.liquidbounce.integration.theme.Wallpaper
 import net.ccbluex.liquidbounce.integration.theme.component.Component
 import net.ccbluex.liquidbounce.render.engine.Color4b
 import net.ccbluex.liquidbounce.utils.input.InputBind
@@ -99,9 +101,9 @@ internal val accessibleInteropGson = GsonBuilder()
  */
 internal fun GsonBuilder.registerCommonTypeAdapters() =
     registerTypeHierarchyAdapter(ClosedRange::class.javaObjectType, RangeAdapter)
-        .registerTypeAdapter(IntRange::class.javaObjectType, IntRangeAdapter)
+        .registerTypeHierarchyAdapter(IntRange::class.javaObjectType, IntRangeAdapter)
         .registerTypeHierarchyAdapter(Item::class.javaObjectType, ItemAdapter)
-        .registerTypeAdapter(Color4b::class.javaObjectType, ColorAdapter)
+        .registerTypeHierarchyAdapter(Color4b::class.javaObjectType, ColorAdapter)
         .registerTypeHierarchyAdapter(Vec3d::class.javaObjectType, Vec3dAdapter)
         .registerTypeHierarchyAdapter(Vec3i::class.javaObjectType, Vec3iAdapter)
         .registerTypeHierarchyAdapter(Block::class.javaObjectType, BlockAdapter)
@@ -110,11 +112,12 @@ internal fun GsonBuilder.registerCommonTypeAdapters() =
         .registerTypeAdapter(ChoiceConfigurable::class.javaObjectType, ChoiceConfigurableSerializer)
         .registerTypeHierarchyAdapter(NamedChoice::class.javaObjectType, EnumChoiceSerializer)
         .registerTypeHierarchyAdapter(MinecraftAccount::class.javaObjectType, MinecraftAccountAdapter)
-        .registerTypeAdapter(Alignment::class.java, AlignmentAdapter)
-        .registerTypeHierarchyAdapter(Text::class.java, TextSerializer())
-        .registerTypeAdapter(Session::class.java, SessionSerializer())
-        .registerTypeAdapter(ServerInfo::class.java, ServerInfoSerializer())
-        .registerTypeAdapter(GameMode::class.java, GameModeSerializer())
-        .registerTypeAdapter(ItemStack::class.java, ItemStackSerializer())
-        .registerTypeAdapter(Identifier::class.java, IdentifierSerializer())
-        .registerTypeAdapter(StatusEffectInstance::class.java, StatusEffectInstanceSerializer())
+        .registerTypeHierarchyAdapter(Alignment::class.javaObjectType, AlignmentAdapter)
+        .registerTypeHierarchyAdapter(Wallpaper::class.javaObjectType, WallpaperLookupAdapter)
+        .registerTypeHierarchyAdapter(Text::class.javaObjectType, TextSerializer)
+        .registerTypeAdapter(Session::class.javaObjectType, SessionSerializer)
+        .registerTypeAdapter(ServerInfo::class.javaObjectType, ServerInfoSerializer)
+        .registerTypeAdapter(GameMode::class.javaObjectType, GameModeSerializer)
+        .registerTypeAdapter(ItemStack::class.javaObjectType, ItemStackSerializer)
+        .registerTypeAdapter(Identifier::class.javaObjectType, IdentifierSerializer)
+        .registerTypeAdapter(StatusEffectInstance::class.javaObjectType, StatusEffectInstanceSerializer)

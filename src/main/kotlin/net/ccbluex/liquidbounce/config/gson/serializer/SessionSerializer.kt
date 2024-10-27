@@ -27,7 +27,7 @@ import net.ccbluex.liquidbounce.utils.client.isPremium
 import net.minecraft.client.session.Session
 import java.lang.reflect.Type
 
-class SessionSerializer : JsonSerializer<Session> {
+object SessionSerializer : JsonSerializer<Session> {
     override fun serialize(src: Session?, typeOfSrc: Type, context: JsonSerializationContext) = src?.let {
         JsonObject().apply {
             addProperty("username", it.username)

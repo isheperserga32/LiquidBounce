@@ -26,7 +26,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.registry.Registries
 import java.lang.reflect.Type
 
-class ItemStackSerializer : JsonSerializer<ItemStack> {
+object ItemStackSerializer : JsonSerializer<ItemStack> {
     override fun serialize(src: ItemStack?, typeOfSrc: Type, context: JsonSerializationContext) = src?.let {
         JsonObject().apply {
             addProperty("identifier", Registries.ITEM.getId(it.item).toString())

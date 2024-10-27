@@ -27,7 +27,7 @@ import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.registry.Registries
 import java.lang.reflect.Type
 
-class StatusEffectInstanceSerializer : JsonSerializer<StatusEffectInstance> {
+object StatusEffectInstanceSerializer : JsonSerializer<StatusEffectInstance> {
     override fun serialize(
         src: StatusEffectInstance?, typeOfSrc: Type, context: JsonSerializationContext
     ) = src?.let {

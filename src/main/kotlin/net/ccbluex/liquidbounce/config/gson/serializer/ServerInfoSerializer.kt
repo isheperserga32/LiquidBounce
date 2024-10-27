@@ -28,7 +28,7 @@ import net.minecraft.client.network.ServerInfo
 import java.lang.reflect.Type
 import java.util.*
 
-class ServerInfoSerializer : JsonSerializer<ServerInfo> {
+object ServerInfoSerializer : JsonSerializer<ServerInfo> {
     override fun serialize(src: ServerInfo, typeOfSrc: Type, context: JsonSerializationContext) = JsonObject().apply {
         addProperty("name", src.name)
         addProperty("address", src.address)

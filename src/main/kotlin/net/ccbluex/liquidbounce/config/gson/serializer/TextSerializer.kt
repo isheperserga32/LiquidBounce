@@ -28,7 +28,7 @@ import net.minecraft.registry.DynamicRegistryManager
 import net.minecraft.text.Text
 import java.lang.reflect.Type
 
-class TextSerializer : JsonSerializer<Text> {
+object TextSerializer : JsonSerializer<Text> {
     override fun serialize(src: Text?, typeOfSrc: Type, context: JsonSerializationContext): JsonElement =
         Text.Serialization.toJson(
             src?.processContent(), mc.world?.registryManager ?: DynamicRegistryManager.EMPTY

@@ -23,7 +23,7 @@ object NativeTheme : Theme {
             NativeComponentFactory("ArrayList", true) { ArrayListNativeComponent(this) },
             NativeComponentFactory("Minimap", false) { MinimapComponent(this) }
         )
-    override val wallpapers: List<Wallpaper> = emptyList()
+    override val wallpapers: List<Wallpaper> = listOf(Wallpaper.MinecraftWallpaper)
 
     private val routes = mutableMapOf(
         VirtualScreenType.TITLE to TitleDrawableRoute()

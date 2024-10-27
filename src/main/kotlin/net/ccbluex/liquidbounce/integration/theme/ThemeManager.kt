@@ -20,6 +20,10 @@
 package net.ccbluex.liquidbounce.integration.theme
 
 import net.ccbluex.liquidbounce.config.ConfigSystem
+import net.ccbluex.liquidbounce.config.types.Configurable
+import net.ccbluex.liquidbounce.config.types.DynamicConfigurable
+import net.ccbluex.liquidbounce.config.types.Value
+import net.ccbluex.liquidbounce.config.types.ValueType
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleHud
 import net.ccbluex.liquidbounce.integration.IntegrationHandler
 import net.ccbluex.liquidbounce.integration.VirtualScreenType
@@ -37,7 +41,7 @@ import java.io.File
 
 const val DEFAULT_THEME = "LiquidBounce"
 
-object ThemeManager {
+object ThemeManager : Configurable("style") {
 
     val themesFolder = File(ConfigSystem.rootFolder, "themes")
 
@@ -62,7 +66,7 @@ object ThemeManager {
             field = value
 
             // Update active wallpaper
-            activeWallpaper = value.defaultWallpaper
+//            value.defaultWallpaper?.let { wallpaper -> activeWallpaper = wallpaper }
 
             // Update integration browser
             IntegrationHandler.sync()
@@ -74,11 +78,21 @@ object ThemeManager {
     private var fallbackTheme = availableThemes.firstOrNull { it.name == DEFAULT_THEME } ?: NativeTheme
 
     /**
-     * The active wallpaper that is displayed as replacement of the standard Minecraft wallpaper. If set to null,
-     * the standard Minecraft wallpaper will be displayed. The wallpaper does not have to match the active theme
-     * and can be set independently.
+     * List of all available wallpapers that can be displayed in the background of the client UI.
      */
-    var activeWallpaper: Wallpaper? = fallbackTheme.defaultWallpaper
+    val availableWallpapers
+        get() = availableThemes.flatMap { wallpaper -> wallpaper.wallpapers }
+
+    /**
+     * The active wallpaper that is displayed as replacement of the standard Minecraft wallpaper.
+     * If set to [Wallpaper.MinecraftWallpaper], the standard Minecraft wallpaper will be displayed.
+     * The wallpaper does not have to match the active theme and can be set independently.
+     */
+    var activeWallpaper: Wallpaper by value(
+        "wallpaper",
+        activeTheme.defaultWallpaper ?: Wallpaper.MinecraftWallpaper,
+        ValueType.WALLPAPER
+    )
 
     /**
      * A list of all active components that are displayed by the [ComponentOverlay] and is used by [ModuleHud] to
@@ -104,15 +118,19 @@ object ThemeManager {
     val fontRenderer: FontRenderer
         get() = activeTheme.fontRenderer ?: FontManager.ARIAL_FONT.getRenderer()
 
-    init {
-        ConfigSystem.dynamic("style", activeComponents) { name, jsonObject ->
+    @Suppress("unused", "UNCHECKED_CAST")
+    private val components =
+        tree(DynamicConfigurable("components", activeComponents as MutableList<Value<*>>, { name, jsonObject ->
             val theme = jsonObject.get("theme")?.asString ?: error("Component must have a theme")
 
             val themeInstance = getTheme(theme) ?: error("Theme $theme not found")
             val factory = themeInstance.getComponentFactory(name) ?: error("Component $name not found in theme $theme")
 
             factory.new(themeInstance)
-        }
+        }))
+
+    init {
+        ConfigSystem.root(this)
     }
 
     /**

@@ -242,7 +242,19 @@ open class Value<T : Any>(
             }
 
             else -> {
-                gson.fromJson(element, currValue.javaClass)
+                var clazz: Class<*>? = currValue.javaClass
+                var r: T? = null
+
+                while (clazz != null && clazz != Any::class.java) {
+                    try {
+                        r = gson.fromJson(element, clazz) as T?
+                        break
+                    } catch (classCast: ClassCastException) {
+                        clazz = clazz.superclass
+                    }
+                }
+
+                r ?: error("Failed to deserialize value")
             }
         })
     }
@@ -447,7 +459,8 @@ enum class ValueType {
     CONFIGURABLE,
     TOGGLEABLE,
     ALIGNMENT,
-    FONT
+    FONT,
+    WALLPAPER
 }
 
 enum class ListValueType(val type: Class<*>?) {

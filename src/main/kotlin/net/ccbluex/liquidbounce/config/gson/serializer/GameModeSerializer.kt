@@ -25,7 +25,7 @@ import com.google.gson.JsonSerializer
 import net.minecraft.world.GameMode
 import java.lang.reflect.Type
 
-class GameModeSerializer : JsonSerializer<GameMode> {
+object GameModeSerializer : JsonSerializer<GameMode> {
     override fun serialize(src: GameMode?, typeOfSrc: Type, context: JsonSerializationContext) =
         src?.let { JsonPrimitive(it.getName()) }
 }
