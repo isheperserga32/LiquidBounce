@@ -30,6 +30,7 @@ class HudDrawableRoute : NativeDrawableRoute() {
         // Draw native components
         activeComponents
             .filterIsInstance<NativeComponent>()
+            .filter { it.enabled }
             .forEach { component ->
                 val (width, height) = component.size()
                 val box = component.alignment.getBounds(width.toFloat(), height.toFloat())
@@ -54,6 +55,7 @@ class HudDrawableRoute : NativeDrawableRoute() {
     override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
         activeComponents
             .filterIsInstance<NativeComponent>()
+            .filter { it.enabled }
             .forEach { component ->
                 val (width, height) = component.size()
 
