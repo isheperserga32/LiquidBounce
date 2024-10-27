@@ -22,7 +22,7 @@ import net.ccbluex.liquidbounce.event.events.OverlayRenderEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
-import net.ccbluex.liquidbounce.render.Fonts
+import net.ccbluex.liquidbounce.integration.theme.ThemeManager
 import net.ccbluex.liquidbounce.render.GUIRenderEnvironment
 import net.ccbluex.liquidbounce.render.engine.Color4b
 import net.ccbluex.liquidbounce.render.engine.Vec3
@@ -56,9 +56,8 @@ object ModuleItemTags : Module("ItemTags", Category.RENDER) {
     private val renderY by float("RenderY", 0.0F, -2.0F..2.0F)
     private val maximumDistance by float("MaximumDistance", 100F, 1F..256F)
 
-    private val fontRenderer by lazy {
-        Fonts.DEFAULT_FONT.get()
-    }
+    private val fontRenderer
+        get() = ThemeManager.fontRenderer
 
     @Suppress("unused")
     val renderHandler = handler<OverlayRenderEvent> {

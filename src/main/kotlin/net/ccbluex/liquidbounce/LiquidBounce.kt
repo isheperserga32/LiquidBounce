@@ -48,7 +48,7 @@ import net.ccbluex.liquidbounce.integration.interop.ClientInteropServer
 import net.ccbluex.liquidbounce.integration.interop.protocol.rest.v1.game.ActiveServerList
 import net.ccbluex.liquidbounce.integration.theme.ThemeManager
 import net.ccbluex.liquidbounce.lang.LanguageManager
-import net.ccbluex.liquidbounce.render.Fonts
+import net.ccbluex.liquidbounce.render.FontCache
 import net.ccbluex.liquidbounce.render.ui.ItemImageAtlas
 import net.ccbluex.liquidbounce.script.ScriptManager
 import net.ccbluex.liquidbounce.utils.aiming.RotationManager
@@ -156,7 +156,7 @@ object LiquidBounce : Listenable {
             ConfigSystem.root(LanguageManager)
             ConfigSystem.root(ClientAccountManager)
             BrowserManager
-            Fonts
+            FontCache
 
             // Register commands and modules
             CommandManager.registerInbuilt()
@@ -211,10 +211,11 @@ object LiquidBounce : Listenable {
 
         override fun reload(manager: ResourceManager) {
             runCatching {
-                logger.info("Loading fonts...")
-                Fonts.loadQueuedFonts()
+                // Load font cache
+                FontCache.workOnQueue()
             }.onSuccess {
-                logger.info("Loaded fonts successfully!")
+                // todo: fix that we not actually count how many we loaded
+                logger.info("Completed loading ${FontCache.fontCache.size} fonts after ${it.inWholeMilliseconds} ms.")
             }.onFailure(ErrorHandler::fatal)
 
             // Check for newest version

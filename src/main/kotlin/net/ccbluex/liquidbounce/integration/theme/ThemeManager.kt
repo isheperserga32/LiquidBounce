@@ -28,6 +28,8 @@ import net.ccbluex.liquidbounce.integration.theme.type.RouteType
 import net.ccbluex.liquidbounce.integration.theme.type.Theme
 import net.ccbluex.liquidbounce.integration.theme.type.native.NativeTheme
 import net.ccbluex.liquidbounce.integration.theme.type.web.WebTheme
+import net.ccbluex.liquidbounce.render.FontCache
+import net.ccbluex.liquidbounce.render.engine.font.FontRenderer
 import net.ccbluex.liquidbounce.utils.client.logger
 import net.ccbluex.liquidbounce.utils.io.extractZip
 import net.ccbluex.liquidbounce.utils.io.resource
@@ -98,6 +100,15 @@ object ThemeManager {
             .map { factory -> factory.new(fallbackTheme) }
             .toTypedArray()
     )
+
+    /**
+     * Later on, we might want to add a way to change the font renderer as option. This acts as default font renderer,
+     * if no other font is specified. Useful for GUI buttons and so on, where no configuration is needed.
+     *
+     * @return The default font renderer of the active theme or the system font renderer.
+     */
+    val fontRenderer: FontRenderer
+        get() = activeTheme.fontRenderer ?: FontCache.SYSTEM_FONT.getRenderer()
 
     init {
         ConfigSystem.dynamic("style", activeComponents) { name, jsonObject ->

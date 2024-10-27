@@ -28,6 +28,7 @@ import net.ccbluex.liquidbounce.integration.theme.Wallpaper
 import net.ccbluex.liquidbounce.integration.theme.component.ComponentFactory
 import net.ccbluex.liquidbounce.integration.theme.type.RouteType
 import net.ccbluex.liquidbounce.integration.theme.type.Theme
+import net.ccbluex.liquidbounce.render.FontCache
 import net.ccbluex.liquidbounce.utils.client.logger
 import java.io.File
 
@@ -69,6 +70,11 @@ class WebTheme(val folder: File) : Theme {
 
     override val defaultWallpaper: Wallpaper?
         get() = wallpapers.firstOrNull { it.name == metadata.wallpaper }
+
+    init {
+        // Load fonts from the assets folder
+        FontCache.queueFolder(folder.resolve("assets"))
+    }
 
     override fun route(screenType: VirtualScreenType?) =
         "$url${screenType?.routeName ?: ""}".let { url ->
