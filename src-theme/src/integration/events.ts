@@ -1,4 +1,4 @@
-import type {Component, PlayerData, Proxy, Server, TextComponent} from "./types";
+import type {PlayerData, Proxy, Server, TextComponent} from "./types";
 
 export interface ToggleModuleEvent {
     moduleName: string;
@@ -19,7 +19,6 @@ export interface ScaleFactorChangeEvent {
 }
 
 export interface ComponentsUpdateEvent {
-    components: Component[];
 }
 
 export interface ClientPlayerDataEvent {

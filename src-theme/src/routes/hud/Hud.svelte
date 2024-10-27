@@ -37,9 +37,7 @@
         zoom = data.scaleFactor * 50;
     });
 
-    listen("componentsUpdate", async (data: ComponentsUpdateEvent) => {
-        // todo: fix this
-        // components = data.components;
+    listen("componentsUpdate", async (_: ComponentsUpdateEvent) => {
         components = await getComponents();
     });
 
