@@ -25,6 +25,8 @@ import net.ccbluex.liquidbounce.utils.math.Easing
 import net.minecraft.block.Block
 import net.minecraft.client.util.InputUtil
 import net.minecraft.item.Item
+import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.Vec3i
 
 open class Configurable(
     name: String,
@@ -95,7 +97,7 @@ open class Configurable(
     ) = Value(name, default, valueType, listType).apply { this@Configurable.inner.add(this) }
 
     fun <T : Any> rangedValue(name: String, default: T, range: ClosedRange<*>, suffix: String,
-                                      valueType: ValueType
+                              valueType: ValueType
     ) =
         RangedValue(name, default, range, suffix, valueType).apply { this@Configurable.inner.add(this) }
 
@@ -141,6 +143,10 @@ open class Configurable(
 
     fun blocks(name: String, default: MutableSet<Block>) =
         value(name, default, ValueType.BLOCKS, ListValueType.Block)
+
+    fun vec3i(name: String, default: Vec3i) = value(name, default, ValueType.VECTOR_I)
+
+    fun vec3d(name: String, default: Vec3d) = value(name, default, ValueType.VECTOR_D)
 
     fun item(name: String, default: Item) = value(name, default, ValueType.ITEM)
 

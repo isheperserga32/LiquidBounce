@@ -39,6 +39,7 @@ import net.minecraft.scoreboard.Team
 import net.minecraft.scoreboard.number.NumberFormat
 import net.minecraft.scoreboard.number.StyledNumberFormat
 import net.minecraft.text.Text
+import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.GameMode
 
@@ -46,10 +47,15 @@ import net.minecraft.world.GameMode
 @Suppress("UNUSED_PARAMETER")
 fun getPlayerData(requestObject: RequestObject) = httpOk(interopGson.toJsonTree(PlayerData.fromPlayer(player)))
 
+// GET /api/v1/client/crosshair
+@Suppress("UNUSED_PARAMETER")
+fun getCrosshairData(requestObject: RequestObject) = httpOk(interopGson.toJsonTree(mc.crosshairTarget))
+
 data class PlayerData(
     val username: String,
     val uuid: String,
     val position: Vec3d,
+    val blockPosition: BlockPos,
     val velocity: Vec3d,
     val selectedSlot: Int,
     val gameMode: GameMode = GameMode.DEFAULT,
@@ -76,6 +82,7 @@ data class PlayerData(
             player.nameForScoreboard,
             player.uuidAsString,
             player.pos,
+            player.blockPos,
             player.velocity,
             player.inventory.selectedSlot,
             if (mc.player == player) interaction.currentGameMode else GameMode.DEFAULT,

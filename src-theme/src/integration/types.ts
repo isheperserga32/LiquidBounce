@@ -28,6 +28,7 @@ export type ModuleSetting =
     | TextSetting
     | TextArraySetting
     | BindSetting
+    | VectorSetting
     | AlignmentSetting;
 
 export interface BlocksSetting {
@@ -121,6 +122,12 @@ export interface IntRangeSetting {
         from: number,
         to: number
     };
+}
+
+export interface VectorSetting {
+    valueType: string;
+    name: string;
+    value: Vec3;
 }
 
 export interface ChoiceSetting {
@@ -398,6 +405,23 @@ export interface ClientUpdate {
 
 export interface Browser {
     url: string
+}
+
+export interface HitResult {
+    type: "block" | "entity" | "miss";
+    pos: Vec3;
+}
+
+export interface BlockHitResult extends HitResult {
+    blockPos: Vec3;
+    side: string;
+    isInsideBlock: boolean;
+}
+
+export interface EntityHitResult extends HitResult {
+    entityName: string;
+    entityType: string;
+    entityPos: Vec3;
 }
 
 export interface Wallpaper {

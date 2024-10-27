@@ -453,6 +453,8 @@ enum class ValueType {
     ITEM, ITEMS,
     KEY,
     BIND,
+    VECTOR_I,
+    VECTOR_D,
     CHOICE, CHOOSE,
     INVALID,
     PROXY,
