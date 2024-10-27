@@ -64,6 +64,7 @@
     <ID>CognitiveComplexMethod:CommandManager.kt$CommandManager$fun tokenizeCommand(line: String): Pair&lt;List&lt;String>, List&lt;Int>></ID>
     <ID>CognitiveComplexMethod:CommandScript.kt$CommandScript$fun createCommand(): Command</ID>
     <ID>CognitiveComplexMethod:ContainerFunctions.kt$@Suppress("UNUSED_PARAMETER") fun postGiveItem(requestObject: RequestObject): FullHttpResponse</ID>
+    <ID>CognitiveComplexMethod:DrawerReference.kt$DrawerReference$fun update(route: RouteType)</ID>
     <ID>CognitiveComplexMethod:FailSwing.kt$FailSwing$suspend fun Sequence&lt;*>.dealWithFakeSwing(target: Entity?)</ID>
     <ID>CognitiveComplexMethod:IpInfoApi.kt$IpInfoApi$private fun makeAsyncEndpointRequest(proxy: ProxyManager.Proxy?, endpoint: String, success: (String) -> Unit, failure: (Throwable) -> Unit)</ID>
     <ID>CognitiveComplexMethod:ItemCategorization.kt$ItemCategorization$@Suppress("CyclomaticComplexMethod", "LongMethod") fun getItemFacets(slot: ItemSlot): Array&lt;ItemFacet></ID>
@@ -82,14 +83,13 @@
     <ID>DestructuringDeclarationWithTooManyEntries:ModuleAutoShoot.kt$ModuleAutoShoot$val (fromPoint, toPoint, _, _) = pointTracker.gatherPoint(target, PointTracker.AimSituation.FOR_NEXT_TICK)</ID>
     <ID>DestructuringDeclarationWithTooManyEntries:ModuleKillAura.kt$ModuleKillAura$val (eyes, nextPoint, box, cutOffBox) = pointTracker.gatherPoint( entity, situation )</ID>
     <ID>EmptyCatchBlock:ModuleMobOwners.kt$ModuleMobOwners${ }</ID>
+    <ID>EmptyFunctionBlock:EmptyDrawableRoute.kt$EmptyDrawableRoute${}</ID>
     <ID>EmptyFunctionBlock:ModuleStorageESP.kt$ModuleStorageESP.StorageScanner${}</ID>
     <ID>FunctionOnlyReturningConstant:SimulatedArrow.kt$SimulatedArrow$private fun isTouchingWater(): Boolean</ID>
     <ID>LongMethod:AutoConfig.kt$AutoConfig$fun handlePossibleAutoConfig(jsonObject: JsonObject)</ID>
     <ID>LongMethod:ChatClient.kt$ChatClient$private fun handleFunctionalPacket(packet: Packet)</ID>
     <ID>LongMethod:CommandAutoDisable.kt$CommandAutoDisable$fun createCommand(): Command</ID>
     <ID>LongMethod:CommandBinds.kt$CommandBinds$fun createCommand(): Command</ID>
-    <ID>LongMethod:CommandClient.kt$CommandClient$private fun componentCommand()</ID>
-    <ID>LongMethod:CommandClient.kt$CommandClient$private fun integrationCommand()</ID>
     <ID>LongMethod:CommandConfig.kt$CommandConfig$fun createCommand(): Command</ID>
     <ID>LongMethod:CommandContainers.kt$CommandContainers$fun createCommand(): Command</ID>
     <ID>LongMethod:CommandHide.kt$CommandHide$fun createCommand(): Command</ID>
@@ -99,9 +99,11 @@
     <ID>LongMethod:CommandScript.kt$CommandScript$fun createCommand(): Command</ID>
     <ID>LongMethod:CommandXRay.kt$CommandXRay$fun createCommand(): Command</ID>
     <ID>LongMethod:InteropFunctionRegistry.kt$internal fun registerInteropFunctions(node: Node)</ID>
+    <ID>LongMethod:MinimapComponent.kt$MinimapComponent$override fun render(context: DrawContext, delta: Float)</ID>
     <ID>LongMethod:ModuleManager.kt$ModuleManager$fun registerInbuilt()</ID>
     <ID>LongMethod:RegistryFunctions.kt$@Suppress("UNUSED_PARAMETER") fun getRegistries(requestObject: RequestObject)</ID>
     <ID>LongMethod:Value.kt$Value$open fun setByString(string: String)</ID>
+    <ID>LongMethod:WebComponent.kt$private fun configureConfigurable(configurable: Configurable, jsonObject: JsonObject)</ID>
     <ID>LongParameterList:Command.kt$Command$( val name: String, val aliases: Array&lt;out String>, val parameters: Array&lt;Parameter&lt;*>>, val subcommands: Array&lt;Command>, val executable: Boolean, val handler: CommandHandler?, private var parentCommand: Command? = null )</ID>
     <ID>LongParameterList:EntityExtensions.kt$( pos: Vec3d, exploding: Entity? = null, power: Float = 6f, explosionRange: Float = power * 2f, // allows setting precomputed values damageDistance: Float = explosionRange * explosionRange, exclude: Array&lt;BlockPos>? = null )</ID>
     <ID>LongParameterList:FallingPlayer.kt$FallingPlayer$( private val player: ClientPlayerEntity, var x: Double, var y: Double, var z: Double, private var motionX: Double, private var motionY: Double, private var motionZ: Double, private val yaw: Float )</ID>
@@ -113,7 +115,7 @@
     <ID>LongParameterList:RotationsUtil.kt$RotationManager$( rotation: Rotation, considerInventory: Boolean = true, configurable: RotationsConfigurable, priority: Priority, provider: Module, whenReached: RestrictedSingleUseAction? = null )</ID>
     <ID>LongParameterList:RotationsUtil.kt$RotationManager$( vecRotation: VecRotation, entity: Entity? = null, considerInventory: Boolean = true, configurable: RotationsConfigurable, priority: Priority, provider: Module )</ID>
     <ID>LongParameterList:TargetFinding.kt$BlockPlacementTargetFindingOptions$( val offsetsToInvestigate: List&lt;Vec3i>, val stackToPlaceWith: ItemStack, val facePositionFactory: FaceTargetPositionFactory, val offsetPriorityGetter: (Vec3i) -> Double, val playerPositionOnPlacement: Vec3d, val playerPoseOnPlacement: EntityPose = EntityPose.STANDING, val allowPointingAway: Boolean = false )</ID>
-    <ID>LongParameterList:ThemeManager.kt$ThemeManager$(context: DrawContext, width: Int, height: Int, mouseX: Int, mouseY: Int, delta: Float)</ID>
+    <ID>LongParameterList:Wallpaper.kt$Wallpaper$(context: DrawContext, width: Int, height: Int, mouseX: Int, mouseY: Int, delta: Float)</ID>
     <ID>LoopWithTooManyJumpStatements:BlockPlacer.kt$BlockPlacer$while</ID>
     <ID>LoopWithTooManyJumpStatements:ModuleKillAura.kt$ModuleKillAura$for</ID>
     <ID>LoopWithTooManyJumpStatements:ModuleProjectilePuncher.kt$ModuleProjectilePuncher$for</ID>
@@ -135,8 +137,12 @@
     <ID>SpreadOperator:JsReflectionUtil.kt$JsReflectionUtil$(*args.map { it!!::class.java }.toTypedArray())</ID>
     <ID>SpreadOperator:ModuleScaffold.kt$ModuleScaffold$(blockInMainHand, blockInOffHand, *blocksInHotbar.map { it.second }.toTypedArray())</ID>
     <ID>SpreadOperator:ModuleVomit.kt$ModuleVomit$( *emptySlots.map { slot -> CreativeInventoryAction.performFillSlot(randomStack, slot) } .toTypedArray(), *emptySlots.map { slot -> ClickInventoryAction.performThrow(null, slot) } .toTypedArray() )</ID>
+    <ID>SpreadOperator:ThemeManager.kt$ThemeManager$( // Weather we support web themes, it might also load native theme defaults instead *fallbackTheme.components // Check if the component is enabled by default .filter { factory -> factory.default } // Create a new component instance .map { factory -> factory.new(fallbackTheme) }.toTypedArray())</ID>
+    <ID>SpreadOperator:ThemeManager.kt$ThemeManager$( NativeTheme, *themesFolder.listFiles()?.filter(File::isDirectory)?.map(::WebTheme)?.toTypedArray() ?: emptyArray() )</ID>
     <ID>StringLiteralDuplication:AutoQueueGommeDuels.kt$AutoQueueGommeDuels$"AutoPlay"</ID>
     <ID>StringLiteralDuplication:JsSetting.kt$JsSetting$"default"</ID>
+    <ID>StringLiteralDuplication:WebComponent.kt$"default"</ID>
+    <ID>StringLiteralDuplication:WebComponent.kt$"range"</ID>
     <ID>SwallowedException:ChunkScanner.kt$ChunkScanner.ChunkScannerThread$e: CancellationException</ID>
     <ID>SwallowedException:ClientInteropServer.kt$ClientInteropServer$e: Exception</ID>
     <ID>SwallowedException:CommandValue.kt$CommandValue$e: Exception</ID>

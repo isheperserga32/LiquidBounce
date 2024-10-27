@@ -51,11 +51,7 @@ object ThemeManager {
      */
     val availableThemes = arrayOf(
         NativeTheme,
-        *themesFolder.listFiles()
-            ?.filter(File::isDirectory)
-            ?.map(::WebTheme)
-            ?.toTypedArray()
-            ?: emptyArray()
+        *themesFolder.listFiles()?.filter(File::isDirectory)?.map(::WebTheme)?.toTypedArray() ?: emptyArray()
     )
 
     /**
@@ -97,9 +93,7 @@ object ThemeManager {
             // Check if the component is enabled by default
             .filter { factory -> factory.default }
             // Create a new component instance
-            .map { factory -> factory.new(fallbackTheme) }
-            .toTypedArray()
-    )
+            .map { factory -> factory.new(fallbackTheme) }.toTypedArray())
 
     /**
      * Later on, we might want to add a way to change the font renderer as option. This acts as default font renderer,
@@ -114,10 +108,8 @@ object ThemeManager {
         ConfigSystem.dynamic("style", activeComponents) { name, jsonObject ->
             val theme = jsonObject.get("theme")?.asString ?: error("Component must have a theme")
 
-            val themeInstance = getTheme(theme)
-                ?: error("Theme $theme not found")
-            val factory = themeInstance.getComponentFactory(name)
-                ?: error("Component $name not found in theme $theme")
+            val themeInstance = getTheme(theme) ?: error("Theme $theme not found")
+            val factory = themeInstance.getComponentFactory(name) ?: error("Component $name not found in theme $theme")
 
             factory.new(themeInstance)
         }
@@ -141,8 +133,7 @@ object ThemeManager {
      * Choose a theme by name.
      */
     fun chooseTheme(name: String) {
-        activeTheme = availableThemes.firstOrNull { it.name == name }
-            ?: error("Theme $name does not exist")
+        activeTheme = availableThemes.firstOrNull { it.name == name } ?: error("Theme $name does not exist")
     }
 
     /**
@@ -163,9 +154,7 @@ object ThemeManager {
         runCatching {
             // Delete old generated default theme
             runCatching {
-                themesFolder.resolve("default")
-                    .takeIf { it.exists() }
-                    ?.deleteRecursively()
+                themesFolder.resolve("default").takeIf { it.exists() }?.deleteRecursively()
             }
 
             // Extract default theme

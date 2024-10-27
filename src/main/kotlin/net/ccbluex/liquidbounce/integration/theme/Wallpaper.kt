@@ -48,8 +48,9 @@ abstract class Wallpaper(val theme: Theme, val name: String, val file: File) {
             return true
         }
 
-        override fun draw(context: DrawContext, width: Int, height: Int, mouseX: Int, mouseY: Int,
-                          delta: Float): Boolean {
+        override fun draw(
+            context: DrawContext, width: Int, height: Int, mouseX: Int, mouseY: Int, delta: Float
+        ): Boolean {
             val imageId = imageId ?: return false
             context.drawTexture(imageId, 0, 0, 0f, 0f, width, height, width, height)
             return true
@@ -72,8 +73,9 @@ abstract class Wallpaper(val theme: Theme, val name: String, val file: File) {
             return true
         }
 
-        override fun draw(context: DrawContext, width: Int, height: Int, mouseX: Int, mouseY: Int,
-                          delta: Float): Boolean {
+        override fun draw(
+            context: DrawContext, width: Int, height: Int, mouseX: Int, mouseY: Int, delta: Float
+        ): Boolean {
             val shader = shader ?: return false
             shader.draw(mouseX, mouseY, width, height, delta)
             return true

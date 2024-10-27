@@ -4,5 +4,5 @@ import net.ccbluex.liquidbounce.integration.theme.type.native.NativeDrawableRout
 import net.minecraft.client.gui.DrawContext
 
 class EmptyDrawableRoute : NativeDrawableRoute() {
-    override fun render(context: DrawContext, delta: Float) { }
+    override fun render(context: DrawContext, delta: Float) {}
 }

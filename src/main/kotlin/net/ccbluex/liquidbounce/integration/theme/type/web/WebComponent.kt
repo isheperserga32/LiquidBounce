@@ -58,6 +58,7 @@ private fun configureConfigurable(configurable: Configurable, jsonObject: JsonOb
             val default = jsonObject["default"].asBoolean
             configurable.boolean(name, default)
         }
+
         "INT" -> {
             val default = jsonObject["default"].asInt
             val min = jsonObject["range"].asJsonObject["min"].asInt
@@ -65,6 +66,7 @@ private fun configureConfigurable(configurable: Configurable, jsonObject: JsonOb
             val suffix = jsonObject["suffix"]?.asString ?: ""
             configurable.int(name, default, min..max, suffix)
         }
+
         "INT_RANGE" -> {
             val defaultMin = jsonObject["default"].asJsonObject["min"].asInt
             val defaultMax = jsonObject["default"].asJsonObject["max"].asInt
@@ -73,6 +75,7 @@ private fun configureConfigurable(configurable: Configurable, jsonObject: JsonOb
             val suffix = jsonObject["suffix"]?.asString ?: ""
             configurable.intRange(name, defaultMin..defaultMax, min..max, suffix)
         }
+
         "FLOAT" -> {
             val default = jsonObject["default"].asFloat
             val min = jsonObject["range"].asJsonObject["min"].asFloat
@@ -80,6 +83,7 @@ private fun configureConfigurable(configurable: Configurable, jsonObject: JsonOb
             val suffix = jsonObject["suffix"]?.asString ?: ""
             configurable.float(name, default, min..max, suffix)
         }
+
         "FLOAT_RANGE" -> {
             val defaultMin = jsonObject["default"].asJsonObject["min"].asFloat
             val defaultMax = jsonObject["default"].asJsonObject["max"].asFloat
@@ -88,14 +92,17 @@ private fun configureConfigurable(configurable: Configurable, jsonObject: JsonOb
             val suffix = jsonObject["suffix"]?.asString ?: ""
             configurable.floatRange(name, defaultMin..defaultMax, min..max, suffix)
         }
+
         "TEXT" -> {
             val default = jsonObject["default"].asString
             configurable.text(name, default)
         }
+
         "COLOR" -> {
             val default = jsonObject["default"].asInt
             configurable.color(name, Color4b(default, hasAlpha = true))
         }
+
         "CONFIGURABLE" -> {
             val configurableObject = Configurable(name)
             val settings = jsonObject["settings"].asJsonArray
@@ -109,13 +116,14 @@ private fun configureConfigurable(configurable: Configurable, jsonObject: JsonOb
             val default = jsonObject["default"].asBoolean
             // Parent is NULL in that case because we are not dealing with Listenable anyway and only use it
             // as toggleable Configurable
-            val configurableObject = object : ToggleableConfigurable(null, name, default) { }
+            val configurableObject = object : ToggleableConfigurable(null, name, default) {}
             val settings = jsonObject["settings"].asJsonArray
             for (setting in settings) {
                 configureConfigurable(configurableObject, setting.asJsonObject)
             }
             configurable.tree(configurableObject)
         }
+
         else -> error("Unsupported type: $type")
     }
 }

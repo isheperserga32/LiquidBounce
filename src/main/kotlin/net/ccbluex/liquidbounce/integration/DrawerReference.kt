@@ -15,9 +15,9 @@ sealed class DrawerReference : AutoCloseable {
         val drawer: NativeDrawer,
         var route: RouteType.Native,
     ) : DrawerReference()
+
     data class Web(
-        val browser: ITab,
-        var route: RouteType.Web
+        val browser: ITab, var route: RouteType.Web
     ) : DrawerReference()
 
     companion object {
@@ -26,35 +26,27 @@ sealed class DrawerReference : AutoCloseable {
             get() = { mc.currentScreen != null && mc.currentScreen !is ChatScreen }
 
         private val takesInputOnEditor: () -> Boolean
-            get() = { IntegrationHandler.route.type == VirtualScreenType.EDITOR  }
+            get() = { IntegrationHandler.route.type == VirtualScreenType.EDITOR }
 
-        fun newComponentRef(route: RouteType, stage: DrawingStage = DrawingStage.OVERLAY) =
-            when (route) {
-                is RouteType.Web -> Web(
-                    BrowserManager.browser?.createTab(
-                        route.url,
-                        frameRate = 60,
-                        takesInput = takesInputOnEditor
-                    )?.stage(stage) ?: error("Browser is not initialized"),
-                    route
-                )
+        fun newComponentRef(route: RouteType, stage: DrawingStage = DrawingStage.OVERLAY) = when (route) {
+            is RouteType.Web -> Web(
+                BrowserManager.browser?.createTab(
+                    route.url, frameRate = 60, takesInput = takesInputOnEditor
+                )?.stage(stage) ?: error("Browser is not initialized"), route
+            )
 
-                is RouteType.Native -> Native(NativeDrawer(route.drawableRoute, stage, takesInputOnEditor), route)
-            }
+            is RouteType.Native -> Native(NativeDrawer(route.drawableRoute, stage, takesInputOnEditor), route)
+        }
 
-        fun newInputRef(route: RouteType, stage: DrawingStage = DrawingStage.SCREEN) =
-            when (route) {
-                is RouteType.Web -> Web(
-                    BrowserManager.browser?.createTab(
-                        route.url,
-                        frameRate = refreshRate,
-                        takesInput = takesInputHandler
-                    )?.stage(stage) ?: error("Browser is not initialized"),
-                    route
-                )
+        fun newInputRef(route: RouteType, stage: DrawingStage = DrawingStage.SCREEN) = when (route) {
+            is RouteType.Web -> Web(
+                BrowserManager.browser?.createTab(
+                    route.url, frameRate = refreshRate, takesInput = takesInputHandler
+                )?.stage(stage) ?: error("Browser is not initialized"), route
+            )
 
-                is RouteType.Native -> Native(NativeDrawer(route.drawableRoute, stage, takesInputHandler), route)
-            }
+            is RouteType.Native -> Native(NativeDrawer(route.drawableRoute, stage, takesInputHandler), route)
+        }
 
     }
 
@@ -76,19 +68,22 @@ sealed class DrawerReference : AutoCloseable {
                     when (val type = route.type) {
                         // If the new route type is null, we should trigger a close event,
                         // but if the current route type is null as well, we simply ignore it
-                        null -> EventManager.callEvent(VirtualScreenEvent(
-                            // Use the current route name
-                            this.route.type?.routeName ?: return,
-                            VirtualScreenEvent.Action.CLOSE
-                        ))
+                        null -> EventManager.callEvent(
+                            VirtualScreenEvent(
+                                // Use the current route name
+                                this.route.type?.routeName ?: return, VirtualScreenEvent.Action.CLOSE
+                            )
+                        )
                         // If the new route type is not null, we should trigger an open event
-                        else -> EventManager.callEvent(VirtualScreenEvent(
-                            type.routeName,
-                            VirtualScreenEvent.Action.OPEN
-                        ))
+                        else -> EventManager.callEvent(
+                            VirtualScreenEvent(
+                                type.routeName, VirtualScreenEvent.Action.OPEN
+                            )
+                        )
                     }
                     this.route = route
                 }
+
                 is Native -> error("Unable to update tab, drawer reference is not a web tab")
             }
 
@@ -97,6 +92,7 @@ sealed class DrawerReference : AutoCloseable {
                     drawer.select(route.drawableRoute)
                     this.route = route
                 }
+
                 is Web -> error("Unable to update tab, drawer reference is not a native tab")
             }
         }
@@ -131,6 +127,5 @@ sealed class DrawerReference : AutoCloseable {
 }
 
 enum class DrawingStage {
-    OVERLAY,
-    SCREEN
+    OVERLAY, SCREEN
 }

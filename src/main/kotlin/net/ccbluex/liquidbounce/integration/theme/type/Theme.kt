@@ -25,8 +25,12 @@ interface Theme {
 }
 
 sealed class RouteType(open val type: VirtualScreenType?, open val theme: Theme) {
-    data class Native(override val type: VirtualScreenType?, override val theme: Theme, val drawableRoute: NativeDrawableRoute)
-        : RouteType(type, theme)
-    data class Web(override val type: VirtualScreenType?, override val theme: Theme, val url: String)
-        : RouteType(type, theme)
+    data class Native(
+        override val type: VirtualScreenType?,
+        override val theme: Theme,
+        val drawableRoute: NativeDrawableRoute
+    ) : RouteType(type, theme)
+
+    data class Web(override val type: VirtualScreenType?, override val theme: Theme, val url: String) :
+        RouteType(type, theme)
 }
