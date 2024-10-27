@@ -54,7 +54,7 @@ class NametagRenderer {
         info: NametagInfo,
         pos: Vec3,
     ) = with(env) {
-        val c = FontCache.DEFAULT_FONT_SIZE.toFloat()
+        val c = FontManager.DEFAULT_FONT_SIZE.toFloat()
 
         val scale = 1.0F / (c * 0.15F) * ModuleNametags.scale
 

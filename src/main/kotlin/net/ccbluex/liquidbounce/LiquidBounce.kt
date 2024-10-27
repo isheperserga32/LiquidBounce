@@ -19,6 +19,7 @@
  */
 package net.ccbluex.liquidbounce
 
+import kotlinx.coroutines.runBlocking
 import net.ccbluex.liquidbounce.api.ClientUpdate.gitInfo
 import net.ccbluex.liquidbounce.api.ClientUpdate.hasUpdate
 import net.ccbluex.liquidbounce.api.IpInfoApi
@@ -48,7 +49,7 @@ import net.ccbluex.liquidbounce.integration.interop.ClientInteropServer
 import net.ccbluex.liquidbounce.integration.interop.protocol.rest.v1.game.ActiveServerList
 import net.ccbluex.liquidbounce.integration.theme.ThemeManager
 import net.ccbluex.liquidbounce.lang.LanguageManager
-import net.ccbluex.liquidbounce.render.FontCache
+import net.ccbluex.liquidbounce.render.FontManager
 import net.ccbluex.liquidbounce.render.ui.ItemImageAtlas
 import net.ccbluex.liquidbounce.script.ScriptManager
 import net.ccbluex.liquidbounce.utils.aiming.RotationManager
@@ -69,6 +70,7 @@ import net.minecraft.resource.ResourceManager
 import net.minecraft.resource.ResourceReloader
 import net.minecraft.resource.SynchronousResourceReloader
 import org.apache.logging.log4j.LogManager
+import kotlin.time.measureTime
 
 /**
  * LiquidBounce
@@ -156,7 +158,7 @@ object LiquidBounce : Listenable {
             ConfigSystem.root(LanguageManager)
             ConfigSystem.root(ClientAccountManager)
             BrowserManager
-            FontCache
+            FontManager
 
             // Register commands and modules
             CommandManager.registerInbuilt()
@@ -211,11 +213,13 @@ object LiquidBounce : Listenable {
 
         override fun reload(manager: ResourceManager) {
             runCatching {
-                // Load font cache
-                FontCache.workOnQueue()
-            }.onSuccess {
-                // todo: fix that we not actually count how many we loaded
-                logger.info("Completed loading ${FontCache.fontCache.size} fonts after ${it.inWholeMilliseconds} ms.")
+                val duration = measureTime {
+                    runBlocking {
+                        FontManager.workOnQueue()
+                    }
+                }
+
+                logger.info("Completed loading fonts in ${duration.inWholeMilliseconds} ms.")
             }.onFailure(ErrorHandler::fatal)
 
             // Check for newest version

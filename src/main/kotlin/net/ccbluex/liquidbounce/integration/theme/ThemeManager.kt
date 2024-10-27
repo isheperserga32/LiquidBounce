@@ -28,7 +28,7 @@ import net.ccbluex.liquidbounce.integration.theme.type.RouteType
 import net.ccbluex.liquidbounce.integration.theme.type.Theme
 import net.ccbluex.liquidbounce.integration.theme.type.native.NativeTheme
 import net.ccbluex.liquidbounce.integration.theme.type.web.WebTheme
-import net.ccbluex.liquidbounce.render.FontCache
+import net.ccbluex.liquidbounce.render.FontManager
 import net.ccbluex.liquidbounce.render.engine.font.FontRenderer
 import net.ccbluex.liquidbounce.utils.client.logger
 import net.ccbluex.liquidbounce.utils.io.extractZip
@@ -108,7 +108,7 @@ object ThemeManager {
      * @return The default font renderer of the active theme or the system font renderer.
      */
     val fontRenderer: FontRenderer
-        get() = activeTheme.fontRenderer ?: FontCache.SYSTEM_FONT.getRenderer()
+        get() = activeTheme.fontRenderer ?: FontManager.ARIAL_FONT.getRenderer()
 
     init {
         ConfigSystem.dynamic("style", activeComponents) { name, jsonObject ->
@@ -154,7 +154,7 @@ object ThemeManager {
      * Get font. If name is blank, the default font renderer is returned.
      */
     fun getFontRenderer(name: String): FontRenderer =
-        if (name.isBlank()) fontRenderer else FontCache.fontCache[name]?.getRenderer() ?: fontRenderer
+        if (name.isBlank()) fontRenderer else FontManager.fontFace(name)?.getRenderer() ?: fontRenderer
 
     /**
      * Extract the default theme from the resources.

@@ -18,64 +18,48 @@
  */
 package net.ccbluex.liquidbounce.render
 
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import net.ccbluex.liquidbounce.render.engine.font.FontGlyphPageManager
 import net.ccbluex.liquidbounce.render.engine.font.FontRenderer
 import net.ccbluex.liquidbounce.utils.client.logger
 import java.awt.Font
 import java.io.File
-import kotlin.time.measureTime
 
-object FontCache {
+object FontManager {
 
-    internal val fontCache = mutableMapOf<String, FontHolder>()
+    /**
+     * As fallback, we can Arial. It should be available on every system.
+     */
+    internal val ARIAL_FONT = systemFont("Arial")
+
+    /**
+     * All font faces that are known to the font manager.
+     */
+    internal val fontFaces = mutableSetOf(
+        ARIAL_FONT
+    )
+
+    /**
+     * Since our font renderer does not support dynamic font size changes,
+     * we will use 43 as the default font size.
+     */
     const val DEFAULT_FONT_SIZE: Float = 43f
 
-    val SYSTEM_FONT
-        get() = fontCache["Arial"] ?: error("System font is not loaded yet!")
-
-    init {
-        // As fallback, we can Arial. It should be available on every system. If not,
-        // we should usually have other fonts available.
-        queueSystemFont("Arial")
-    }
-
     /**
-     * Returns the font by the given name. If the font is not found in the cache, it will return the system font.
+     * Returns the font by the given name.
      */
-    fun byName(name: String) = fontCache[name] ?: SYSTEM_FONT
+    internal fun fontFace(name: String) = fontFaces.associateBy { fontFace -> fontFace.name }[name]
 
-    /**
-     * TODO: Parallel task
-     */
-    fun workOnQueue() = measureTime {
-        for ((_, reference) in fontCache) {
-            reference.make()
-        }
-    }
-
-    private fun queueSystemFont(name: String) {
-        try {
-            val fontHolder = FontHolder(name)
-
-            arrayOf(
-                Font.PLAIN,
-                Font.BOLD,
-                Font.ITALIC,
-                Font.BOLD or Font.ITALIC
-            ).map { style ->
-                Font(name, style, DEFAULT_FONT_SIZE.toInt())
-                    .deriveFont(DEFAULT_FONT_SIZE)
-            }.forEachIndexed { index, font ->
-                fontHolder.fillStyle(font, index)
+    internal suspend fun workOnQueue() = coroutineScope {
+        fontFaces.map { fontFace ->
+            launch {
+                fontFace.make()
             }
-
-            fontCache[name] = fontHolder
-        } catch (e: Exception) {
-            logger.warn("Failed to load system font $name", e)
-        }
+        }.forEach { job -> job.join() }
     }
 
-    fun queueFolder(path: File) {
+    internal fun queueFolder(path: File) {
         try {
             path.listFiles { file -> file.extension == "ttf" }
                 ?.forEach(::queueFile)
@@ -84,33 +68,57 @@ object FontCache {
         }
     }
 
-    fun queueFile(file: File) {
+    internal fun queueFile(file: File) {
         try {
+            if (!file.exists()) {
+                logger.warn("Font file ${file.absolutePath} does not exist.")
+                return
+            }
+
+            if (file.extension != "ttf") {
+                logger.warn("Font file ${file.absolutePath} is not a TrueType font.")
+                return
+            }
+
+            if (fontFaces.any { it.file == file }) {
+                logger.warn("Font file ${file.absolutePath} is already loaded.")
+                return
+            }
+
             val font = Font
                 .createFont(Font.TRUETYPE_FONT, file)
                 .deriveFont(DEFAULT_FONT_SIZE)
 
-            val fontHolder = fontCache.getOrElse(font.name) { FontHolder(font.name, file) }
-
-            // TODO: Check if the font style works
-            arrayOf(
-                Font.PLAIN,
-                Font.BOLD,
-                Font.ITALIC,
-                Font.BOLD or Font.ITALIC
-            ).map { style ->
-                font.deriveFont(style)
-            }.forEachIndexed { index, font ->
-                fontHolder.fillStyle(font, index)
-            }
-
-            fontCache[font.name] = fontHolder
+            // Name will consist of the font name and family. This makes it possible
+            // to select the different styles of the font.
+            val fontFace = FontFace(font.name, file)
+            // In this case, we have only one style available, which is the plain style.
+            fontFace.fillStyle(font, 0)
+            fontFaces += fontFace
         } catch (e: Exception) {
             logger.warn("Failed to load font from file ${file.absolutePath}", e)
         }
     }
 
-    data class FontHolder(
+    private fun systemFont(name: String): FontFace {
+        val fontFace = FontFace(name)
+
+        arrayOf(
+            Font.BOLD,
+            Font.BOLD,
+            Font.ITALIC,
+            Font.BOLD or Font.ITALIC
+        ).map { style ->
+            Font(name, style, DEFAULT_FONT_SIZE.toInt())
+                .deriveFont(DEFAULT_FONT_SIZE)
+        }.forEachIndexed { index, font ->
+            fontFace.fillStyle(font, index)
+        }
+
+        return fontFace
+    }
+
+    internal data class FontFace(
         val name: String,
         /**
          * The file of the font. If the font is a system font, this will be null.
@@ -132,8 +140,7 @@ object FontCache {
     ) {
 
         private var renderer: FontRenderer? = null
-
-        val isLoaded get() = renderer != null
+        internal val isLoaded get() = renderer != null
 
         fun getRenderer() = renderer ?: error("Font was not loaded yet!")
 
