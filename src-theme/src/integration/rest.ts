@@ -1,4 +1,4 @@
-import {REST_BASE} from "./host";
+import {REST_BASE, THEME_NAME} from "./host";
 import type {
     Account,
     AlignmentSetting,
@@ -510,9 +510,6 @@ export async function getGameWindow(): Promise<GameWindow> {
 
     return data;
 }
-
-// todo: get name from metadata
-const THEME_NAME = "LiquidBounce";
 
 export async function getAllComponents(): Promise<Component[]> {
     const response = await fetch(`${API_BASE}/client/components`);
