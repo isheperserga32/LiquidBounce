@@ -116,37 +116,39 @@
 
 <div class="hud" style="zoom: {zoom}%">
     {#each components as c (c.id)}
-        <div class="component"
-             style="border: {editor ? '4px solid white' : 'none'}; {toStyle(c.settings.alignment)}"
-             on:mousedown={(event) => startDrag(c, event)}>
-            {#if c.name === "Watermark"}
-                <Watermark/>
-            {:else if c.name === "ArrayList"}
-                <ArrayList/>
-            {:else if c.name === "TabGui"}
-                <TabGui/>
-            {:else if c.name === "Notifications"}
-                <Notifications/>
-            {:else if c.name === "TargetHud"}
-                <TargetHud/>
-            {:else if c.name === "BlockCounter"}
-                <BlockCounter/>
-            {:else if c.name === "Hotbar"}
-                <HotBar/>
-            {:else if c.name === "Scoreboard"}
-                <Scoreboard/>
-            {:else if c.name === "Taco"}
-                <Taco/>
-            {:else if c.name === "Keystrokes"}
-                <Keystrokes/>
-            {:else if c.name === "Effects"}
-                <Effects />
-            {:else if c.name === "Text"}
-                <Text settings={c.settings} />
-            {:else if c.name === "Image"}
-                <img alt="" src={c.settings.src} style="scale: {c.settings.scale};">
-            {/if}
-        </div>
+        {#if c.enabled}
+            <div class="component"
+                 style="border: {editor ? '4px solid white' : 'none'}; {toStyle(c.settings.alignment)}"
+                 on:mousedown={(event) => startDrag(c, event)}>
+                {#if c.name === "Watermark"}
+                    <Watermark/>
+                {:else if c.name === "ArrayList"}
+                    <ArrayList/>
+                {:else if c.name === "TabGui"}
+                    <TabGui/>
+                {:else if c.name === "Notifications"}
+                    <Notifications/>
+                {:else if c.name === "TargetHud"}
+                    <TargetHud/>
+                {:else if c.name === "BlockCounter"}
+                    <BlockCounter/>
+                {:else if c.name === "Hotbar"}
+                    <HotBar/>
+                {:else if c.name === "Scoreboard"}
+                    <Scoreboard/>
+                {:else if c.name === "Taco"}
+                    <Taco/>
+                {:else if c.name === "Keystrokes"}
+                    <Keystrokes/>
+                {:else if c.name === "Effects"}
+                    <Effects />
+                {:else if c.name === "Text"}
+                    <Text settings={c.settings} />
+                {:else if c.name === "Image"}
+                    <img alt="" src={c.settings.src} style="scale: {c.settings.scale};">
+                {/if}
+            </div>
+        {/if}
     {/each}
 </div>
 
