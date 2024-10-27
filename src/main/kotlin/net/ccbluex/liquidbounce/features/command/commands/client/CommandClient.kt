@@ -37,11 +37,15 @@ import net.ccbluex.liquidbounce.features.misc.HideAppearance.wipeClient
 import net.ccbluex.liquidbounce.features.module.ModuleManager
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleHud
 import net.ccbluex.liquidbounce.integration.IntegrationHandler
+import net.ccbluex.liquidbounce.integration.VirtualScreenType
 import net.ccbluex.liquidbounce.integration.browser.BrowserScreen
 import net.ccbluex.liquidbounce.integration.theme.ThemeManager
+import net.ccbluex.liquidbounce.integration.theme.type.RouteType
 import net.ccbluex.liquidbounce.integration.theme.type.native.NativeTheme
 import net.ccbluex.liquidbounce.lang.LanguageManager
 import net.ccbluex.liquidbounce.utils.client.*
+import net.minecraft.text.ClickEvent
+import net.minecraft.text.HoverEvent
 import net.minecraft.util.Util
 
 /**
@@ -100,76 +104,88 @@ object CommandClient {
     private fun integrationCommand() = CommandBuilder.begin("integration")
         .hub()
         .subcommand(CommandBuilder.begin("menu")
-            .alias("url")
             .handler { command, args ->
                 chat(variable("Client Integration"))
-//                val baseUrl = ThemeManager.route().url
-//
-//                chat(
-//                    regular("Base URL: ")
-//                        .append(variable(baseUrl).styled {
-//                            it.withUnderline(true)
-//                                .withClickEvent(ClickEvent(ClickEvent.Action.OPEN_URL, baseUrl))
-//                                .withHoverEvent(
-//                                    HoverEvent(
-//                                        HoverEvent.Action.SHOW_TEXT,
-//                                        regular("Click to open the integration URL in your browser.")
-//                                    )
-//                                )
-//                        }),
-//                    prefix = false
-//                )
+                val baseUrl = (ThemeManager.route() as? RouteType.Web)?.url
+                    ?: run {
+                        chat(markAsError("Your current theme does not support web menu."))
+                        return@handler
+                    }
 
-//                chat(prefix = false)
-//                chat(regular("Integration Menu:"))
-//                for (screenType in VirtualScreenType.entries) {
-//                    val url = runCatching {
-//                        ThemeManager.route(screenType, true)
-//                    }.getOrNull()?.url ?: continue
-//                    val upperFirstName = screenType.routeName.replaceFirstChar { it.uppercase() }
-//
-//                    chat(
-//                        regular("-> $upperFirstName (")
-//                            .append(variable("Browser").styled {
-//                                it.withUnderline(true)
-//                                    .withClickEvent(ClickEvent(ClickEvent.Action.OPEN_URL, url))
-//                                    .withHoverEvent(
-//                                        HoverEvent(
-//                                            HoverEvent.Action.SHOW_TEXT,
-//                                            regular("Click to open the URL in your browser.")
-//                                        )
-//                                    )
-//                            })
-//                            .append(regular(", "))
-//                            .append(variable("Clipboard").styled {
-//                                it.withUnderline(true)
-//                                    .withClickEvent(ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, url))
-//                                    .withHoverEvent(
-//                                        HoverEvent(
-//                                            HoverEvent.Action.SHOW_TEXT,
-//                                            regular("Click to copy the URL to your clipboard.")
-//                                        )
-//                                    )
-//                            })
-//                            .append(regular(")")),
-//                        prefix = false
-//                    )
-//                }
-//
-//                chat(variable("Hint: You can also access the integration from another device.")
-//                    .styled { it.withItalic(true) })
+
+                chat(
+                    regular("Base URL: ")
+                        .append(variable(baseUrl).styled {
+                            it.withUnderline(true)
+                                .withClickEvent(ClickEvent(ClickEvent.Action.OPEN_URL, baseUrl))
+                                .withHoverEvent(
+                                    HoverEvent(
+                                        HoverEvent.Action.SHOW_TEXT,
+                                        regular("Click to open the integration URL in your browser.")
+                                    )
+                                )
+                        }),
+                    prefix = false
+                )
+
+                chat(prefix = false)
+                chat(regular("Integration Menu:"))
+                for (screenType in VirtualScreenType.entries) {
+                    var url = runCatching {
+                        ThemeManager.route(screenType) as? RouteType.Web
+                    }.getOrNull()?.url ?: continue
+
+                    // If the screen type is marked as static, it already contains ?static at the end
+                    if (!screenType.isStatic) {
+                        url = "$url?static"
+                    }
+
+                    val upperFirstName = screenType.routeName.replaceFirstChar { it.uppercase() }
+
+                    chat(
+                        regular("-> $upperFirstName (")
+                            .append(variable("Browser").styled {
+                                it.withUnderline(true)
+                                    .withClickEvent(ClickEvent(ClickEvent.Action.OPEN_URL, url))
+                                    .withHoverEvent(
+                                        HoverEvent(
+                                            HoverEvent.Action.SHOW_TEXT,
+                                            regular("Click to open the URL in your browser.")
+                                        )
+                                    )
+                            })
+                            .append(regular(", "))
+                            .append(variable("Clipboard").styled {
+                                it.withUnderline(true)
+                                    .withClickEvent(ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, url))
+                                    .withHoverEvent(
+                                        HoverEvent(
+                                            HoverEvent.Action.SHOW_TEXT,
+                                            regular("Click to copy the URL to your clipboard.")
+                                        )
+                                    )
+                            })
+                            .append(regular(")")),
+                        prefix = false
+                    )
+                }
+
+                chat(variable("Hint: You can also access the integration from another device.")
+                    .styled { it.withItalic(true) })
             }.build()
         )
-        .subcommand(CommandBuilder.begin("override")
-            .parameter(
-                ParameterBuilder.begin<String>("name")
-                    .verifiedBy(ParameterBuilder.STRING_VALIDATOR).required()
-                    .build()
-            ).handler { command, args ->
-                chat(regular("Overrides client JCEF browser..."))
+        // TODO: Add a Debug Mode Theme for testing purposes
+//        .subcommand(CommandBuilder.begin("override")
+//            .parameter(
+//                ParameterBuilder.begin<String>("name")
+//                    .verifiedBy(ParameterBuilder.STRING_VALIDATOR).required()
+//                    .build()
+//            ).handler { command, args ->
+//                chat(regular("Overrides client JCEF browser..."))
 //                integrationReference.loadUrl(args[0] as String)
-            }.build()
-        ).subcommand(CommandBuilder.begin("reset")
+//            }.build()
+//        )
+        .subcommand(CommandBuilder.begin("reset")
             .handler { command, args ->
                 chat(regular("Resetting client JCEF browser..."))
                 IntegrationHandler.sync()
