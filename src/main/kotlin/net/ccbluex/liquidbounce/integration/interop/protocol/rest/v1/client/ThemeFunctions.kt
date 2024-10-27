@@ -25,7 +25,7 @@ import io.netty.handler.codec.http.FullHttpResponse
 import net.ccbluex.liquidbounce.integration.theme.ThemeManager
 import net.ccbluex.liquidbounce.render.FontCache
 import net.ccbluex.netty.http.model.RequestObject
-import net.ccbluex.netty.http.util.httpOk
+import net.ccbluex.netty.http.util.*
 
 // GET /api/v1/client/theme
 @Suppress("UNUSED_PARAMETER")
@@ -43,3 +43,13 @@ fun getFonts(requestObject: RequestObject): FullHttpResponse = httpOk(JsonArray(
             add(name)
         }
 })
+
+// GET /api/v1/client/fonts/:name
+@Suppress("UNUSED_PARAMETER")
+fun getFont(requestObject: RequestObject): FullHttpResponse {
+    val name = requestObject.params["name"] ?: return httpBadRequest("Missing font name")
+    val font = FontCache.fontCache[name] ?: return httpNotFound(name, "Font not found")
+    val file = font.file ?: return httpNoContent()
+
+    return httpFile(file)
+}

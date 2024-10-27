@@ -1,14 +1,12 @@
 <script lang="ts">
     import {createEventDispatcher, onMount} from "svelte";
-    import type {ModuleSetting, TextSetting} from "../../../../integration/types";
+    import type {ModuleSetting} from "../../../../integration/types";
     import {getFonts} from "../../../../integration/rest";
     import {convertToSpacedString, spaceSeperatedNames} from "../../../../theme/theme_config";
     import Font from "./Font.svelte";
     import VirtualList from "../blocks/VirtualList.svelte";
 
     export let setting: ModuleSetting;
-
-    const cSetting = setting as TextSetting;
 
     const dispatch = createEventDispatcher();
     let fonts: string[] = [];
@@ -29,17 +27,17 @@
 
     function handleFontSelect(e: CustomEvent<{ name: string }>) {
         const selectedFont = e.detail.name;
-        setting = { ...cSetting, value: selectedFont };
+        setting = { ...setting, value: selectedFont };
         dispatch("change", { setting });
     }
 </script>
 
 <div class="setting">
-    <div class="name">{$spaceSeperatedNames ? convertToSpacedString(cSetting.name) : cSetting.name}</div>
+    <div class="name">{$spaceSeperatedNames ? convertToSpacedString(setting.name) : setting.name}</div>
     <input type="text" placeholder="Search" class="search-input" bind:value={searchQuery} spellcheck="false">
     <div class="results">
         <VirtualList items={shownFonts} let:item>
-            <Font name={item} highlight={cSetting.value === item} on:click={handleFontSelect}/>
+            <Font name={item} highlight={setting.value === item} on:click={handleFontSelect}/>
         </VirtualList>
     </div>
 </div>

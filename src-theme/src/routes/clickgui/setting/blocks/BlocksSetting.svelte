@@ -72,9 +72,9 @@
   }
 
   .name {
-    color: $clickgui-text-color;
     font-size: 12px;
     font-weight: 500;
+    color: $clickgui-text-color;
     margin-bottom: 5px;
   }
 

@@ -90,7 +90,7 @@ object FontCache {
                 .createFont(Font.TRUETYPE_FONT, file)
                 .deriveFont(DEFAULT_FONT_SIZE)
 
-            val fontHolder = fontCache.getOrElse(font.name) { FontHolder(font.name) }
+            val fontHolder = fontCache.getOrElse(font.name) { FontHolder(font.name, file) }
 
             // TODO: Check if the font style works
             arrayOf(
@@ -112,6 +112,10 @@ object FontCache {
 
     data class FontHolder(
         val name: String,
+        /**
+         * The file of the font. If the font is a system font, this will be null.
+         */
+        val file: File? = null,
         @Suppress("ArrayInDataClass")
         /**
          * Style of the font. If an element is null, fall back to `[0]`

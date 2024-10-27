@@ -42,6 +42,7 @@ internal fun registerInteropFunctions(node: Node) = node.withPath("/api/v1/clien
     // Theme Functions
     get("/theme", ::getThemeInfo)
     get("/fonts", ::getFonts)
+    get("/fonts/:name", ::getFont)
 
     // Wallpaper Functions
     get("/wallpaper", ::getWallpaper)
