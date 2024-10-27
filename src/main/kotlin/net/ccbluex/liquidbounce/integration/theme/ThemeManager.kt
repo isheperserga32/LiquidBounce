@@ -66,7 +66,7 @@ object ThemeManager : Configurable("style") {
             field = value
 
             // Update active wallpaper
-//            value.defaultWallpaper?.let { wallpaper -> activeWallpaper = wallpaper }
+            value.defaultWallpaper?.let { wallpaper -> activeWallpaper = wallpaper }
 
             // Update integration browser
             IntegrationHandler.sync()
