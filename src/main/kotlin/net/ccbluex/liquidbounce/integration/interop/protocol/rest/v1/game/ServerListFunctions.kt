@@ -26,15 +26,15 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.mojang.blaze3d.systems.RenderSystem
 import io.netty.handler.codec.http.FullHttpResponse
+import net.ccbluex.liquidbounce.config.gson.interopGson
+import net.ccbluex.liquidbounce.config.gson.serializer.ResourcePolicy
 import net.ccbluex.liquidbounce.event.Listenable
 import net.ccbluex.liquidbounce.event.events.GameTickEvent
 import net.ccbluex.liquidbounce.event.handler
-import net.ccbluex.liquidbounce.utils.client.logger
-import net.ccbluex.liquidbounce.utils.client.mc
-import net.ccbluex.liquidbounce.integration.interop.protocol.ResourcePolicy
-import net.ccbluex.liquidbounce.integration.interop.protocol.protocolGson
 import net.ccbluex.liquidbounce.integration.interop.protocol.rest.v1.game.ActiveServerList.pingThemAll
 import net.ccbluex.liquidbounce.integration.interop.protocol.rest.v1.game.ActiveServerList.serverList
+import net.ccbluex.liquidbounce.utils.client.logger
+import net.ccbluex.liquidbounce.utils.client.mc
 import net.ccbluex.netty.http.model.RequestObject
 import net.ccbluex.netty.http.util.httpForbidden
 import net.ccbluex.netty.http.util.httpInternalServerError
@@ -63,7 +63,7 @@ fun getServers(requestObject: RequestObject) = runCatching {
 
     val servers = JsonArray()
     serverList.toList().forEachIndexed { id, serverInfo ->
-        val json = protocolGson.toJsonTree(serverInfo)
+        val json = interopGson.toJsonTree(serverInfo)
 
         if (!json.isJsonObject) {
             logger.warn("Failed to convert serverInfo to json")

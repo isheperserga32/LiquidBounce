@@ -17,14 +17,14 @@
  * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.ccbluex.liquidbounce.config.adapter
+package net.ccbluex.liquidbounce.config.gson.adapter
 
 import com.google.gson.*
 import net.ccbluex.liquidbounce.render.engine.Color4b
 import java.awt.Color
 import java.lang.reflect.Type
 
-object ColorSerializer : JsonSerializer<Color4b>, JsonDeserializer<Color4b> {
+object ColorAdapter : JsonSerializer<Color4b>, JsonDeserializer<Color4b> {
 
     override fun serialize(src: Color4b, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
         return JsonPrimitive(src.toARGB())

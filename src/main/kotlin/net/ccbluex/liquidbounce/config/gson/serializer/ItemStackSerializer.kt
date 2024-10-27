@@ -17,27 +17,25 @@
  * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.ccbluex.liquidbounce.config.adapter
+package net.ccbluex.liquidbounce.config.gson.serializer
 
-import com.google.gson.*
-import net.ccbluex.liquidbounce.render.Fonts
+import com.google.gson.JsonObject
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
+import net.minecraft.item.ItemStack
+import net.minecraft.registry.Registries
 import java.lang.reflect.Type
 
-object FontDetailSerializer : JsonSerializer<Fonts.FontInfo>, JsonDeserializer<Fonts.FontInfo> {
-
-    override fun serialize(src: Fonts.FontInfo, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
-        val obj = JsonObject()
-        obj.addProperty("name", src.name)
-        return obj
-    }
-
-    override fun deserialize(
-        json: JsonElement,
-        typeOfT: Type?,
-        context: JsonDeserializationContext?
-    ): Fonts.FontInfo {
-        val obj = json.asJsonObject
-        return Fonts.FontInfo(obj.get("name").asString)
+class ItemStackSerializer : JsonSerializer<ItemStack> {
+    override fun serialize(src: ItemStack?, typeOfSrc: Type, context: JsonSerializationContext) = src?.let {
+        JsonObject().apply {
+            addProperty("identifier", Registries.ITEM.getId(it.item).toString())
+            add("displayName", context.serialize(it.name))
+            addProperty("count", it.count)
+            addProperty("damage", it.damage)
+            addProperty("maxDamage", it.maxDamage)
+            addProperty("empty", it.isEmpty)
+        }
     }
 
 }

@@ -1,8 +1,8 @@
 package net.ccbluex.liquidbounce.integration.theme.type.web
 
 import com.google.gson.JsonObject
-import net.ccbluex.liquidbounce.config.Configurable
-import net.ccbluex.liquidbounce.config.ToggleableConfigurable
+import net.ccbluex.liquidbounce.config.types.Configurable
+import net.ccbluex.liquidbounce.config.types.ToggleableConfigurable
 import net.ccbluex.liquidbounce.integration.theme.component.Component
 import net.ccbluex.liquidbounce.integration.theme.component.ComponentTweak
 import net.ccbluex.liquidbounce.integration.theme.type.Theme
@@ -43,6 +43,8 @@ class WebComponent(
  *     },
  *     "suffix": "px"
  * }
+ *
+ * TOOD: Check if I can integrate this using Dynamic Configurable
  *
  * @param jsonObject JsonObject
  */

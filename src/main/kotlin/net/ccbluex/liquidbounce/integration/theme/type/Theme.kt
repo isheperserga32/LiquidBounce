@@ -17,6 +17,8 @@ interface Theme {
     fun doesOverlay(type: VirtualScreenType?): Boolean
     fun canSplash(): Boolean
 
+    fun getComponentFactory(name: String): ComponentFactory? = components.firstOrNull { it.name == name }
+
 }
 
 sealed class RouteType(open val type: VirtualScreenType?, open val theme: Theme) {

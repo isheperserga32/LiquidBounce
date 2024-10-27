@@ -18,7 +18,7 @@
  */
 package net.ccbluex.liquidbounce.utils.input
 
-import net.ccbluex.liquidbounce.config.NamedChoice
+import net.ccbluex.liquidbounce.config.types.NamedChoice
 import net.minecraft.client.util.InputUtil
 
 /**

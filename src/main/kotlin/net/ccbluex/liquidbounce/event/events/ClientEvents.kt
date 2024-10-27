@@ -21,7 +21,7 @@
 package net.ccbluex.liquidbounce.event.events
 
 import com.google.gson.annotations.SerializedName
-import net.ccbluex.liquidbounce.config.Value
+import net.ccbluex.liquidbounce.config.types.Value
 import net.ccbluex.liquidbounce.event.Event
 import net.ccbluex.liquidbounce.features.chat.packet.User
 import net.ccbluex.liquidbounce.features.misc.ProxyManager

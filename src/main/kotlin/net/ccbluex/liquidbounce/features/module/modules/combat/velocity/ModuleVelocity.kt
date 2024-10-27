@@ -18,15 +18,16 @@
  */
 package net.ccbluex.liquidbounce.features.module.modules.combat.velocity
 
-import net.ccbluex.liquidbounce.config.Choice
-import net.ccbluex.liquidbounce.event.*
-import net.ccbluex.liquidbounce.event.events.*
+import net.ccbluex.liquidbounce.config.types.Choice
+import net.ccbluex.liquidbounce.event.EventManager
+import net.ccbluex.liquidbounce.event.events.GameTickEvent
+import net.ccbluex.liquidbounce.event.events.PacketEvent
+import net.ccbluex.liquidbounce.event.events.TransferOrigin
+import net.ccbluex.liquidbounce.event.handler
+import net.ccbluex.liquidbounce.event.sequenceHandler
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.modules.combat.velocity.mode.*
-import net.ccbluex.liquidbounce.features.module.modules.combat.velocity.mode.VelocityDexland
-import net.ccbluex.liquidbounce.features.module.modules.combat.velocity.mode.VelocityExemptGrim117
-import net.ccbluex.liquidbounce.features.module.modules.combat.velocity.mode.VelocityJumpReset
 import net.minecraft.network.listener.ClientPlayPacketListener
 import net.minecraft.network.packet.Packet
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket

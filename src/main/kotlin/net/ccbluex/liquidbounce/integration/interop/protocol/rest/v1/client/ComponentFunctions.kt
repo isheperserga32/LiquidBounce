@@ -26,8 +26,8 @@ import com.google.gson.JsonPrimitive
 import com.mojang.blaze3d.systems.RenderSystem
 import io.netty.handler.codec.http.FullHttpResponse
 import net.ccbluex.liquidbounce.config.ConfigSystem
-import net.ccbluex.liquidbounce.integration.interop.protocol.genericProtocolGson
-import net.ccbluex.liquidbounce.integration.interop.protocol.protocolGson
+import net.ccbluex.liquidbounce.config.gson.accessibleInteropGson
+import net.ccbluex.liquidbounce.config.gson.interopGson
 import net.ccbluex.liquidbounce.integration.theme.ThemeManager
 import net.ccbluex.liquidbounce.integration.theme.ThemeManager.activeComponents
 import net.ccbluex.liquidbounce.integration.theme.component.ComponentOverlay
@@ -61,7 +61,7 @@ fun getComponentFactories(requestObject: RequestObject): FullHttpResponse {
 @Suppress("UNUSED_PARAMETER")
 fun getAllComponents(requestObject: RequestObject) = httpOk(JsonArray().apply {
     for (component in activeComponents) {
-        add(protocolGson.toJsonTree(component))
+        add(accessibleInteropGson.toJsonTree(component))
     }
 })
 
@@ -72,7 +72,7 @@ fun getComponents(requestObject: RequestObject): FullHttpResponse {
 
     return httpOk(JsonArray().apply {
         for (component in components) {
-            add(protocolGson.toJsonTree(component))
+            add(accessibleInteropGson.toJsonTree(component))
         }
     })
 }
@@ -84,7 +84,7 @@ fun getComponentSettings(requestObject: RequestObject): FullHttpResponse {
 
     val component = activeComponents
         .find { it.id == id } ?: return httpBadRequest("No component found")
-    val json = ConfigSystem.serializeConfigurable(component, gson = genericProtocolGson)
+    val json = ConfigSystem.serializeConfigurable(component, gson = interopGson)
 
     ComponentOverlay.fireComponentsUpdate()
 
@@ -98,7 +98,7 @@ fun updateComponentSettings(requestObject: RequestObject): FullHttpResponse {
 
     val component = activeComponents
         .find { it.id == id } ?: return httpBadRequest("No component found")
-    ConfigSystem.deserializeConfigurable(component, StringReader(requestObject.body), gson = protocolGson)
+    ConfigSystem.deserializeConfigurable(component, StringReader(requestObject.body), gson = interopGson)
 
     ComponentOverlay.fireComponentsUpdate()
 
@@ -114,7 +114,7 @@ fun moveComponent(requestObject: RequestObject): FullHttpResponse {
         .find { it.id == id } ?: return httpBadRequest("No component found")
 
     // We copy the alignment to the existing because we do not want to replace the instance
-    val newAlignment = protocolGson.fromJson(requestObject.body, Alignment::class.java)
+    val newAlignment = interopGson.fromJson(requestObject.body, Alignment::class.java)
     component.alignment = newAlignment
 
     ComponentOverlay.fireComponentsUpdate()

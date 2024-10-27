@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
  */
-package net.ccbluex.liquidbounce.config
+package net.ccbluex.liquidbounce.config.types
 
 import net.ccbluex.liquidbounce.event.Listenable
 import net.ccbluex.liquidbounce.render.engine.Color4b
@@ -95,7 +95,8 @@ open class Configurable(
     ) = Value(name, default, valueType, listType).apply { this@Configurable.inner.add(this) }
 
     fun <T : Any> rangedValue(name: String, default: T, range: ClosedRange<*>, suffix: String,
-                                      valueType: ValueType) =
+                                      valueType: ValueType
+    ) =
         RangedValue(name, default, range, suffix, valueType).apply { this@Configurable.inner.add(this) }
 
     // Fixed data types

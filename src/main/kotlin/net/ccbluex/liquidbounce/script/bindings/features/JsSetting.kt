@@ -19,6 +19,7 @@
 package net.ccbluex.liquidbounce.script.bindings.features
 
 import net.ccbluex.liquidbounce.config.*
+import net.ccbluex.liquidbounce.config.types.*
 import org.graalvm.polyglot.Value as PolyglotValue;
 
 /**

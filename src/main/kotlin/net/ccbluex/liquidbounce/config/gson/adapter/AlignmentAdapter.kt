@@ -19,14 +19,14 @@
  *
  */
 
-package net.ccbluex.liquidbounce.config.adapter
+package net.ccbluex.liquidbounce.config.gson.adapter
 
 import com.google.gson.*
 import net.ccbluex.liquidbounce.utils.render.Alignment
 import net.ccbluex.liquidbounce.utils.render.Alignment.ScreenAxisX
 import java.lang.reflect.Type
 
-object AlignmentSerializer : JsonDeserializer<Alignment>, JsonSerializer<Alignment> {
+object AlignmentAdapter : JsonDeserializer<Alignment>, JsonSerializer<Alignment> {
 
     override fun deserialize(
         json: JsonElement,

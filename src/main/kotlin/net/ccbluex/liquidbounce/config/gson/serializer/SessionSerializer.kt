@@ -17,24 +17,24 @@
  * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.ccbluex.liquidbounce.config.adapter
+package net.ccbluex.liquidbounce.config.gson.serializer
 
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
-import net.ccbluex.liquidbounce.config.Value
+import net.ccbluex.liquidbounce.api.ClientApi.formatAvatarUrl
+import net.ccbluex.liquidbounce.utils.client.isPremium
+import net.minecraft.client.session.Session
 import java.lang.reflect.Type
 
-object ValueSerializationAdapter : JsonSerializer<Value<*>> {
-
-    override fun serialize(src: Value<*>, typeOfSrc: Type?, context: JsonSerializationContext): JsonElement {
-        val obj = JsonObject()
-
-        obj.addProperty("name", src.name)
-        obj.add("value", context.serialize(src.inner))
-
-        return obj
+class SessionSerializer : JsonSerializer<Session> {
+    override fun serialize(src: Session?, typeOfSrc: Type, context: JsonSerializationContext) = src?.let {
+        JsonObject().apply {
+            addProperty("username", it.username)
+            addProperty("uuid", it.uuidOrNull.toString())
+            addProperty("accountType", it.accountType.getName())
+            addProperty("avatar", formatAvatarUrl(it.uuidOrNull, it.username))
+            addProperty("premium", it.isPremium())
+        }
     }
-
 }

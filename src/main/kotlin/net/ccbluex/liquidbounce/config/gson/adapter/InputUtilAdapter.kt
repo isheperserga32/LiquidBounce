@@ -1,7 +1,7 @@
 /*
  * This file is part of LiquidBounce (https://github.com/CCBlueX/LiquidBounce)
  *
- * Copyright (c) 2015 - 2024 CCBlueX
+ * Copyright (c) 2015 - 202 CCBlueX
  *
  * LiquidBounce is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,23 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
  */
-package net.ccbluex.liquidbounce.config.util
+package net.ccbluex.liquidbounce.config.gson.adapter
 
-import com.google.gson.ExclusionStrategy
-import com.google.gson.FieldAttributes
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+import com.google.gson.*
+import net.minecraft.client.util.InputUtil
+import java.lang.reflect.Type
 
-@Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FIELD)
-annotation class Exclude
+object InputUtilAdapter : JsonSerializer<InputUtil.Key>, JsonDeserializer<InputUtil.Key> {
 
-class ExcludeStrategy : ExclusionStrategy {
-    override fun shouldSkipClass(clazz: Class<*>?) = false
-    override fun shouldSkipField(field: FieldAttributes) = field.getAnnotation(Exclude::class.java) != null
+    override fun serialize(src: InputUtil.Key, typeOfSrc: Type, context: JsonSerializationContext) =
+        JsonPrimitive(src.translationKey)
+
+    override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext?): InputUtil.Key =
+        InputUtil.fromTranslationKey(json.asString)
+
 }
-
-/**
- * Decode JSON content
- */
-inline fun <reified T> decode(stringJson: String): T = Gson().fromJson(stringJson, object : TypeToken<T>() {}.type)

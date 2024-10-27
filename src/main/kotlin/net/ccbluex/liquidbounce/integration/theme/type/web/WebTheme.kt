@@ -1,8 +1,29 @@
+/*
+ * This file is part of LiquidBounce (https://github.com/CCBlueX/LiquidBounce)
+ *
+ * Copyright (c) 2024 CCBlueX
+ *
+ * LiquidBounce is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * LiquidBounce is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
+ *
+ *
+ */
+
 package net.ccbluex.liquidbounce.integration.theme.type.web
 
+import net.ccbluex.liquidbounce.config.gson.interopGson
 import net.ccbluex.liquidbounce.integration.VirtualScreenType
 import net.ccbluex.liquidbounce.integration.interop.ClientInteropServer
-import net.ccbluex.liquidbounce.integration.interop.protocol.protocolGson
 import net.ccbluex.liquidbounce.integration.theme.Wallpaper
 import net.ccbluex.liquidbounce.integration.theme.component.ComponentFactory
 import net.ccbluex.liquidbounce.integration.theme.type.RouteType
@@ -18,7 +39,7 @@ class WebTheme(val folder: File) : Theme {
             error("Theme $name does not contain a metadata file")
         }
 
-        protocolGson.fromJson(metadataFile.readText(), ThemeMetadata::class.java)
+        interopGson.fromJson(metadataFile.readText(), ThemeMetadata::class.java)
     }
 
     override val name: String
@@ -28,7 +49,7 @@ class WebTheme(val folder: File) : Theme {
         .listFiles()
         ?.mapNotNull { file ->
             runCatching {
-                protocolGson.fromJson(file.readText(), ComponentFactory.JsonComponentFactory::class.java)
+                interopGson.fromJson(file.readText(), ComponentFactory.JsonComponentFactory::class.java)
             }.onFailure { error ->
                 logger.error("Failed to load $name component factory from file ${file.name}", error)
             }.getOrNull()

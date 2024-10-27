@@ -1,13 +1,16 @@
 package net.ccbluex.liquidbounce.utils.aiming.anglesmooth
 
-import net.ccbluex.liquidbounce.config.ChoiceConfigurable
+import net.ccbluex.liquidbounce.config.types.ChoiceConfigurable
 import net.ccbluex.liquidbounce.utils.aiming.Rotation
 import net.ccbluex.liquidbounce.utils.aiming.RotationManager
 import net.ccbluex.liquidbounce.utils.entity.lastRotation
 import net.ccbluex.liquidbounce.utils.kotlin.random
 import net.minecraft.entity.Entity
 import net.minecraft.util.math.Vec3d
-import kotlin.math.*
+import kotlin.math.abs
+import kotlin.math.hypot
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 class AccelerationSmoothMode(override val parent: ChoiceConfigurable<*>)
 : AngleSmoothMode("Acceleration") {

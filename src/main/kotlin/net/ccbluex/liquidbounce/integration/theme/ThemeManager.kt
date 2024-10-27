@@ -99,6 +99,19 @@ object ThemeManager {
             .toTypedArray()
     )
 
+    init {
+        ConfigSystem.dynamic("style", activeComponents) { name, jsonObject ->
+            val theme = jsonObject.get("theme")?.asString ?: error("Component must have a theme")
+
+            val themeInstance = getTheme(theme)
+                ?: error("Theme $theme not found")
+            val factory = themeInstance.getComponentFactory(name)
+                ?: error("Component $name not found in theme $theme")
+
+            factory.new(themeInstance)
+        }
+    }
+
     /**
      * Get the route for the given virtual screen type.
      */
@@ -120,6 +133,11 @@ object ThemeManager {
         activeTheme = availableThemes.firstOrNull { it.name == name }
             ?: error("Theme $name does not exist")
     }
+
+    /**
+     * Get theme by [name]
+     */
+    fun getTheme(name: String): Theme? = availableThemes.firstOrNull { it.name == name }
 
     /**
      * Extract the default theme from the resources.

@@ -18,7 +18,7 @@
  */
 package net.ccbluex.liquidbounce.utils.block.placer
 
-import net.ccbluex.liquidbounce.config.ToggleableConfigurable
+import net.ccbluex.liquidbounce.config.types.ToggleableConfigurable
 import net.ccbluex.liquidbounce.utils.block.getState
 import net.ccbluex.liquidbounce.utils.block.isBlockedByEntities
 import net.ccbluex.liquidbounce.utils.block.manhattanDistanceTo
@@ -29,7 +29,6 @@ import net.minecraft.block.Blocks
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import java.util.*
-import kotlin.Comparator
 
 // TODO support no wall range, proper reach calculations
 // wall range support could be done by taking the angle and, if the face is pointing to the player, exclude

@@ -21,12 +21,12 @@
 
 package net.ccbluex.liquidbounce.integration.interop.protocol.rest.v1.game
 
+import net.ccbluex.liquidbounce.config.gson.interopGson
 import net.ccbluex.liquidbounce.features.module.modules.misc.sanitizeWithNameProtect
 import net.ccbluex.liquidbounce.utils.client.interaction
 import net.ccbluex.liquidbounce.utils.client.mc
 import net.ccbluex.liquidbounce.utils.client.player
 import net.ccbluex.liquidbounce.utils.entity.getActualHealth
-import net.ccbluex.liquidbounce.integration.interop.protocol.protocolGson
 import net.ccbluex.netty.http.model.RequestObject
 import net.ccbluex.netty.http.util.httpOk
 import net.minecraft.entity.effect.StatusEffectInstance
@@ -44,7 +44,7 @@ import net.minecraft.world.GameMode
 
 // GET /api/v1/client/player
 @Suppress("UNUSED_PARAMETER")
-fun getPlayerData(requestObject: RequestObject) = httpOk(protocolGson.toJsonTree(PlayerData.fromPlayer(player)))
+fun getPlayerData(requestObject: RequestObject) = httpOk(interopGson.toJsonTree(PlayerData.fromPlayer(player)))
 
 data class PlayerData(
     val username: String,

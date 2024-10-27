@@ -16,37 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
  */
-package net.ccbluex.liquidbounce.config.adapter
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonSerializationContext
-import com.google.gson.JsonSerializer
-import net.ccbluex.liquidbounce.config.Choice
-import net.ccbluex.liquidbounce.config.ChoiceConfigurable
+package net.ccbluex.liquidbounce.config.gson.adapter
+
+import com.google.gson.*
+import net.ccbluex.liquidbounce.render.Fonts
 import java.lang.reflect.Type
 
-object ChoiceConfigurableSerializer : JsonSerializer<ChoiceConfigurable<Choice>> {
+object FontAdapter : JsonSerializer<Fonts.FontInfo>, JsonDeserializer<Fonts.FontInfo> {
 
-    override fun serialize(
-        src: ChoiceConfigurable<Choice>, typeOfSrc: Type, context: JsonSerializationContext
-    ): JsonElement {
+    override fun serialize(src: Fonts.FontInfo, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
         val obj = JsonObject()
-
         obj.addProperty("name", src.name)
-        obj.addProperty("active", src.activeChoice.choiceName)
-        obj.add("value", context.serialize(src.inner))
-
-        val choices = JsonObject()
-
-        for (choice in src.choices) {
-            choices.add(choice.name, context.serialize(choice))
-        }
-
-        obj.add("choices", choices)
-        obj.add("valueType", context.serialize(src.valueType))
-
         return obj
+    }
+
+    override fun deserialize(
+        json: JsonElement,
+        typeOfT: Type?,
+        context: JsonDeserializationContext?
+    ): Fonts.FontInfo {
+        val obj = json.asJsonObject
+        return Fonts.FontInfo(obj.get("name").asString)
     }
 
 }

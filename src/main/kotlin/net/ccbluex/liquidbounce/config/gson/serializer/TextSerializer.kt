@@ -1,7 +1,7 @@
 /*
  * This file is part of LiquidBounce (https://github.com/CCBlueX/LiquidBounce)
  *
- * Copyright (c) 2015 - 202 CCBlueX
+ * Copyright (c) 2015 - 2024 CCBlueX
  *
  * LiquidBounce is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,22 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
  */
-package net.ccbluex.liquidbounce.config.adapter
 
-import com.google.gson.*
-import net.minecraft.block.Block
-import net.minecraft.registry.Registries
-import net.minecraft.util.Identifier
+package net.ccbluex.liquidbounce.config.gson.serializer
+
+import com.google.gson.JsonElement
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
+import net.ccbluex.liquidbounce.utils.client.mc
+import net.ccbluex.liquidbounce.utils.client.processContent
+import net.minecraft.registry.DynamicRegistryManager
+import net.minecraft.text.Text
 import java.lang.reflect.Type
 
-object BlockValueSerializer : JsonSerializer<Block>, JsonDeserializer<Block> {
-
-    override fun serialize(src: Block, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
-        return JsonPrimitive(Registries.BLOCK.getId(src).toString())
-    }
-
-    override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext?): Block {
-        return Registries.BLOCK.get(Identifier.tryParse(json.asString))
-    }
-
+class TextSerializer : JsonSerializer<Text> {
+    override fun serialize(src: Text?, typeOfSrc: Type, context: JsonSerializationContext): JsonElement =
+        Text.Serialization.toJson(
+            src?.processContent(), mc.world?.registryManager ?: DynamicRegistryManager.EMPTY
+        )
 }

@@ -20,7 +20,7 @@ package net.ccbluex.liquidbounce.utils.block
 
 import it.unimi.dsi.fastutil.doubles.DoubleObjectImmutablePair
 import it.unimi.dsi.fastutil.doubles.DoubleObjectPair
-import net.ccbluex.liquidbounce.config.NamedChoice
+import net.ccbluex.liquidbounce.config.types.NamedChoice
 import net.ccbluex.liquidbounce.event.EventManager
 import net.ccbluex.liquidbounce.event.events.BlockBreakingProgressEvent
 import net.ccbluex.liquidbounce.render.EMPTY_BOX

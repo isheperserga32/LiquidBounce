@@ -17,21 +17,15 @@
  * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package net.ccbluex.liquidbounce.config.adapter
+package net.ccbluex.liquidbounce.config.gson.serializer
 
-import com.google.gson.*
-import net.ccbluex.liquidbounce.authlib.account.MinecraftAccount
-import net.ccbluex.liquidbounce.authlib.manage.AccountSerializer
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializationContext
+import com.google.gson.JsonSerializer
+import net.ccbluex.liquidbounce.config.types.NamedChoice
 import java.lang.reflect.Type
 
-object MinecraftAccountSerializer : JsonSerializer<MinecraftAccount>, JsonDeserializer<MinecraftAccount> {
-
-    override fun serialize(src: MinecraftAccount, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
-        return AccountSerializer.toJson(src)
-    }
-
-    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext?): MinecraftAccount {
-        return AccountSerializer.fromJson(json.asJsonObject)
-    }
-
+object EnumChoiceSerializer : JsonSerializer<NamedChoice> {
+    override fun serialize(src: NamedChoice, typeOfSrc: Type, context: JsonSerializationContext) =
+        JsonPrimitive(src.choiceName)
 }
