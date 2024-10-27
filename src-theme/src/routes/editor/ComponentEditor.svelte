@@ -14,7 +14,6 @@
 
     onMount(async () => {
         configurable = await getComponent(id);
-        console.log(JSON.stringify(configurable));
     });
 
     async function updateComponentSettings() {
