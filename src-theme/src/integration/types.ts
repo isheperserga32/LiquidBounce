@@ -425,7 +425,7 @@ export interface EntityHitResult extends HitResult {
 }
 
 export interface Wallpaper {
-    active: ThemeWallpaper | null;
+    active: ThemeWallpaper;
     available: ThemeWallpaper[];
 }
 
