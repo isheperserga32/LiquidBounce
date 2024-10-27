@@ -115,6 +115,14 @@ object JsSetting {
         return value(name, default, ValueType.TEXT)
     }
 
+    @JvmName("textArray")
+    fun textArray(value: PolyglotValue): Value<MutableList<String>> {
+        val name = value.getMember("name").asString()
+        val default = value.getMember("default").`as`(Array<String>::class.java)
+
+        return value(name, default.toMutableList(), ValueType.TEXT_ARRAY, ListValueType.String)
+    }
+
     @JvmName("choose")
     fun choose(value: PolyglotValue): ChooseListValue<NamedChoice> {
         val name = value.getMember("name").asString()
