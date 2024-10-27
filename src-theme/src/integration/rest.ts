@@ -645,3 +645,8 @@ export async function browserClose() {
         method: "POST",
     });
 }
+
+export async function getFonts(): Promise<string[]> {
+    const response = await fetch(`${API_BASE}/client/fonts`);
+    return await response.json();
+}

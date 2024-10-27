@@ -133,6 +133,8 @@ open class Configurable(
 
     fun curve(name: String, default: Easing) = enumChoice(name, default)
 
+    fun font(name: String, default: String) = value(name, default, ValueType.FONT)
+
     fun color(name: String, default: Color4b) = value(name, default, ValueType.COLOR)
 
     fun block(name: String, default: Block) = value(name, default, ValueType.BLOCK)

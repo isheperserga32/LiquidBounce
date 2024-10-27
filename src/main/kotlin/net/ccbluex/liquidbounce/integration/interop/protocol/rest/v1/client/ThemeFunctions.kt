@@ -19,9 +19,11 @@
  */
 package net.ccbluex.liquidbounce.integration.interop.protocol.rest.v1.client
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.netty.handler.codec.http.FullHttpResponse
 import net.ccbluex.liquidbounce.integration.theme.ThemeManager
+import net.ccbluex.liquidbounce.render.FontCache
 import net.ccbluex.netty.http.model.RequestObject
 import net.ccbluex.netty.http.util.httpOk
 
@@ -30,4 +32,14 @@ import net.ccbluex.netty.http.util.httpOk
 fun getThemeInfo(requestObject: RequestObject): FullHttpResponse = httpOk(JsonObject().apply {
     addProperty("theme", ThemeManager.activeTheme.name)
     addProperty("wallpaper", ThemeManager.activeWallpaper?.name)
+})
+
+// GET /api/v1/client/fonts
+@Suppress("UNUSED_PARAMETER")
+fun getFonts(requestObject: RequestObject): FullHttpResponse = httpOk(JsonArray().apply {
+    FontCache.fontCache
+        .filter { (_, holder) -> holder.isLoaded }
+        .forEach { (name, _) ->
+            add(name)
+        }
 })

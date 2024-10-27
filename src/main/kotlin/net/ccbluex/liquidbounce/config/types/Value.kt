@@ -287,7 +287,7 @@ open class Value<T : Any>(
                 set(newValue as T)
             }
 
-            ValueType.TEXT -> {
+            ValueType.TEXT, ValueType.FONT -> {
                 set(string as T)
             }
 
@@ -447,6 +447,7 @@ enum class ValueType {
     CONFIGURABLE,
     TOGGLEABLE,
     ALIGNMENT,
+    FONT
 }
 
 enum class ListValueType(val type: Class<*>?) {

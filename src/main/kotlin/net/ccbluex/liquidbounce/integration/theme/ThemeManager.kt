@@ -151,6 +151,12 @@ object ThemeManager {
     fun getTheme(name: String): Theme? = availableThemes.firstOrNull { it.name == name }
 
     /**
+     * Get font. If name is blank, the default font renderer is returned.
+     */
+    fun getFontRenderer(name: String): FontRenderer =
+        if (name.isBlank()) fontRenderer else FontCache.fontCache[name]?.getRenderer() ?: fontRenderer
+
+    /**
      * Extract the default theme from the resources.
      */
     private fun extractDefault() {

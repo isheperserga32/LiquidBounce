@@ -16,6 +16,7 @@
     import {onMount} from "svelte";
     import TextArraySetting from "../TextArraySetting.svelte";
     import BindSetting from "../BindSetting.svelte";
+    import FontSetting from "../fonts/FontSetting.svelte";
 
     export let setting: ModuleSetting;
     export let path: string;
@@ -60,6 +61,8 @@
             <TextArraySetting bind:setting={setting} on:change/>
         {:else if setting.valueType === "BIND"}
             <BindSetting bind:setting={setting} on:change/>
+        {:else if setting.valueType === "FONT"}
+            <FontSetting bind:setting={setting} on:change/>
         {:else}
             <div style="color: white">Unsupported setting {setting.valueType}</div>
         {/if}

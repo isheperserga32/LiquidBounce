@@ -129,6 +129,8 @@ object FontCache {
 
         private var renderer: FontRenderer? = null
 
+        val isLoaded get() = renderer != null
+
         fun getRenderer() = renderer ?: error("Font was not loaded yet!")
 
         /**
@@ -142,7 +144,7 @@ object FontCache {
          * Creates a [FontRenderer] instance from the given font styles.
          */
         fun make() {
-            if (renderer != null) {
+            if (isLoaded) {
                 return
             }
 
