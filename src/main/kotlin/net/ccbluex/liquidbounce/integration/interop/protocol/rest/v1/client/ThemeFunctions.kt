@@ -31,7 +31,7 @@ import net.ccbluex.netty.http.util.*
 @Suppress("UNUSED_PARAMETER")
 fun getThemeInfo(requestObject: RequestObject): FullHttpResponse = httpOk(JsonObject().apply {
     addProperty("theme", ThemeManager.activeTheme.name)
-    addProperty("wallpaper", ThemeManager.activeWallpaper?.name)
+    addProperty("wallpaper", ThemeManager.activeWallpaper.name)
 })
 
 // GET /api/v1/client/fonts

@@ -5,6 +5,7 @@ import net.ccbluex.liquidbounce.integration.theme.Wallpaper
 import net.ccbluex.liquidbounce.integration.theme.component.ComponentFactory
 import net.ccbluex.liquidbounce.integration.theme.type.native.NativeDrawableRoute
 import net.ccbluex.liquidbounce.render.engine.font.FontRenderer
+import net.minecraft.util.Identifier
 
 interface Theme {
     val name: String
@@ -13,6 +14,8 @@ interface Theme {
     val defaultWallpaper: Wallpaper? get() = wallpapers.firstOrNull()
     val fontRenderer: FontRenderer?
         get() = null
+    val textures: Map<String, Lazy<Identifier>>
+        get() = hashMapOf()
 
     fun route(screenType: VirtualScreenType? = null): RouteType
     fun doesAccept(type: VirtualScreenType?): Boolean = doesOverlay(type) || doesSupport(type)

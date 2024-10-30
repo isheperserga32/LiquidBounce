@@ -29,7 +29,12 @@ import net.ccbluex.liquidbounce.integration.theme.component.ComponentFactory
 import net.ccbluex.liquidbounce.integration.theme.type.RouteType
 import net.ccbluex.liquidbounce.integration.theme.type.Theme
 import net.ccbluex.liquidbounce.render.FontManager
+import net.ccbluex.liquidbounce.render.engine.font.FontRenderer
 import net.ccbluex.liquidbounce.utils.client.logger
+import net.ccbluex.liquidbounce.utils.client.mc
+import net.minecraft.client.texture.NativeImage
+import net.minecraft.client.texture.NativeImageBackedTexture
+import net.minecraft.util.Identifier
 import java.io.File
 
 class WebTheme(val folder: File) : Theme {
@@ -70,6 +75,20 @@ class WebTheme(val folder: File) : Theme {
 
     override val defaultWallpaper: Wallpaper?
         get() = wallpapers.firstOrNull { it.name == metadata.wallpaper }
+
+    override val fontRenderer: FontRenderer?
+        get() = metadata.font?.let { FontManager.fontFace(it)?.getRenderer() }
+
+    override val textures: Map<String, Lazy<Identifier>> = folder.resolve("textures").listFiles { _, name ->
+        name.endsWith(".png")
+    }?.associateBy { it.nameWithoutExtension }?.mapValues { (name, file) ->
+            lazy {
+                mc.textureManager.registerDynamicTexture(
+                    "liquidbounce-theme-${this.name.lowercase()}-texture-${name.lowercase()}",
+                    NativeImageBackedTexture(NativeImage.read(file.inputStream()))
+                )
+            }
+    } ?: hashMapOf()
 
     init {
         // Load fonts from the assets folder
