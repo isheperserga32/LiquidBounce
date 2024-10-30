@@ -91,6 +91,7 @@
     <ID>LongMethod:ChatClient.kt$ChatClient$private fun handleFunctionalPacket(packet: Packet)</ID>
     <ID>LongMethod:CommandAutoDisable.kt$CommandAutoDisable$fun createCommand(): Command</ID>
     <ID>LongMethod:CommandBinds.kt$CommandBinds$fun createCommand(): Command</ID>
+    <ID>LongMethod:CommandClient.kt$CommandClient$private fun integrationCommand()</ID>
     <ID>LongMethod:CommandConfig.kt$CommandConfig$fun createCommand(): Command</ID>
     <ID>LongMethod:CommandContainers.kt$CommandContainers$fun createCommand(): Command</ID>
     <ID>LongMethod:CommandHide.kt$CommandHide$fun createCommand(): Command</ID>
