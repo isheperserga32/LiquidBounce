@@ -1,7 +1,7 @@
 import {REST_BASE, THEME_NAME} from "./host";
 import type {
     Account,
-    AlignmentSetting,
+    Alignment,
     Browser,
     ClientInfo,
     ClientUpdate,
@@ -546,7 +546,7 @@ export async function deleteComponent(id: string) {
     });
 }
 
-export async function moveComponent(id: string, alignment: AlignmentSetting) {
+export async function moveComponent(id: string, alignment: Alignment) {
     await fetch(`${API_BASE}/client/component/${id}`, {
         method: "PATCH",
         headers: {

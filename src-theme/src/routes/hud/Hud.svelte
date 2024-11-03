@@ -9,7 +9,7 @@
     import {onMount} from "svelte";
     import {getComponents, getGameWindow, moveComponent} from "../../integration/rest";
     import {listen} from "../../integration/ws";
-    import {type AlignmentSetting, type Component, HorizontalAlignment} from "../../integration/types";
+    import {type Alignment, type Component, HorizontalAlignment} from "../../integration/types";
     import Taco from "./elements/taco/Taco.svelte";
     import type {ComponentsUpdateEvent, ScaleFactorChangeEvent} from "../../integration/events";
     import Keystrokes from "./elements/keystrokes/Keystrokes.svelte";
@@ -76,7 +76,7 @@
         }
     };
 
-    function toStyle(alignment: AlignmentSetting): string {
+    function toStyle(alignment: Alignment): string {
         const { horizontal, vertical, horizontalOffset, verticalOffset } = alignment;
 
         const horizontalStyle = (() => {

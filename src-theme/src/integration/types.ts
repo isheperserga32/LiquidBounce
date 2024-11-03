@@ -28,8 +28,7 @@ export type ModuleSetting =
     | TextSetting
     | TextArraySetting
     | BindSetting
-    | VectorSetting
-    | AlignmentSetting;
+    | VectorSetting;
 
 export interface BlocksSetting {
     valueType: string;
@@ -157,7 +156,7 @@ export interface TogglableSetting {
     value: ModuleSetting[];
 }
 
-export interface AlignmentSetting {
+export interface Alignment {
     horizontal: HorizontalAlignment,
     vertical: VerticalAlignment,
     horizontalOffset: number,
