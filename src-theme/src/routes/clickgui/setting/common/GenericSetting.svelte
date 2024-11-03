@@ -17,7 +17,6 @@
     import TextArraySetting from "../TextArraySetting.svelte";
     import BindSetting from "../BindSetting.svelte";
     import VectorSetting from "../VectorSetting.svelte";
-    import FontSetting from "../fonts/FontSetting.svelte";
 
     export let setting: ModuleSetting;
     export let path: string;
@@ -64,8 +63,6 @@
             <BindSetting bind:setting={setting} on:change/>
         {:else if setting.valueType === "VECTOR_I" || setting.valueType === "VECTOR_D" }
             <VectorSetting bind:setting={setting} on:change/>
-        {:else if setting.valueType === "FONT"}
-            <FontSetting bind:setting={setting} on:change/>
         {:else}
             <div style="color: white">Unsupported setting {setting.valueType}</div>
         {/if}

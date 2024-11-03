@@ -3,7 +3,6 @@
     import {fade} from "svelte/transition";
 
     export let closeOnInternalClick: boolean;
-    export let dropdownDirection: 'up' | 'down' = 'down'; // Default to down
 
     let expanded = false;
     let selectElement: HTMLElement;
@@ -15,7 +14,7 @@
         }
     }
 
-    function handleSelectClick(e: MouseEvent) {
+    function handleSelectClick(e:MouseEvent) {
         if (closeOnInternalClick) {
             expanded = !expanded;
         } else {
@@ -40,7 +39,7 @@
         <img src="img/menu/icon-select-arrow.svg" alt="expand">
     </div>
     {#if expanded}
-        <div class="options {dropdownDirection === 'up' ? 'dropdown-up' : 'dropdown-down'}" transition:fade|global={{ duration: 200, easing: quintOut }}>
+        <div class="options" transition:fade|global={{ duration: 200, easing: quintOut }}>
             <slot name="options"></slot>
         </div>
     {/if}
@@ -90,15 +89,5 @@
     max-height: 250px;
     overflow: auto;
     background-color: rgba($menu-base-color, 0.9);
-
-    &.dropdown-up {
-      bottom: 100%; // Position above the header
-      transform: translateY(-5px); // Optional slight offset
-    }
-
-    &.dropdown-down {
-      top: 100%; // Default position below the header
-      transform: translateY(5px); // Optional slight offset
-    }
   }
 </style>

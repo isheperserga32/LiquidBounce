@@ -7,7 +7,6 @@
     export let options: string[];
     export let value: string;
     export let title: string;
-    export let dropdownDirection: 'up' | 'down' = 'down'; // Default to down
 
     const dispatch = createEventDispatcher<{
         change: { value: string }
@@ -15,11 +14,13 @@
 
     function handleOptionClick(o: string) {
         value = o;
-        dispatch("change", { value: o });
+        dispatch("change", {value: o});
     }
 </script>
 
-<GenericSelect closeOnInternalClick={true} dropdownDirection={dropdownDirection}>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<GenericSelect closeOnInternalClick={true}>
     <span slot="title"><span class="title">{title}</span> {value}</span>
 
     <svelte:fragment slot="options">

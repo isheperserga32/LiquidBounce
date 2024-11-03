@@ -7,24 +7,18 @@
     import HotBar from "./elements/hotbar/HotBar.svelte";
     import Scoreboard from "./elements/Scoreboard.svelte";
     import {onMount} from "svelte";
-    import {getComponents, getGameWindow, moveComponent} from "../../integration/rest";
+    import {getComponents, getGameWindow} from "../../integration/rest";
     import {listen} from "../../integration/ws";
-    import {type Alignment, type Component, HorizontalAlignment} from "../../integration/types";
+    import {type Alignment, type Component, HorizontalAlignment, VerticalAlignment} from "../../integration/types";
     import Taco from "./elements/taco/Taco.svelte";
     import type {ComponentsUpdateEvent, ScaleFactorChangeEvent} from "../../integration/events";
     import Keystrokes from "./elements/keystrokes/Keystrokes.svelte";
     import Effects from "./elements/Effects.svelte";
-    import {VerticalAlignment} from "../../integration/types.js";
     import BlockCounter from "./elements/BlockCounter.svelte";
     import Text from "./elements/Text.svelte";
 
     let zoom = 100;
     let components: Component[] = [];
-    let draggingComponent: Component | null = null;
-
-    let editor = false;
-    let startX = 0;
-    let startY = 0;
 
     onMount(async () => {
         const gameWindow = await getGameWindow();
@@ -37,88 +31,61 @@
         zoom = data.scaleFactor * 50;
     });
 
-    listen("componentsUpdate", async (_: ComponentsUpdateEvent) => {
-        components = await getComponents();
+    listen("componentsUpdate", (data: ComponentsUpdateEvent) => {
+        // force update to re-render
+        components = [];
+        components = data.components;
     });
 
-    listen("virtualScreen", async (event: any) => {
-        editor = event.action == "open" && event.screenName == "editor";
-    });
+    function generateStyleString(alignment: Alignment): string {
+        let style = "position: fixed;";
 
-    const startDrag = (component: Component, event: MouseEvent) => {
-        draggingComponent = component;
-        startX = event.clientX - component.settings.alignment.horizontalOffset;
-        startY = event.clientY - component.settings.alignment.verticalOffset;
-        document.addEventListener("mousemove", onDrag);
-        document.addEventListener("mouseup", stopDrag);
-    };
-
-    const onDrag = (event: MouseEvent) => {
-        if (draggingComponent) {
-            // todo: implement that top and bottom as well as left and right behaves differently
-
-            draggingComponent.settings.alignment = {
-                ...draggingComponent.settings.alignment,
-                horizontalOffset: event.clientX - startX,
-                verticalOffset: event.clientY - startY
-            };
-            components = [...components];
+        switch (alignment.horizontal) {
+            case HorizontalAlignment.LEFT:
+                style += `left: ${alignment.horizontalOffset}px;`;
+                break;
+            case HorizontalAlignment.RIGHT:
+                style += `right: ${alignment.horizontalOffset}px;`;
+                break;
+            case HorizontalAlignment.CENTER:
+            case HorizontalAlignment.CENTER_TRANSLATED:
+                style += `left: calc(50% + ${alignment.horizontalOffset}px);`;
+                break;
         }
-    };
 
-    // Stop dragging and log the final position
-    const stopDrag = async () => {
-        if (draggingComponent) {
-            await moveComponent(draggingComponent.id, draggingComponent.settings.alignment);
-            draggingComponent = null;
-            document.removeEventListener("mousemove", onDrag);
-            document.removeEventListener("mouseup", stopDrag);
+        switch (alignment.vertical) {
+            case VerticalAlignment.TOP:
+                style += `top: ${alignment.verticalOffset}px;`;
+                break;
+            case VerticalAlignment.BOTTOM:
+                style += `bottom: ${alignment.verticalOffset}px;`;
+                break;
+            case VerticalAlignment.CENTER:
+            case VerticalAlignment.CENTER_TRANSLATED:
+                style += `top: calc(50% + ${alignment.verticalOffset}px);`;
+                break;
         }
-    };
 
-    function toStyle(alignment: Alignment): string {
-        const { horizontal, vertical, horizontalOffset, verticalOffset } = alignment;
+        style += "transform: translate("
+        if (alignment.horizontal === HorizontalAlignment.CENTER_TRANSLATED) {
+            style += "-50%,";
+        } else {
+            style += "0,";
+        }
+        if (alignment.vertical === VerticalAlignment.CENTER_TRANSLATED) {
+            style += "-50%);";
+        } else {
+            style += "0);"
+        }
 
-        const horizontalStyle = (() => {
-            switch (horizontal) {
-                case HorizontalAlignment.LEFT:
-                    return `left: ${horizontalOffset}px;`;
-                case HorizontalAlignment.RIGHT:
-                    return `right: ${horizontalOffset}px;`;
-                case HorizontalAlignment.CENTER:
-                case HorizontalAlignment.CENTER_TRANSLATED:
-                    return `left: calc(50% + ${horizontalOffset}px);`;
-                default:
-                    return '';
-            }
-        })();
-
-        const verticalStyle = (() => {
-            switch (vertical) {
-                case VerticalAlignment.TOP:
-                    return `top: ${verticalOffset}px;`;
-                case VerticalAlignment.BOTTOM:
-                    return `bottom: ${verticalOffset}px;`;
-                case VerticalAlignment.CENTER:
-                case VerticalAlignment.CENTER_TRANSLATED:
-                    return `top: calc(50% + ${verticalOffset}px);`;
-                default:
-                    return '';
-            }
-        })();
-
-        const transformStyle = `transform: translate(${horizontal === HorizontalAlignment.CENTER_TRANSLATED ? "-50%" : "0"}, ${vertical === VerticalAlignment.CENTER_TRANSLATED ? "-50%" : "0"});`;
-        return `position: fixed; ${horizontalStyle} ${verticalStyle} ${transformStyle}`;
+        return style;
     }
 </script>
 
 <div class="hud" style="zoom: {zoom}%">
-    {#each components as c (c.id)}
+    {#each components as c}
         {#if c.settings.enabled}
-            <!-- svelte-ignore a11y-no-static-element-interactions -->
-            <div class="component"
-                 style="border: {editor ? '4px solid white' : 'none'}; {toStyle(c.settings.alignment)}"
-                 on:mousedown={(event) => startDrag(c, event)}>
+            <div style="{generateStyleString(c.settings.alignment)}">
                 {#if c.name === "Watermark"}
                     <Watermark/>
                 {:else if c.name === "ArrayList"}
@@ -140,11 +107,11 @@
                 {:else if c.name === "Keystrokes"}
                     <Keystrokes/>
                 {:else if c.name === "Effects"}
-                    <Effects />
+                    <Effects/>
                 {:else if c.name === "Text"}
-                    <Text settings={c.settings} />
+                    <Text settings={c.settings}/>
                 {:else if c.name === "Image"}
-                    <img alt="" src={c.settings.src} style="scale: {c.settings.scale};">
+                    <img alt="" src="{c.settings.src}" style="scale: {c.settings.scale};">
                 {/if}
             </div>
         {/if}
@@ -155,11 +122,5 @@
   .hud {
     height: 100vh;
     width: 100vw;
-    position: relative;
-  }
-
-  .component {
-    cursor: move;
-    position: fixed;
   }
 </style>

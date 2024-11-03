@@ -1,12 +1,10 @@
 import {REST_BASE, THEME_NAME} from "./host";
 import type {
     Account,
-    Alignment,
     Browser,
     ClientInfo,
     ClientUpdate,
     Component,
-    ComponentFactories,
     ConfigurableSetting,
     GameWindow,
     HitResult,
@@ -21,7 +19,6 @@ import type {
     Server,
     Session,
     VirtualScreen,
-    Wallpaper,
     World
 } from "./types";
 
@@ -519,56 +516,9 @@ export async function getGameWindow(): Promise<GameWindow> {
     return data;
 }
 
-export async function getAllComponents(): Promise<Component[]> {
-    const response = await fetch(`${API_BASE}/client/components`);
-    return await response.json();
-}
-
-export async function getComponentFactories(): Promise<ComponentFactories[]> {
-    const response = await fetch(`${API_BASE}/client/componentFactories`);
-    return await response.json();
-}
-
 export async function getComponents(): Promise<Component[]> {
     const response = await fetch(`${API_BASE}/client/components/${THEME_NAME}`);
     return await response.json();
-}
-
-export async function createComponent(theme: string, name: string) {
-    await fetch(`${API_BASE}/client/components/${theme}/${name}`, {
-        method: "POST"
-    });
-}
-
-export async function deleteComponent(id: string) {
-    await fetch(`${API_BASE}/client/component/${id}`, {
-        method: "DELETE"
-    });
-}
-
-export async function moveComponent(id: string, alignment: Alignment) {
-    await fetch(`${API_BASE}/client/component/${id}`, {
-        method: "PATCH",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(alignment)
-    });
-}
-
-export async function getComponent(id: string): Promise<ConfigurableSetting> {
-    const response = await fetch(`${API_BASE}/client/component/${id}`);
-    return await response.json();
-}
-
-export async function updateComponent(id: string, settings: ConfigurableSetting) {
-    await fetch(`${API_BASE}/client/component/${id}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(settings)
-    });
 }
 
 export async function getClientInfo(): Promise<ClientInfo> {
@@ -591,16 +541,9 @@ export async function reconnectToServer() {
     });
 }
 
-export async function getWallpaper(): Promise<Wallpaper> {
-    const response = await fetch(`${API_BASE}/client/wallpaper`);
-    const data: Wallpaper = await response.json();
-
-    return data;
-}
-
-export async function putWallpaper(theme: string, name: string) {
-    await fetch(`${API_BASE}/client/wallpaper/${theme}/${name}`, {
-        method: "PUT",
+export async function toggleBackgroundShaderEnabled() {
+    await fetch(`${API_BASE}/client/shader`, {
+        method: "POST",
     });
 }
 
@@ -649,9 +592,4 @@ export async function browserClose() {
     await fetch(`${API_BASE}/client/browser/close`, {
         method: "POST",
     });
-}
-
-export async function getFonts(): Promise<string[]> {
-    const response = await fetch(`${API_BASE}/client/fonts`);
-    return await response.json();
 }

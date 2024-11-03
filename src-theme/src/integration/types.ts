@@ -93,8 +93,8 @@ export interface FloatRangeSetting {
     };
     suffix: string;
     value: {
-        from: number,
-        to: number
+        from: number;
+        to: number;
     };
 }
 
@@ -118,8 +118,8 @@ export interface IntRangeSetting {
     };
     suffix: string;
     value: {
-        from: number,
-        to: number
+        from: number;
+        to: number;
     };
 }
 
@@ -157,10 +157,10 @@ export interface TogglableSetting {
 }
 
 export interface Alignment {
-    horizontal: HorizontalAlignment,
-    vertical: VerticalAlignment,
-    horizontalOffset: number,
-    verticalOffset: number
+    horizontal: HorizontalAlignment;
+    vertical: VerticalAlignment;
+    horizontalOffset: number;
+    verticalOffset: number;
 }
 
 export enum HorizontalAlignment {
@@ -202,7 +202,7 @@ export interface PlayerData {
     velocity: Vec3;
     selectedSlot: number;
     gameMode: string;
-    health: number,
+    health: number;
     actualHealth: number;
     maxHealth: number;
     absorption: number;

@@ -37,6 +37,7 @@
     });
 
     function handleBlockToggle(e: CustomEvent<{ identifier: string, enabled: boolean }>) {
+        console.log(e);
         if (e.detail.enabled) {
             cSetting.value = [...cSetting.value, e.detail.identifier];
         } else {
@@ -72,9 +73,9 @@
   }
 
   .name {
+    color: $clickgui-text-color;
     font-size: 12px;
     font-weight: 500;
-    color: $clickgui-text-color;
     margin-bottom: 5px;
   }
 
