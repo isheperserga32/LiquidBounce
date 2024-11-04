@@ -42,7 +42,6 @@ import net.minecraft.entity.Entity
 
 object ModuleNametags : Module("Nametags", Category.RENDER) {
 
-    val font by font("Font", "")
     val items by boolean("Items", true)
 
     object Health : ToggleableConfigurable(this, "Health", true) {
@@ -62,7 +61,7 @@ object ModuleNametags : Module("Nametags", Category.RENDER) {
     val maximumDistance by float("MaximumDistance", 100F, 1F..256F)
 
     val fontRenderer
-        get() = ThemeManager.getFontRenderer(font)
+        get() = ThemeManager.fontRenderer
 
     @Suppress("unused")
     val overlayRenderHandler = handler<OverlayRenderEvent>(priority = EventPriorityConvention.FIRST_PRIORITY) { event ->
