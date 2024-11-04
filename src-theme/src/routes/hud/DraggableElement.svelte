@@ -5,12 +5,20 @@
 
     export let alignment: Alignment;
     export let id: string;
+    export let name: string;
+    export let editorMode: boolean;
 
     let element: HTMLElement | undefined;
 
     let moving = false;
     let prevX = 0;
     let prevY = 0;
+
+    let descriptorBottom = false;
+
+    function updateDescriptorBottom() {
+        descriptorBottom = (element?.offsetTop ?? 0) < window.innerHeight / 2 - (element?.offsetHeight ?? 0) / 2;
+    }
 
     $: styleString = generateStyleString(alignment);
 
@@ -71,27 +79,29 @@
             switch (alignment.vertical) {
                 case VerticalAlignment.CENTER_TRANSLATED:
                     alignment.verticalOffset = clamp(
-                        alignment.horizontalOffset,
+                        alignment.verticalOffset,
                         -window.innerHeight / 2 + (element?.offsetHeight ?? 0) / 2,
                         window.innerHeight / 2 - (element?.offsetHeight ?? 0) / 2
                     );
                     break;
                 case VerticalAlignment.CENTER:
                     alignment.verticalOffset = clamp(
-                        alignment.horizontalOffset,
+                        alignment.verticalOffset,
                         -window.innerHeight / 2,
                         window.innerHeight / 2
                     );
                     break;
                 case VerticalAlignment.TOP:
                 case VerticalAlignment.BOTTOM:
-                    alignment.verticalOffset= clamp(alignment.verticalOffset, 0, window.innerHeight - (element?.offsetHeight ?? 0));
+                    alignment.verticalOffset = clamp(alignment.verticalOffset, 0, window.innerHeight - (element?.offsetHeight ?? 0));
                     break;
             }
         }
 
         prevX = e.screenX;
         prevY = e.screenY;
+
+        updateDescriptorBottom();
     }
 
     async function onMouseUp() {
@@ -142,11 +152,68 @@
 
         return style;
     }
+
+    updateDescriptorBottom();
 </script>
 
 <svelte:window on:mouseup={onMouseUp} on:mousemove={onMouseMove}/>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<div class="draggable-element" style={styleString} on:mousedown={onMouseDown} bind:this={element}>
+<div class="draggable-element" style={styleString} on:mousedown={onMouseDown} bind:this={element}
+     class:editor-mode={editorMode}>
     <slot/>
+    {#if editorMode}
+        <div class="descriptor" class:bottom={descriptorBottom}>{name}</div>
+    {/if}
 </div>
+
+<style lang="scss">
+  @import "../../colors";
+
+  .draggable-element {
+    position: relative;
+    min-width: 50px;
+    min-height: 50px;
+  }
+
+  .editor-mode {
+    border: solid 1px $hud-editor-element-border-color;
+    background-color: rgba($hud-editor-element-background-color, 0.1);
+  }
+
+  .descriptor {
+    background-color: $hud-editor-descriptor-background-color;
+    color: $hud-editor-descriptor-color;
+    padding: 5px 8px;
+    border-radius: 5px;
+    position: absolute;
+    top: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+
+    &::after {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 8px solid $hud-editor-descriptor-background-color;
+      left: 50%;
+      bottom: -12px;
+      transform: translateX(-50%) rotate(-90deg);
+    }
+
+    &.bottom {
+      top: unset;
+      bottom: -45px;
+
+      &::after {
+        top: -12px;
+        transform: translateX(-50%) rotate(90deg);
+      }
+    }
+  }
+</style>
