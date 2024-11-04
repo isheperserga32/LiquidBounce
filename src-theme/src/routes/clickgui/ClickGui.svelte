@@ -1,6 +1,6 @@
 <script lang="ts">
     import {onMount} from "svelte";
-    import {getGameWindow, getModules, getModuleSettings} from "../../integration/rest";
+    import {getGameWindow, getModules, getModuleSettings, openScreen} from "../../integration/rest";
     import {groupByCategory} from "../../integration/util";
     import type {GroupedModules, Module} from "../../integration/types";
     import Panel from "./Panel.svelte";
@@ -47,6 +47,8 @@
     {#each Object.entries(categories) as [category, modules], panelIndex}
         <Panel {category} {modules} {panelIndex}/>
     {/each}
+    
+    <button on:click={() => openScreen("editor")}>HUD Editor</button>
 </div>
 
 <style lang="scss">

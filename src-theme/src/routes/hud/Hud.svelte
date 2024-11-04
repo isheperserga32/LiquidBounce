@@ -9,17 +9,20 @@
     import {onMount} from "svelte";
     import {getComponents, getGameWindow} from "../../integration/rest";
     import {listen} from "../../integration/ws";
-    import {type Alignment, type Component, HorizontalAlignment, VerticalAlignment} from "../../integration/types";
+    import {type Component} from "../../integration/types";
     import Taco from "./elements/taco/Taco.svelte";
     import type {ComponentsUpdateEvent, ScaleFactorChangeEvent} from "../../integration/events";
     import Keystrokes from "./elements/keystrokes/Keystrokes.svelte";
     import Effects from "./elements/Effects.svelte";
     import BlockCounter from "./elements/BlockCounter.svelte";
     import Text from "./elements/Text.svelte";
-    import DraggableElement from "./DraggableElement.svelte";
+    import DraggableComponent from "./editor/DraggableComponent.svelte";
+    import AddComponentButton from "./editor/AddComponentButton.svelte";
 
     let zoom = 100;
     let components: Component[] = [];
+
+    let editorMode = true;
 
     onMount(async () => {
         const gameWindow = await getGameWindow();
@@ -41,7 +44,7 @@
 <div class="hud" style="zoom: {zoom}%">
     {#each components as c (c.id)}
         {#if c.settings.enabled}
-            <DraggableElement alignment={c.settings.alignment} id={c.id} editorMode={true} name={c.name}>
+            <DraggableComponent alignment={c.settings.alignment} id={c.id} {editorMode} name={c.name}>
                 {#if c.name === "Watermark"}
                     <Watermark/>
                 {:else if c.name === "ArrayList"}
@@ -69,9 +72,13 @@
                 {:else if c.name === "Image"}
                     <img alt="" src="{c.settings.src}" style="scale: {c.settings.scale};">
                 {/if}
-            </DraggableElement>
+            </DraggableComponent>
         {/if}
     {/each}
+
+    {#if editorMode}
+        <AddComponentButton />
+    {/if}
 </div>
 
 <style lang="scss">

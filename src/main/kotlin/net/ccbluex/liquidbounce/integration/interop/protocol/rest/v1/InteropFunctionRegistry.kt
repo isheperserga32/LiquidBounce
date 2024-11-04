@@ -68,7 +68,7 @@ internal fun registerInteropFunctions(node: Node) = node.withPath("/api/v1/clien
     get("/components", ::getAllComponents)
     get("/components/:name", ::getComponents)
     post("/components/:name/:componentName", ::createComponent)
-    get("/componentFactories", ::getComponentFactories)
+    get("/component-factories", ::getComponentFactories)
 
     // Component Functions
     patch("/component/:id", ::moveComponent)

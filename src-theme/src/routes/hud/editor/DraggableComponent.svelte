@@ -1,7 +1,9 @@
 <script lang="ts">
-    import {type Alignment, HorizontalAlignment, VerticalAlignment} from "../../integration/types.js";
-    import {scaleFactor} from "../clickgui/clickgui_store";
-    import {moveComponent} from "../../integration/rest";
+    import {type Alignment, HorizontalAlignment, VerticalAlignment} from "../../../integration/types.js";
+    import {scaleFactor} from "../../clickgui/clickgui_store";
+    import {moveComponent} from "../../../integration/rest";
+    import {onMount} from "svelte";
+    import ComponentSettings from "./ComponentSettings.svelte";
 
     export let alignment: Alignment;
     export let id: string;
@@ -14,10 +16,10 @@
     let prevX = 0;
     let prevY = 0;
 
-    let descriptorBottom = false;
+    let settingsBottom = false;
 
-    function updateDescriptorBottom() {
-        descriptorBottom = (element?.offsetTop ?? 0) < window.innerHeight / 2 - (element?.offsetHeight ?? 0) / 2;
+    function updateSettingsBottom() {
+        settingsBottom = (element?.offsetTop ?? 0) < window.innerHeight / 2 - (element?.offsetHeight ?? 0) / 2;
     }
 
     $: styleString = generateStyleString(alignment);
@@ -101,7 +103,7 @@
         prevX = e.screenX;
         prevY = e.screenY;
 
-        updateDescriptorBottom();
+        updateSettingsBottom();
     }
 
     async function onMouseUp() {
@@ -153,67 +155,37 @@
         return style;
     }
 
-    updateDescriptorBottom();
+    onMount(() => {
+        updateSettingsBottom();
+    });
 </script>
 
 <svelte:window on:mouseup={onMouseUp} on:mousemove={onMouseMove}/>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<div class="draggable-element" style={styleString} on:mousedown={onMouseDown} bind:this={element}
-     class:editor-mode={editorMode}>
-    <slot/>
+<div class="draggable-element" style={styleString} bind:this={element}>
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <div class="contained-element" on:mousedown={onMouseDown} class:editor-mode={editorMode}>
+        <slot/>
+    </div>
     {#if editorMode}
-        <div class="descriptor" class:bottom={descriptorBottom}>{name}</div>
+        <ComponentSettings {name} {id} bottom={settingsBottom}/>
     {/if}
 </div>
 
 <style lang="scss">
-  @import "../../colors";
+  @import "../../../colors";
 
   .draggable-element {
     position: relative;
+  }
+
+  .contained-element {
     min-width: 50px;
     min-height: 50px;
   }
 
   .editor-mode {
     border: solid 1px $hud-editor-element-border-color;
-    background-color: rgba($hud-editor-element-background-color, 0.1);
-  }
-
-  .descriptor {
-    background-color: $hud-editor-descriptor-background-color;
-    color: $hud-editor-descriptor-color;
-    padding: 5px 8px;
-    border-radius: 5px;
-    position: absolute;
-    top: -45px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 14px;
-
-    &::after {
-      content: "";
-      display: block;
-      position: absolute;
-      width: 0;
-      height: 0;
-      border-top: 8px solid transparent;
-      border-bottom: 8px solid transparent;
-      border-right: 8px solid $hud-editor-descriptor-background-color;
-      left: 50%;
-      bottom: -12px;
-      transform: translateX(-50%) rotate(-90deg);
-    }
-
-    &.bottom {
-      top: unset;
-      bottom: -45px;
-
-      &::after {
-        top: -12px;
-        transform: translateX(-50%) rotate(90deg);
-      }
-    }
+    background-color: $hud-editor-element-background-color;
   }
 </style>

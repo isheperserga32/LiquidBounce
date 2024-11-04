@@ -73,7 +73,6 @@
   @import "../../../colors.scss";
 
     .text {
-        position: absolute;
         white-space: nowrap;
         user-select: none;
         pointer-events: none;

@@ -4,7 +4,7 @@ import type {
     Browser,
     ClientInfo,
     ClientUpdate,
-    Component,
+    Component, ComponentFactories,
     ConfigurableSetting,
     GameWindow,
     HitResult,
@@ -518,6 +518,32 @@ export async function getGameWindow(): Promise<GameWindow> {
 
 export async function getComponents(): Promise<Component[]> {
     const response = await fetch(`${API_BASE}/client/components/${THEME_NAME}`);
+    return await response.json();
+}
+
+export async function getComponentSettings(id: string): Promise<ConfigurableSetting> {
+    const response = await fetch(`${API_BASE}/client/component/${id}`);
+    return await response.json();
+}
+
+export async function setComponentSettings(id: string, settings: ConfigurableSetting) {
+    await fetch(`${API_BASE}/client/component/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(settings)
+    });
+}
+
+export async function createComponent(theme: string, name: string) {
+    await fetch(`${API_BASE}/client/components/${theme}/${name}`, {
+        method: "POST"
+    });
+}
+
+export async function getComponentFactories(): Promise<ComponentFactories[]> {
+    const response = await fetch(`${API_BASE}/client/component-factories`);
     return await response.json();
 }
 
