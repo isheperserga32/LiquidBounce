@@ -16,6 +16,7 @@
     import Effects from "./elements/Effects.svelte";
     import BlockCounter from "./elements/BlockCounter.svelte";
     import Text from "./elements/Text.svelte";
+    import DraggableElement from "./DraggableElement.svelte";
 
     let zoom = 100;
     let components: Component[] = [];
@@ -31,61 +32,16 @@
         zoom = data.scaleFactor * 50;
     });
 
-    listen("componentsUpdate", (data: ComponentsUpdateEvent) => {
+    listen("componentsUpdate", async (data: ComponentsUpdateEvent) => {
         // force update to re-render
-        components = [];
-        components = data.components;
+        components = await getComponents();
     });
-
-    function generateStyleString(alignment: Alignment): string {
-        let style = "position: fixed;";
-
-        switch (alignment.horizontal) {
-            case HorizontalAlignment.LEFT:
-                style += `left: ${alignment.horizontalOffset}px;`;
-                break;
-            case HorizontalAlignment.RIGHT:
-                style += `right: ${alignment.horizontalOffset}px;`;
-                break;
-            case HorizontalAlignment.CENTER:
-            case HorizontalAlignment.CENTER_TRANSLATED:
-                style += `left: calc(50% + ${alignment.horizontalOffset}px);`;
-                break;
-        }
-
-        switch (alignment.vertical) {
-            case VerticalAlignment.TOP:
-                style += `top: ${alignment.verticalOffset}px;`;
-                break;
-            case VerticalAlignment.BOTTOM:
-                style += `bottom: ${alignment.verticalOffset}px;`;
-                break;
-            case VerticalAlignment.CENTER:
-            case VerticalAlignment.CENTER_TRANSLATED:
-                style += `top: calc(50% + ${alignment.verticalOffset}px);`;
-                break;
-        }
-
-        style += "transform: translate("
-        if (alignment.horizontal === HorizontalAlignment.CENTER_TRANSLATED) {
-            style += "-50%,";
-        } else {
-            style += "0,";
-        }
-        if (alignment.vertical === VerticalAlignment.CENTER_TRANSLATED) {
-            style += "-50%);";
-        } else {
-            style += "0);"
-        }
-
-        return style;
-    }
 </script>
 
 <div class="hud" style="zoom: {zoom}%">
-    {#each components as c}
+    {#each components as c (c.id)}
         {#if c.settings.enabled}
-            <div style="{generateStyleString(c.settings.alignment)}">
+            <DraggableElement alignment={c.settings.alignment} id={c.id}>
                 {#if c.name === "Watermark"}
                     <Watermark/>
                 {:else if c.name === "ArrayList"}
@@ -113,7 +69,7 @@
                 {:else if c.name === "Image"}
                     <img alt="" src="{c.settings.src}" style="scale: {c.settings.scale};">
                 {/if}
-            </div>
+            </DraggableElement>
         {/if}
     {/each}
 </div>

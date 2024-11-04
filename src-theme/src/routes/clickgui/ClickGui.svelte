@@ -27,7 +27,7 @@
         categories = groupByCategory(modules);
 
         const clickGuiSettings = await getModuleSettings("ClickGUI");
-        clickGuiScaleFactor = clickGuiSettings.value.find(v => v.name === "Scale")?.value as number ?? 1
+        clickGuiScaleFactor = clickGuiSettings.value.find(v => v.name === "Scale")?.value as number ?? 1;
     });
 
     listen("scaleFactorChange", (e: ScaleFactorChangeEvent) => {

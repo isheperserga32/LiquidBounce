@@ -1,6 +1,6 @@
 import {REST_BASE, THEME_NAME} from "./host";
 import type {
-    Account,
+    Account, Alignment,
     Browser,
     ClientInfo,
     ClientUpdate,
@@ -519,6 +519,16 @@ export async function getGameWindow(): Promise<GameWindow> {
 export async function getComponents(): Promise<Component[]> {
     const response = await fetch(`${API_BASE}/client/components/${THEME_NAME}`);
     return await response.json();
+}
+
+export async function moveComponent(id: string, alignment: Alignment) {
+    await fetch(`${API_BASE}/client/component/${id}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(alignment)
+    });
 }
 
 export async function getClientInfo(): Promise<ClientInfo> {
