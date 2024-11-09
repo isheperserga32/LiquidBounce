@@ -33,7 +33,6 @@ import net.ccbluex.liquidbounce.utils.client.*
 import net.minecraft.entity.Entity
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket
 import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket
-import net.minecraft.world.explosion.Explosion
 import net.minecraft.world.explosion.ExplosionBehavior
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -283,30 +282,31 @@ object CommandFakePlayer : Listenable {
          * so an ExplosionS2CPacket handler is required.
          */
         if (packet is ExplosionS2CPacket) {
-            val explosion = Explosion(
-                world,
-                null,
-                packet.x,
-                packet.y,
-                packet.z,
-                packet.radius,
-                packet.affectedBlocks,
-                packet.destructionType,
-                packet.particle,
-                packet.emitterParticle,
-                packet.soundEvent
-            )
-
-            fakePlayers.forEach { fakePlayer ->
-                if (!explosionBehavior.shouldDamage(explosion, fakePlayer)) { // might not be necessary
-                    return@handler
-                }
-
-                fakePlayer.damage(
-                    Explosion.createDamageSource(world, null),
-                    explosionBehavior.calculateDamage(explosion, fakePlayer)
-                )
-            }
+            // todo: fix explosions
+//            val explosion = Explosion(
+//                world,
+//                null,
+//                packet.x,
+//                packet.y,
+//                packet.z,
+//                packet.radius,
+//                packet.affectedBlocks,
+//                packet.destructionType,
+//                packet.particle,
+//                packet.emitterParticle,
+//                packet.soundEvent
+//            )
+//
+//            fakePlayers.forEach { fakePlayer ->
+//                if (!explosionBehavior.shouldDamage(explosion, fakePlayer)) { // might not be necessary
+//                    return@handler
+//                }
+//
+//                fakePlayer.damage(
+//                    Explosion.createDamageSource(world, null),
+//                    explosionBehavior.calculateDamage(explosion, fakePlayer)
+//                )
+//            }
         }
 
         /**

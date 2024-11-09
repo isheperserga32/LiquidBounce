@@ -23,6 +23,7 @@ import net.ccbluex.liquidbounce.interfaces.OtherClientPlayerEntityAddition
 import net.minecraft.client.network.OtherClientPlayerEntity
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.damage.DamageSource
+import net.minecraft.server.world.ServerWorld
 
 /**
  * This class represents a Fake Player implementing
@@ -64,10 +65,7 @@ open class FakePlayer(
         this.limbAnimator.pos = snapshot.limbPos
     }
 
-    /**
-     * Applies the actual damage.
-     */
-    override fun damage(source: DamageSource?, amount: Float): Boolean {
+    override fun damage(world: ServerWorld?, source: DamageSource?, amount: Float): Boolean {
         @Suppress("CAST_NEVER_SUCCEEDS") // it does succeed with the mixin into OtherClientPlayerEntity
         return (this as OtherClientPlayerEntityAddition).`liquid_bounce$actuallyDamage`(source, amount)
     }

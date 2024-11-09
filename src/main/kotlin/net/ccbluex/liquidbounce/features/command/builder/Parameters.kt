@@ -22,7 +22,6 @@ package net.ccbluex.liquidbounce.features.command.builder
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.ModuleManager
 import net.ccbluex.liquidbounce.utils.client.world
-import net.minecraft.enchantment.Enchantments
 import net.minecraft.registry.Registries
 import net.minecraft.registry.RegistryKeys
 
@@ -56,7 +55,7 @@ fun enchantmentParameter(name: String = "enchantment") =
         .begin<String>(name)
         .verifiedBy(ParameterBuilder.STRING_VALIDATOR)
         .autocompletedWith { begin ->
-            world.registryManager.get(RegistryKeys.ENCHANTMENT).indexedEntries.map {
+            world.registryManager.getOptional(RegistryKeys.ENCHANTMENT).get().indexedEntries.map {
                 it.idAsString
             }
         }

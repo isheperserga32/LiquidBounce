@@ -88,8 +88,14 @@ object ModuleFakeLag : Module("FakeLag", Category.COMBAT) {
 
             // Flush on explosion
             is ExplosionS2CPacket -> {
-                if (packet.playerVelocityX != 0f || packet.playerVelocityY != 0f || packet.playerVelocityZ != 0f) {
-                    return false
+                val playerKnockback = packet.playerKnockback
+
+                if (playerKnockback.isPresent) {
+                    val knockback = playerKnockback.get()
+
+                    if (knockback.x != 0.0 || knockback.y != 0.0 || knockback.z != 0.0) {
+                        return false
+                    }
                 }
             }
 

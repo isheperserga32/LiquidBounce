@@ -355,7 +355,7 @@ object ModuleCriticals : Module("Criticals", Category.COMBAT) {
         val reactionTime = 10
 
         val simulatedPlayer = SimulatedPlayer.fromClientPlayer(
-            SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(DirectionalInput(player.input))
+            SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(DirectionalInput(player.input.playerInput))
         )
         val simulatedTarget = SimulatedPlayer.fromOtherPlayer(
             target,

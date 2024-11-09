@@ -59,7 +59,7 @@ object CommandXRay {
                         val identifier = Identifier.tryParse(name)
                         val displayName = identifier.toString()
 
-                        val block = Registries.BLOCK.getOrEmpty(identifier).orElseThrow {
+                        val block = Registries.BLOCK.getOptionalValue(identifier).orElseThrow {
                             throw CommandException(command.result("blockNotExists", displayName))
                         }
 
@@ -84,7 +84,7 @@ object CommandXRay {
                         val identifier = Identifier.tryParse(name)
                         val displayName = identifier.toString()
 
-                        val block = Registries.BLOCK.getOrEmpty(identifier).orElseThrow {
+                        val block = Registries.BLOCK.getOptionalValue(identifier).orElseThrow {
                             throw CommandException(command.result("blockNotExists", displayName))
                         }
 
