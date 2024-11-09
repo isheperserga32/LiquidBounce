@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.VertexSorter
 import net.ccbluex.liquidbounce.event.Listenable
 import net.ccbluex.liquidbounce.event.events.ResourceReloadEvent
 import net.ccbluex.liquidbounce.event.handler
+import net.ccbluex.liquidbounce.render.engine.Color4b
 import net.ccbluex.liquidbounce.utils.client.mc
 import net.ccbluex.liquidbounce.utils.math.Vec2i
 import net.minecraft.client.MinecraftClient
@@ -18,7 +19,6 @@ import net.minecraft.registry.Registries
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
 import org.joml.Matrix4f
-import java.awt.Color
 import java.awt.image.BufferedImage
 import java.util.stream.Collectors
 import kotlin.math.ceil
@@ -60,12 +60,13 @@ object ItemImageAtlas: Listenable {
 
         for (x in 0 until image.width) {
             for (y in 0 until image.height) {
-                val r = image.getRed(x, y).toInt() and 0xFF
-                val g = image.getGreen(x, y).toInt() and 0xFF
-                val b = image.getBlue(x, y).toInt() and 0xFF
+                val color = Color4b(image.getColorArgb(x, y))
+                val r = color.r and 0xFF
+                val g = color.g and 0xFF
+                val b = color.b and 0xFF
                 val a = image.getOpacity(x, y).toInt() and 0xFF
 
-                img.setRGB(x, y, Color(r, g, b, a).rgb)
+                img.setRGB(x, y, Color4b(r, g, b, a).toARGB())
             }
         }
 

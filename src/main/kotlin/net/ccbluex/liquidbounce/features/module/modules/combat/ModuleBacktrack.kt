@@ -114,7 +114,7 @@ object ModuleBacktrack : Module("Backtrack", Category.COMBAT) {
                 val pos = if (packet is EntityS2CPacket) {
                     position?.withDelta(packet.deltaX.toLong(), packet.deltaY.toLong(), packet.deltaZ.toLong())
                 } else {
-                    (packet as EntityPositionS2CPacket).let { vec -> Vec3d(vec.x, vec.y, vec.z) }
+                    (packet as EntityPositionS2CPacket).let { vec -> packet.change.position }
                 }
 
                 position?.setPos(pos)
@@ -181,17 +181,18 @@ object ModuleBacktrack : Module("Backtrack", Category.COMBAT) {
 
             renderEnvironmentForWorld(event.matrixStack) {
                 withPositionRelativeToCamera(pos) {
-                    mc.entityRenderDispatcher.render(
-                        entity,
-                        0.0,
-                        0.0,
-                        0.0,
-                        entity.yaw,
-                        1.0f,
-                        event.matrixStack,
-                        mc.bufferBuilders.entityVertexConsumers,
-                        reducedLight
-                    )
+                    // todo: fix later
+//                    mc.entityRenderDispatcher.render(
+//                        entity,
+//                        0.0,
+//                        0.0,
+//                        0.0,
+//                        entity.yaw,
+//                        1.0f,
+//                        event.matrixStack,
+//                        mc.bufferBuilders.entityVertexConsumers,
+//                        reducedLight
+//                    )
                 }
             }
         }

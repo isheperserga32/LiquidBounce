@@ -38,7 +38,6 @@ import net.ccbluex.liquidbounce.utils.kotlin.isEmpty
 import net.ccbluex.liquidbounce.utils.math.toVec3d
 import net.minecraft.block.Block
 import net.minecraft.block.BlockState
-import net.minecraft.block.Blocks
 import net.minecraft.registry.Registries
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
@@ -277,7 +276,8 @@ object ModuleHoleESP : Module("HoleESP", Category.RENDER) {
 
             // Only check positions in this chunk (pos is BlockPos.Mutable)
             forEach { pos ->
-                if (chunk != null && (pos.y <= chunk.bottomY || pos.y - 1 >= chunk.topY)) {
+                // todo: is top y different to topYInclusive?
+                if (chunk != null && (pos.y <= chunk.bottomY || pos.y - 1 >= chunk.topYInclusive)) {
                     return@forEach
                 }
 

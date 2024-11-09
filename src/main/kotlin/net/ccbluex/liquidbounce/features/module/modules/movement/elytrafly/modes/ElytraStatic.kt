@@ -34,7 +34,6 @@ internal object ElytraStatic : Choice("Static") {
         get() = ModuleElytraFly.modes
 
     val repeatable = repeatable {
-
         if (player.vehicle != null) {
             return@repeatable
         }
@@ -52,7 +51,9 @@ internal object ElytraStatic : Choice("Static") {
         }
 
         if (mc.options.sneakKey.isPressed && instantStop) {
-            player.stopFallFlying()
+            player.stopGliding()
+            // todo: check if this is the same
+            // player.stopFallFlying()
             return@repeatable
         }
         fun isAnyMovementKeyPressed(): Boolean {
@@ -62,7 +63,7 @@ internal object ElytraStatic : Choice("Static") {
         }
 
         // If player is flying
-        if (player.isFallFlying && isAnyMovementKeyPressed()) {
+        if (player.isGliding && isAnyMovementKeyPressed()) {
             if (ModuleElytraFly.Speed.enabled) {
                 if (player.moving) {
                     player.strafe(speed = ModuleElytraFly.Speed.horizontal.toDouble())
@@ -74,11 +75,12 @@ internal object ElytraStatic : Choice("Static") {
                 }
             }
             // If the player has an elytra and wants to fly instead
-        } else if (chestSlot.item == Items.ELYTRA && player.input.jumping) {
+        } else if (chestSlot.item == Items.ELYTRA && player.input.playerInput.jump) {
             if (instant) {
                 // Jump must be off due to abnormal speed boosts
-                player.input.jumping = true
-                player.input.jumping = false
+                // todo: check why this code makes no sense
+//                player.input.playerInput.jump = true
+//                player.input.playerInput.jump = false
             }
         }
 

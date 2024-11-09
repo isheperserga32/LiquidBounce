@@ -174,7 +174,7 @@ class ItemCategorization(
             is BowItem -> arrayOf(BowItemFacet(slot))
             is CrossbowItem -> arrayOf(CrossbowItemFacet(slot))
             is ArrowItem -> arrayOf(ArrowItemFacet(slot))
-            is ToolItem -> arrayOf(ToolItemFacet(slot))
+            is MiningToolItem -> arrayOf(ToolItemFacet(slot))
             is FishingRodItem -> arrayOf(RodItemFacet(slot), ThrowableItemFacet(slot))
             is ShieldItem -> arrayOf(ShieldItemFacet(slot))
             is BlockItem -> {
@@ -186,7 +186,8 @@ class ItemCategorization(
                     arrayOf(ItemFacet(slot))
                 }
             }
-            is MilkBucketItem -> arrayOf(PrimitiveItemFacet(slot, ItemCategory(ItemType.BUCKET, 2)))
+            // todo: what happend to milk?
+//            is MilkBucketItem -> arrayOf(PrimitiveItemFacet(slot, ItemCategory(ItemType.BUCKET, 2)))
             is BucketItem -> {
                 when (item.fluid) {
                     is WaterFluid -> arrayOf(PrimitiveItemFacet(slot, ItemCategory(ItemType.BUCKET, 0)))

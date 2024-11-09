@@ -50,7 +50,9 @@ internal object NoFallVulcanTP : Choice("VulcanTP288") {
 
             // Extreme high fall velocity
             player.setVelocity(0.0, -99.887575, 0.0)
-            player.input.sneaking = true
+
+            // todo: fix this, and why though?
+            // player.input.playerInput.sneak = true
         }
     }
 

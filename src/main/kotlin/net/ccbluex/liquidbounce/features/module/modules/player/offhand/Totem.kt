@@ -96,7 +96,7 @@ class Totem : ToggleableConfigurable(ModuleOffhand, "Totem", true) {
                     return 0f
                 }
 
-                if (ignoreElytra && player.isFallFlying && player.isInPose(EntityPose.FALL_FLYING)) {
+                if (ignoreElytra && player.isGliding && player.isInPose(EntityPose.GLIDING)) {
                     return 0f
                 }
 

@@ -129,12 +129,13 @@ object ModuleSmartEat : Module("SmartEat", Category.PLAYER) {
                     val i: Int = scaledWidth / 2
                     val x = i - 91 - 26 - offset
                     val y = scaledHeight - 16 - 3
-                    dc.drawItemInSlot(mc.textRenderer, currentFood.itemStack, x, y)
+                    // todo: fix this
+//                    dc.drawItemInSlot(mc.textRenderer, currentFood.itemStack, x, y)
                     dc.drawItem(currentFood.itemStack, x, y)
-                    dc.drawGuiTexture(
-                        HOTBAR_OFFHAND_LEFT_TEXTURE, i - 91 - 29 - offset,
-                        scaledHeight - 23, 29, 24
-                    )
+//                    dc.drawGuiTexture(
+//                        HOTBAR_OFFHAND_LEFT_TEXTURE, i - 91 - 29 - offset,
+//                        scaledHeight - 23, 29, 24
+//                    )
                 }
             }
         }

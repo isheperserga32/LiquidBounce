@@ -156,7 +156,7 @@ object ModuleScaffold : Module("Scaffold", Category.WORLD) {
     }
 
     val isTowering: Boolean
-        get() = towerMode.choices.indexOf(towerMode.activeChoice) != 0 && player.input.jumping
+        get() = towerMode.choices.indexOf(towerMode.activeChoice) != 0 && mc.options.jumpKey.isPressed
 
     // SafeWalk feature - uses the SafeWalk module as a base
     @Suppress("unused")

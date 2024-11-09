@@ -111,7 +111,7 @@ object ModuleReverseStep : Module("ReverseStep", Category.MOVEMENT) {
                     if (simulateFalling) {
                         simulationQueue += PlayerMoveC2SPacket.PositionAndOnGround(
                             simulatePlayer.pos.x,
-                            simulatePlayer.pos.y, simulatePlayer.pos.z, simulatePlayer.onGround
+                            simulatePlayer.pos.y, simulatePlayer.pos.z, simulatePlayer.onGround, player.horizontalCollision
                         )
                     }
                 }

@@ -29,8 +29,12 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.render.engine.Color4b
 import net.ccbluex.liquidbounce.render.renderEnvironmentForWorld
 import net.ccbluex.liquidbounce.render.utils.rainbow
-import net.minecraft.client.render.*
+import net.minecraft.client.gl.ShaderProgramKeys
+import net.minecraft.client.render.BufferBuilder
+import net.minecraft.client.render.BufferRenderer
+import net.minecraft.client.render.Camera
 import net.minecraft.client.render.VertexFormat.DrawMode
+import net.minecraft.client.render.VertexFormats
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.Entity
 import org.apache.commons.lang3.tuple.MutablePair

@@ -113,7 +113,7 @@ object ScaffoldGodBridgeTechnique : ScaffoldTechnique("GodBridge"), ScaffoldLedg
     }
 
     override fun getRotations(target: BlockPlacementTarget?): Rotation? {
-        val dirInput = DirectionalInput(player.input)
+        val dirInput = DirectionalInput(player.input.playerInput)
 
         if (dirInput == DirectionalInput.NONE) {
             target ?: return null

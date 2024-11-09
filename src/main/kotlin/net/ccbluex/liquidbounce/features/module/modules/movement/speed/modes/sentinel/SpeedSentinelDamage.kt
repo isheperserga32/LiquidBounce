@@ -122,13 +122,13 @@ class SpeedSentinelDamage(override val parent: ChoiceConfigurable<*>) : Choice("
         externalDamageAdjust = 0
         hasBeenHurt = false
         enabledTime = System.currentTimeMillis()
-        network.sendPacket(PlayerMoveC2SPacket.PositionAndOnGround(player.x, player.y, player.z, false))
+        network.sendPacket(PlayerMoveC2SPacket.PositionAndOnGround(player.x, player.y, player.z, false, player.horizontalCollision))
         network.sendPacket(
             PlayerMoveC2SPacket.PositionAndOnGround(
                 player.x, player.y + 3.25, player.z,
             false))
-        network.sendPacket(PlayerMoveC2SPacket.PositionAndOnGround(player.x, player.y, player.z, false))
-        network.sendPacket(PlayerMoveC2SPacket.PositionAndOnGround(player.x, player.y, player.z, true))
+        network.sendPacket(PlayerMoveC2SPacket.PositionAndOnGround(player.x, player.y, player.z, false, player.horizontalCollision))
+        network.sendPacket(PlayerMoveC2SPacket.PositionAndOnGround(player.x, player.y, player.z, true, player.horizontalCollision))
     }
 
 }

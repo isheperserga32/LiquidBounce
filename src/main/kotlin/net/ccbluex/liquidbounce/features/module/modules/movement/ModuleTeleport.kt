@@ -72,7 +72,9 @@ object ModuleTeleport : Module("Teleport", Category.EXPLOIT, aliases = arrayOf("
 
     @Suppress("unused")
     private val packetHandler = handler<PacketEvent> {
-        if (it.packet is PlayerPositionLookS2CPacket) {
+        val packet = it.packet
+
+        if (packet is PlayerPositionLookS2CPacket) {
             val indicatedTeleport = indicatedTeleport ?: return@handler
 
             if (teleportsToWait > 1) {
@@ -81,12 +83,13 @@ object ModuleTeleport : Module("Teleport", Category.EXPLOIT, aliases = arrayOf("
                 return@handler
             }
 
+            val position = packet.change
             sendPacketSilently(MovePacketType.FULL.generatePacket().apply {
-                this.x = it.packet.x
-                this.y = it.packet.y
-                this.z = it.packet.z
-                this.yaw = it.packet.yaw
-                this.pitch = it.packet.pitch
+                this.x = position.position.x
+                this.y = position.position.y
+                this.z = position.position.z
+                this.yaw = position.yaw
+                this.pitch = position.pitch
                 this.onGround = false
             })
 

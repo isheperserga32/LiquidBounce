@@ -72,6 +72,16 @@ data class DirectionalInput(
     }
 }
 
+fun PlayerInput.copy(
+    forward: Boolean = this.forward,
+    backward: Boolean = this.backward,
+    left: Boolean = this.left,
+    right: Boolean = this.right,
+    jump: Boolean = this.jump,
+    sneak: Boolean = this.sneak,
+    sprint: Boolean = this.sprint,
+) = PlayerInput(forward, backward, left, right, jump, sneak, sprint)
+
 /**
  * Returns the yaw difference the position is from the player position
  *

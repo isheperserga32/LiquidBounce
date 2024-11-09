@@ -46,7 +46,7 @@ object ScaffoldJumpStrafe : ToggleableConfigurable(ModuleScaffold, "StrafeOnJump
     private val diagonalSpeed by floatRange("DiagonalSpeed", 0.48f..0.49f, 0.1f..1f)
 
     val afterJumpHandler = handler<PlayerAfterJumpEvent> {
-        val dirInput = DirectionalInput(player.input)
+        val dirInput = DirectionalInput(player.input.playerInput)
 
         // Taken from GodBridge feature
         val direction = getMovementDirectionOfInput(player.yaw, dirInput) + 180
