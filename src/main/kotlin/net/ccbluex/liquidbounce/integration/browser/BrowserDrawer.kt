@@ -23,11 +23,11 @@ import com.mojang.blaze3d.systems.RenderSystem
 import net.ccbluex.liquidbounce.event.Listenable
 import net.ccbluex.liquidbounce.event.events.*
 import net.ccbluex.liquidbounce.event.handler
+import net.ccbluex.liquidbounce.integration.browser.supports.IBrowser
 import net.ccbluex.liquidbounce.utils.client.mc
 import net.ccbluex.liquidbounce.utils.kotlin.EventPriorityConvention
-import net.ccbluex.liquidbounce.integration.browser.supports.IBrowser
+import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.render.BufferRenderer.drawWithGlobalProgram
-import net.minecraft.client.render.GameRenderer
 import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormat
 import net.minecraft.client.render.VertexFormats
@@ -112,7 +112,7 @@ class BrowserDrawer(val browser: () -> IBrowser?) : Listenable {
         RenderSystem.disableDepthTest()
         RenderSystem.enableBlend()
         RenderSystem.blendFunc(GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA)
-        RenderSystem.setShader { GameRenderer.getPositionTexColorProgram() }
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR)
         RenderSystem.setShaderTexture(0, texture)
         val tessellator = Tessellator.getInstance()
         val buffer = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR)

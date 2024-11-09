@@ -26,9 +26,9 @@ import net.ccbluex.liquidbounce.utils.math.minus
 import net.ccbluex.liquidbounce.utils.math.plus
 import net.ccbluex.liquidbounce.utils.math.rangeTo
 import net.ccbluex.liquidbounce.utils.math.times
-import net.minecraft.client.input.Input
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.entity.EntityPose
+import net.minecraft.util.PlayerInput
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.MathHelper
@@ -41,7 +41,7 @@ data class DirectionalInput(
     val left: Boolean,
     val right: Boolean,
 ) {
-    constructor(input: Input) : this(input.pressingForward, input.pressingBack, input.pressingLeft, input.pressingRight)
+    constructor(input: PlayerInput) : this(input.forward, input.backward, input.left, input.right)
 
     override fun equals(other: Any?): Boolean {
         return other is DirectionalInput &&

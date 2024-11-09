@@ -98,7 +98,7 @@ object ModuleBreadcrumbs : Module("Breadcrumbs", Category.RENDER, aliases = arra
             VertexFormats.POSITION_COLOR)
         val renderData = RenderData(matrix, buffer, colorF, lines)
 
-        RenderSystem.setShader { GameRenderer.getPositionColorProgram() }
+        RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR)
 
         trails.forEach { (entity, trail) ->
             trail.verifyAndRenderTrail(renderData, camera, entity, time)

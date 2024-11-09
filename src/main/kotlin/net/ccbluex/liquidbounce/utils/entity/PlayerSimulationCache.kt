@@ -48,7 +48,7 @@ object PlayerSimulationCache: Listenable {
         }
 
         val simulatedPlayer = SimulatedPlayer.fromClientPlayer(
-            SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(DirectionalInput(player.input))
+            SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(DirectionalInput(player.input.playerInput))
         )
 
         val simulatedPlayerCache = SimulatedPlayerCache(simulatedPlayer)

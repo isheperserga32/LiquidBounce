@@ -41,11 +41,11 @@ import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.entity.mob.CreeperEntity
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.entity.vehicle.TntMinecartEntity
+import net.minecraft.item.consume.UseAction
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 import net.minecraft.network.packet.c2s.play.VehicleMoveC2SPacket
 import net.minecraft.scoreboard.ScoreboardDisplaySlot
 import net.minecraft.stat.Stats
-import net.minecraft.util.UseAction
 import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.*
 import net.minecraft.util.shape.VoxelShapes
@@ -119,7 +119,7 @@ val PlayerEntity.ping: Int
     get() = mc.networkHandler?.getPlayerListEntry(uuid)?.latency ?: 0
 
 val ClientPlayerEntity.directionYaw: Float
-    get() = getMovementDirectionOfInput(this.yaw, DirectionalInput(this.input))
+    get() = getMovementDirectionOfInput(this.yaw, DirectionalInput(this.input.playerInput))
 
 val ClientPlayerEntity.isBlockAction: Boolean
     get() = player.isUsingItem && player.activeItem.useAction == UseAction.BLOCK

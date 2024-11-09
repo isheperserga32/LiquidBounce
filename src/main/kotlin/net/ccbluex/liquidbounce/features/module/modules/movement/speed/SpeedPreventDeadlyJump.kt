@@ -56,7 +56,7 @@ object SpeedPreventDeadlyJump : QuickImports {
 
     private fun createSimulatedPlayer(player: ClientPlayerEntity): SimulatedPlayer {
         val input = SimulatedPlayer.SimulatedPlayerInput(
-            DirectionalInput(player.input),
+            DirectionalInput(player.input.playerInput),
             jumping = false,
             sprinting = true,
             sneaking = false
