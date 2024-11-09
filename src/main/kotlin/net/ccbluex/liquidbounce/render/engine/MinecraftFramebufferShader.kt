@@ -19,7 +19,6 @@
 package net.ccbluex.liquidbounce.render.engine
 
 import net.ccbluex.liquidbounce.utils.client.mc
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gl.Framebuffer
 import net.minecraft.client.gl.GlUniform
 import net.minecraft.client.gl.PostEffectProcessor
@@ -40,31 +39,31 @@ abstract class MinecraftFramebufferShader(private val shaderName: String) {
 
     fun load() {
         val identifier = Identifier.of("liquidbounce", "shaders/post/$shaderName.json")
+//
+//        val outlinesShader = PostEffectProcessor(
+//            mc.textureManager,
+//            mc.resourceManager,
+//            mc.framebuffer,
+//            identifier
+//        )
+//
+//        outlinesShader.setupDimensions(mc.window.framebufferWidth, mc.window.framebufferHeight)
+//
+//        framebuffer = outlinesShader.getSecondaryTarget("final")
+//        vertexConsumerProvider = OutlineVertexConsumerProvider(mc.bufferBuilders.entityVertexConsumers)
 
-        val outlinesShader = PostEffectProcessor(
-            mc.textureManager,
-            mc.resourceManager,
-            mc.framebuffer,
-            identifier
-        )
-
-        outlinesShader.setupDimensions(mc.window.framebufferWidth, mc.window.framebufferHeight)
-
-        framebuffer = outlinesShader.getSecondaryTarget("final")
-        vertexConsumerProvider = OutlineVertexConsumerProvider(mc.bufferBuilders.entityVertexConsumers)
-
-        this.postEffectProcessor = outlinesShader
+//        this.postEffectProcessor = outlinesShader
     }
 
     fun close() {
-        postEffectProcessor?.close()
+//        postEffectProcessor?.close()
         this.postEffectProcessor = null
     }
 
     protected fun beginInternal() {
         // Clear the buffer if it is dirty
         if (this.isDirty) {
-            assureLoaded(framebuffer).clear(MinecraftClient.IS_SYSTEM_MAC)
+//            assureLoaded(framebuffer).clear(MinecraftClient.IS_SYSTEM_MAC)
 
             this.isDirty = false
         }
@@ -73,16 +72,16 @@ abstract class MinecraftFramebufferShader(private val shaderName: String) {
     }
 
     fun end(tickDelta: Float) {
-        // Render the framebuffer if something was rendered to it
-        if (this.isDirty) {
-            val framebuffer = assureLoaded(framebuffer)
-            val originalFramebuffer = mc.worldRenderer.entityOutlinesFramebuffer
-
-            mc.worldRenderer.entityOutlinesFramebuffer = framebuffer
-            vertexConsumerProvider?.draw()
-            mc.worldRenderer.entityOutlinesFramebuffer = originalFramebuffer
-            postEffectProcessor?.render(tickDelta)
-        }
+//        // Render the framebuffer if something was rendered to it
+//        if (this.isDirty) {
+//            val framebuffer = assureLoaded(framebuffer)
+//            val originalFramebuffer = mc.worldRenderer.entityOutlinesFramebuffer
+//
+//            mc.worldRenderer.entityOutlinesFramebuffer = framebuffer
+//            vertexConsumerProvider?.draw()
+//            mc.worldRenderer.entityOutlinesFramebuffer = originalFramebuffer
+//            postEffectProcessor?.render(tickDelta)
+//        }
 
         mc.framebuffer.beginWrite(false)
     }
@@ -92,11 +91,11 @@ abstract class MinecraftFramebufferShader(private val shaderName: String) {
     }
 
     fun drawFramebuffer() {
-        assureLoaded(framebuffer).draw(mc.window.framebufferWidth, mc.window.framebufferHeight, false)
+//        assureLoaded(framebuffer).draw(mc.window.framebufferWidth, mc.window.framebufferHeight, false)
     }
 
     fun onResized(width: Int, height: Int) {
-        this.postEffectProcessor?.setupDimensions(width, height)
+//        this.postEffectProcessor?.setupDimensions(width, height)
     }
 
     protected fun setUniform1f(name: String, value: Float) {
@@ -104,8 +103,9 @@ abstract class MinecraftFramebufferShader(private val shaderName: String) {
     }
 
     private fun glUniform(name: String): GlUniform {
-        return (assureLoaded(this.postEffectProcessor).passes[0].program.getUniformByName(name)
-            ?: throw IllegalArgumentException("There is no uniform with the name $name"))
+//        return (assureLoaded(this.postEffectProcessor).passes[0].program.getUniformByName(name)
+//            ?: throw IllegalArgumentException("There is no uniform with the name $name"))
+        TODO()
     }
 
     private inline fun <reified T> assureLoaded(t: T?): T =

@@ -93,7 +93,7 @@ internal object VelocityModify : Choice("Modify") {
             //  Modify packet according to the specified values
             val playerKnockback = packet.playerKnockback.orElse(null) ?: return@handler
 
-/           // todo: fix immutable
+           // todo: fix immutable
 //            packet.playerVelocityX *= horizontal
 //            packet.playerVelocityY *= vertical
 //            packet.playerVelocityZ *= horizontal

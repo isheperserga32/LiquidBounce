@@ -87,7 +87,7 @@ enum class VirtualScreenType(
     CREATE_WORLD(
         "create_world",
         recognizer = { it is CreateWorldScreen },
-        open = { CreateWorldScreen.create(mc, IntegrationHandler.parent) }
+        open = { CreateWorldScreen.show(mc, IntegrationHandler.parent) }
     ),
 
     OPTIONS(

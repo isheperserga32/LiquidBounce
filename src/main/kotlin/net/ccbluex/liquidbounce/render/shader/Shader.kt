@@ -7,8 +7,8 @@ package net.ccbluex.liquidbounce.render.shader
 
 import com.mojang.blaze3d.platform.GlConst
 import com.mojang.blaze3d.platform.GlStateManager
-import net.minecraft.client.gl.GlProgramManager
 import net.minecraft.client.gl.GlUniform
+import net.minecraft.client.gl.GlUsage
 import net.minecraft.client.gl.VertexBuffer
 import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormat
@@ -46,7 +46,7 @@ class Shader(vertex: String, fragment: String) : Closeable {
         val fragProgram = compileShader(fragment, GlConst.GL_FRAGMENT_SHADER)
 
         this.canvas = ScalableCanvas()
-        this.buffer = VertexBuffer(VertexBuffer.Usage.DYNAMIC)
+        this.buffer = VertexBuffer(GlUsage.DYNAMIC_READ) // todo: what dynamic is dynamic?
         this.program = GlStateManager.glCreateProgram()
 
         GlStateManager.glAttachShader(program, vertProgram)
@@ -87,7 +87,7 @@ class Shader(vertex: String, fragment: String) : Closeable {
 
     private fun compileShader(source: String, type: Int): Int {
         val shader = GlStateManager.glCreateShader(type)
-        GlStateManager.glShaderSource(shader, listOf(source))
+        GlStateManager.glShaderSource(shader, source)
         GlStateManager.glCompileShader(shader)
 
         // check compilation status
@@ -100,7 +100,7 @@ class Shader(vertex: String, fragment: String) : Closeable {
     }
 
     fun draw(mouseX: Int, mouseY: Int, width: Int, height: Int, delta: Float) {
-        GlProgramManager.useProgram(this.program)
+        GlStateManager._glUseProgram(this.program)
 
         canvas.resize((width * QUALITY).toInt(), (height * QUALITY).toInt())
         canvas.write()

@@ -8,7 +8,6 @@ import net.ccbluex.liquidbounce.features.module.modules.render.ModuleHud
 import net.ccbluex.liquidbounce.render.ui.ItemImageAtlas
 import net.ccbluex.liquidbounce.utils.client.Chronometer
 import net.ccbluex.liquidbounce.utils.client.mc
-import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gl.SimpleFramebuffer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ChatScreen
@@ -22,7 +21,8 @@ object UIRenderer {
     val overlayFramebuffer: SimpleFramebuffer by lazy {
         val fb = SimpleFramebuffer(
             mc.window.framebufferWidth,
-            mc.window.framebufferHeight, true, MinecraftClient.IS_SYSTEM_MAC
+            mc.window.framebufferHeight,
+            true
         )
 
         fb.setClearColor(0.0f, 0.0f, 0.0f, 0.0f)
@@ -63,7 +63,7 @@ object UIRenderer {
         if (ModuleHud.isBlurable) {
             this.isDrawingHudFramebuffer = true
 
-            this.overlayFramebuffer.clear(true)
+            this.overlayFramebuffer.clear()
             this.overlayFramebuffer.beginWrite(true)
         }
 
@@ -87,16 +87,16 @@ object UIRenderer {
         // Remember the previous projection matrix because the draw method changes it AND NEVER FUCKING CHANGES IT
         // BACK IN ORDER TO INTRODUCE HARD TO FUCKING FIND BUGS. Thanks Mojang :+1:
         val projectionMatrix = RenderSystem.getProjectionMatrix()
-        val vertexSorting = RenderSystem.getVertexSorting()
+        val projectionType = RenderSystem.getProjectionType()
 
-        this.overlayFramebuffer.draw(mc.window.framebufferWidth, mc.window.framebufferHeight, false)
+        this.overlayFramebuffer.draw(mc.window.framebufferWidth, mc.window.framebufferHeight)
 
-        RenderSystem.setProjectionMatrix(projectionMatrix, vertexSorting)
+        RenderSystem.setProjectionMatrix(projectionMatrix, projectionType)
         RenderSystem.defaultBlendFunc()
     }
 
     fun setupDimensions(width: Int, height: Int) {
-        this.overlayFramebuffer.resize(width, height, true)
+        this.overlayFramebuffer.resize(width, height)
     }
 
 }

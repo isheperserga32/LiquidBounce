@@ -38,7 +38,6 @@ import net.minecraft.registry.tag.ItemTags
 import net.minecraft.registry.tag.TagKey
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.BlockPos
-import kotlin.jvm.optionals.getOrNull
 
 val ACCEPTED_ITEM_TAGS
     get() = arrayOf(
@@ -144,19 +143,20 @@ fun <T> constructMap(registry: DefaultedRegistry<T>, tagKeys: Array<TagKey<T>>):
     val map = hashMapOf<Identifier, Identifier>()
 
     for (acceptedTag in tagKeys) {
-        val get = registry.getEntryList(acceptedTag).getOrNull() ?: continue
-
-        get.forEach {
-            val itemId = registry.getId(it.value())
-
-            if (map.containsKey(itemId)) {
-                println("Duplicate $itemId in ${acceptedTag.id} in ${map[itemId]}")
-
-                return@forEach
-            }
-
-            map[itemId] = acceptedTag.id
-        }
+        // todo: fix this
+//        val get = registry.getEntryList(acceptedTag).getOrNull() ?: continue
+//
+//        get.forEach {
+//            val itemId = registry.getId(it.value())
+//
+//            if (map.containsKey(itemId)) {
+//                println("Duplicate $itemId in ${acceptedTag.id} in ${map[itemId]}")
+//
+//                return@forEach
+//            }
+//
+//            map[itemId] = acceptedTag.id
+//        }
     }
 
     return map

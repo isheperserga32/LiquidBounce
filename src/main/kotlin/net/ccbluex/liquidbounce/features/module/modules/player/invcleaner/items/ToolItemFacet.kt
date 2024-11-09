@@ -23,7 +23,6 @@ import net.ccbluex.liquidbounce.utils.item.EnchantmentValueEstimator
 import net.ccbluex.liquidbounce.utils.item.type
 import net.ccbluex.liquidbounce.utils.sorting.ComparatorChain
 import net.minecraft.enchantment.Enchantments
-import net.minecraft.item.ToolItem
 
 class ToolItemFacet(itemSlot: ItemSlot) : ItemFacet(itemSlot) {
     companion object {
@@ -35,7 +34,8 @@ class ToolItemFacet(itemSlot: ItemSlot) : ItemFacet(itemSlot) {
             )
         private val COMPARATOR =
             ComparatorChain<ToolItemFacet>(
-                compareBy { (it.itemStack.item as ToolItem).material.miningSpeedMultiplier },
+                // todo: needs to be checked differently now
+//                compareBy { (it.itemStack.item as MiningToolItem).material.miningSpeedMultiplier },
                 compareBy { VALUE_ESTIMATOR.estimateValue(it.itemStack) },
                 PREFER_BETTER_DURABILITY,
                 PREFER_ITEMS_IN_HOTBAR,

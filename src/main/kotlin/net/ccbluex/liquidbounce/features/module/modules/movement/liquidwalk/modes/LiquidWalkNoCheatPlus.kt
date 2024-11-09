@@ -52,7 +52,7 @@ internal object LiquidWalkNoCheatPlus : Choice("NoCheatPlus") {
 
     @Suppress("unused")
     val shapeHandler = handler<BlockShapeEvent> { event ->
-        if (player.input.sneaking || player.fallDistance > 3.0f || player.isOnFire) {
+        if (mc.options.sneakKey.isPressed || player.fallDistance > 3.0f || player.isOnFire) {
             return@handler
         }
 
@@ -64,7 +64,7 @@ internal object LiquidWalkNoCheatPlus : Choice("NoCheatPlus") {
     }
 
     val repeatable = repeatable {
-        if (player.box.isBlockAtPosition { it is FluidBlock } && !player.input.sneaking) {
+        if (player.box.isBlockAtPosition { it is FluidBlock } && !mc.options.sneakKey.isPressed) {
             player.velocity.y = 0.08
         }
     }
@@ -73,7 +73,7 @@ internal object LiquidWalkNoCheatPlus : Choice("NoCheatPlus") {
         val packet = event.packet
 
         if (event.origin == TransferOrigin.SEND && packet is PlayerMoveC2SPacket) {
-            if (!player.input.sneaking && !player.isTouchingWater && standingOnWater() && !collidesWithAnythingElse()) {
+            if (!mc.options.sneakKey.isPressed && !player.isTouchingWater && standingOnWater() && !collidesWithAnythingElse()) {
                 if (shiftDown) {
                     packet.y -= 0.001
                 }

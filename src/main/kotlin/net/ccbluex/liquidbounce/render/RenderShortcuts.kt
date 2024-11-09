@@ -27,7 +27,7 @@ import net.ccbluex.liquidbounce.render.engine.Vec3
 import net.ccbluex.liquidbounce.render.engine.font.FontRenderer
 import net.ccbluex.liquidbounce.render.engine.font.FontRendererBuffers
 import net.ccbluex.liquidbounce.utils.client.mc
-import net.minecraft.client.gl.ShaderProgram
+import net.minecraft.client.gl.ShaderProgramKey
 import net.minecraft.client.gl.ShaderProgramKeys
 import net.minecraft.client.render.*
 import net.minecraft.client.render.VertexFormat.DrawMode
@@ -288,7 +288,7 @@ fun RenderEnvironment.drawTextureQuad(pos1: Vec3d, pos2: Vec3d) {
 inline fun RenderEnvironment.drawCustomMesh(
     drawMode: DrawMode,
     vertexFormat: VertexFormat,
-    shader: ShaderProgram,
+    shader: ShaderProgramKey,
     drawer: BufferBuilder.(Matrix4f) -> Unit
 ) {
     val tessellator = RenderSystem.renderThreadTesselator()

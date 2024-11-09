@@ -107,7 +107,7 @@ class SimulatedPlayer(
                 player.fallDistance,
                 player.jumpingCooldown,
                 player.jumping,
-                player.isFallFlying,
+                player.isGliding,
                 player.isOnGround,
                 player.horizontalCollision,
                 player.verticalCollision,
@@ -135,7 +135,7 @@ class SimulatedPlayer(
                 player.fallDistance,
                 player.jumpingCooldown,
                 player.jumping,
-                player.isFallFlying,
+                player.isGliding,
                 player.isOnGround,
                 player.horizontalCollision,
                 player.verticalCollision,
@@ -172,7 +172,7 @@ class SimulatedPlayer(
             this.jumpingCooldown--
         }
 
-        this.isJumping = this.input.jumping
+        this.isJumping = this.input.playerInput.jump
 
         val d: Vec3d = this.velocity
 
@@ -227,7 +227,7 @@ class SimulatedPlayer(
         if (this.isSwimming && !this.player.hasVehicle()) {
             val g = this.getRotationVector().y
             val h = if (g < -0.2) 0.085 else 0.06
-            if (g <= 0.0 || this.input.jumping || !this.player.world
+            if (g <= 0.0 || this.input.playerInput.jump || !this.player.world
                 .getBlockState(BlockPos.ofFloored(this.pos.x, this.pos.y + 1.0 - 0.1, this.pos.z))
                 .fluidState.isEmpty
             ) {
@@ -257,7 +257,7 @@ class SimulatedPlayer(
             val e: Double = this.pos.y
             var f = if (isSprinting()) 0.9f else 0.8f // this.player.getBaseMovementSpeedMultiplier()
             var g = 0.02f
-            var h = this.getAttributeValue(EntityAttributes.GENERIC_WATER_MOVEMENT_EFFICIENCY).toFloat()
+            var h = this.getAttributeValue(EntityAttributes.WATER_MOVEMENT_EFFICIENCY).toFloat()
 
             if (!onGround) {
                 h *= 0.5f
@@ -908,16 +908,12 @@ class SimulatedPlayer(
             }
         }
 
-        override fun toString(): String {
-            return "SimulatedPlayerInput(forwards={${this.pressingForward}}, backwards={${this.pressingBack}}, left={${this.pressingLeft}}, right={${this.pressingRight}}, jumping={${this.jumping}}, sprinting=$sprinting, slowDown=$sneaking)"
-        }
-
         companion object {
             private const val MAX_WALKING_SPEED = 0.121
 
             fun fromClientPlayer(
                 directionalInput: DirectionalInput,
-                jumping: Boolean = player.input.jumping,
+                jumping: Boolean = player.input.playerInput.jump,
                 sprinting: Boolean = player.isSprinting,
                 sneaking: Boolean = player.isSneaking
             ): SimulatedPlayerInput {

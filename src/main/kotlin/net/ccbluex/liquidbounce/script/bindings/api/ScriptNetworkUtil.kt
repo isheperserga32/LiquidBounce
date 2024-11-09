@@ -19,25 +19,26 @@
 package net.ccbluex.liquidbounce.script.bindings.api
 
 import net.ccbluex.liquidbounce.utils.client.network
+import net.ccbluex.liquidbounce.utils.client.player
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 
 @Suppress("unused")
 object ScriptNetworkUtil {
 
     @JvmName("movePlayerGround")
-    fun movePlayerGround(onGround: Boolean) = network.sendPacket(PlayerMoveC2SPacket.OnGroundOnly(onGround))
+    fun movePlayerGround(onGround: Boolean) = network.sendPacket(PlayerMoveC2SPacket.OnGroundOnly(onGround, player.horizontalCollision))
 
     @JvmName("movePlayerPosition")
     fun movePlayerPosition(x: Double, y: Double, z: Double, onGround: Boolean) =
-        network.sendPacket(PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, onGround))
+        network.sendPacket(PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, onGround, player.horizontalCollision))
 
     @JvmName("movePlayerPositionAndLook")
     fun movePlayerPositionAndLook(x: Double, y: Double, z: Double, yaw: Float, pitch: Float, onGround: Boolean) =
-        network.sendPacket(PlayerMoveC2SPacket.Full(x, y, z, yaw, pitch, onGround))
+        network.sendPacket(PlayerMoveC2SPacket.Full(x, y, z, yaw, pitch, onGround, player.horizontalCollision))
 
     @JvmName("movePlayerLook")
     fun movePlayerLook(yaw: Float, pitch: Float, onGround: Boolean) =
-        network.sendPacket(PlayerMoveC2SPacket.LookAndOnGround(yaw, pitch, onGround))
+        network.sendPacket(PlayerMoveC2SPacket.LookAndOnGround(yaw, pitch, onGround, player.horizontalCollision))
 
     @JvmName("sendChatMessage")
     fun sendChatMessage(message: String) = network.sendChatMessage(message)

@@ -20,8 +20,9 @@
  */
 package net.ccbluex.liquidbounce.integration.theme.component.types.minimap
 
+import net.ccbluex.liquidbounce.render.engine.Color4b
 import net.ccbluex.liquidbounce.utils.block.ChunkScanner
-import net.ccbluex.liquidbounce.utils.client.mc
+import net.ccbluex.liquidbounce.utils.client.world
 import net.ccbluex.liquidbounce.utils.math.Vec2i
 import net.minecraft.block.BlockState
 import net.minecraft.block.MapColor.Brightness
@@ -82,14 +83,12 @@ object ChunkRenderer {
                 textureAtlasManager.editChunk(ChunkPos(posToUpdate)) { texture, atlasPosition ->
                     val (x, y) = atlasPosition.getPosOnAtlas(posToUpdate.x and 15, posToUpdate.z and 15)
 
-                    texture.image!!.setColor(x, y, color)
+                    texture.image!!.setColorArgb(x, y, color.toARGB())
                 }
             }
         }
 
-        private fun getColor(x: Int, z: Int): Int {
-            val world = mc.world!!
-
+        private fun getColor(x: Int, z: Int): Color4b {
             val height = heightmapManager.getHeight(x, z)
             val offsetsToCheck =
                 arrayOf(
@@ -127,18 +126,18 @@ object ChunkRenderer {
             val surfaceBlockState = world.getBlockState(surfaceBlockPos)
 
             if (surfaceBlockState.isAir) {
-                return Color(255, 207, 179).rgb
+                return Color4b(255, 207, 179)
             }
 
             val baseColor = surfaceBlockState.getMapColor(world, surfaceBlockPos).getRenderColor(Brightness.HIGH)
 
             val color = Color(baseColor)
 
-            return Color(
+            return Color4b(
                 (color.red * brightness).roundToInt(),
                 (color.green * brightness).roundToInt(),
                 (color.blue * brightness).roundToInt(),
-            ).rgb
+            )
         }
 
         override fun chunkUpdate(
@@ -164,7 +163,7 @@ object ChunkRenderer {
 
                         val color = getColor(offX or (x shl 4), offZ or (z shl 4))
 
-                        texture.image!!.setColor(texX, texY, color)
+                        texture.image!!.setColorArgb(texX, texY, color.toARGB())
                     }
                 }
             }
@@ -177,7 +176,7 @@ object ChunkRenderer {
 
                             val color = getColor(offX + otherPos.startX, offZ + otherPos.startZ)
 
-                            texture.image!!.setColor(texX, texY, color)
+                            texture.image!!.setColorArgb(texX, texY, color.toARGB())
                         }
                     }
                 }
