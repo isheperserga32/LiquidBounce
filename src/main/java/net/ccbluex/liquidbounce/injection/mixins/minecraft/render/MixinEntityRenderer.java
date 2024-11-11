@@ -20,14 +20,13 @@
 package net.ccbluex.liquidbounce.injection.mixins.minecraft.render;
 
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleCombineMobs;
-import net.ccbluex.liquidbounce.features.module.modules.render.ModuleMobOwners;
-import net.ccbluex.liquidbounce.features.module.modules.render.nametags.ModuleNametags;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.OrderedText;
@@ -43,7 +42,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EntityRenderer.class)
-public abstract class MixinEntityRenderer<T extends Entity> {
+public abstract class MixinEntityRenderer<T extends Entity, S extends EntityRenderState> {
 
     @Shadow
     @Final
@@ -60,13 +59,13 @@ public abstract class MixinEntityRenderer<T extends Entity> {
     }
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void renderMobOwners(T entity, float yaw, float tickDelta, MatrixStack matrices,
-                                 VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
-        var ownerName = ModuleMobOwners.INSTANCE.getOwnerInfoText(entity);
-
-        if (ownerName != null) {
-            renderLabel(entity, ownerName, matrices, vertexConsumers, light);
-        }
+    private void renderMobOwners(S state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
+        // todo: fix this, entity is not available here anymore
+//        var ownerName = ModuleMobOwners.INSTANCE.getOwnerInfoText(entity);
+//
+//        if (ownerName != null) {
+//            renderLabel(entity, ownerName, matrices, vertexConsumers, light);
+//        }
     }
 
     @Unique
@@ -98,11 +97,12 @@ public abstract class MixinEntityRenderer<T extends Entity> {
     }
 
     @Inject(method = "renderLabelIfPresent", at = @At("HEAD"), cancellable = true)
-    private void disableDuplicateNametagsAndInjectMobOwners(T entity, Text text, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, float tickDelta, CallbackInfo ci) {
+    private void disableDuplicateNametagsAndInjectMobOwners(S state, Text text, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
         // Don't render nametags
-        if (ModuleNametags.INSTANCE.getEnabled() && ModuleNametags.shouldRenderNametag(entity)) {
-            ci.cancel();
-        }
+        // todo: fix this, entity is not available here anymore
+//        if (ModuleNametags.INSTANCE.getEnabled() && ModuleNametags.shouldRenderNametag(entity)) {
+//            ci.cancel();
+//        }
     }
 
 }

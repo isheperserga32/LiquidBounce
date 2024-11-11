@@ -28,12 +28,9 @@ import net.ccbluex.liquidbounce.utils.aiming.RotationManager;
 import net.ccbluex.liquidbounce.utils.input.InputTracker;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.input.KeyboardInput;
-import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.util.math.MathHelper;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -42,10 +39,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(KeyboardInput.class)
 public class MixinKeyboardInput extends MixinInput {
-
-    @Shadow
-    @Final
-    private GameOptions settings;
 
     /**
      * Hook inventory move module
@@ -67,6 +60,7 @@ public class MixinKeyboardInput extends MixinInput {
     @Inject(method = "tick", at = @At(
             value = "FIELD",
             target = "Lnet/minecraft/client/input/KeyboardInput;playerInput:Lnet/minecraft/util/PlayerInput;",
+            ordinal = 0,
             shift = At.Shift.AFTER
     ), allow = 1)
     private void injectMovementInputEvent(CallbackInfo ci) {
