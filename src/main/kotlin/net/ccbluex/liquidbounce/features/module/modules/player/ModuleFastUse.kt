@@ -29,10 +29,9 @@ import net.ccbluex.liquidbounce.utils.client.MovePacketType
 import net.ccbluex.liquidbounce.utils.client.Timer
 import net.ccbluex.liquidbounce.utils.entity.moving
 import net.ccbluex.liquidbounce.utils.item.isConsumable
-import net.ccbluex.liquidbounce.utils.item.isFood
 import net.ccbluex.liquidbounce.utils.kotlin.EventPriorityConvention
 import net.ccbluex.liquidbounce.utils.kotlin.Priority
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 
@@ -88,7 +87,7 @@ object ModuleFastUse : Module("FastUse", Category.PLAYER) {
     @Suppress("unused")
     val movementInputHandler = handler<MovementInputEvent>(priority = EventPriorityConvention.FIRST_PRIORITY) { event ->
         if (mc.options.useKey.isPressed && stopInput) {
-            event.directionalInput = DirectionalInput.NONE
+            event.input = PlayerInput()
         }
     }
 

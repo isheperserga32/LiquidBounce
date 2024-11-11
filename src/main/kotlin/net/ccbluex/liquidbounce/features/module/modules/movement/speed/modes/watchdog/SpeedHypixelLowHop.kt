@@ -30,6 +30,7 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.speed.ModuleSpe
 import net.ccbluex.liquidbounce.utils.entity.moving
 import net.ccbluex.liquidbounce.utils.entity.sqrtSpeed
 import net.ccbluex.liquidbounce.utils.entity.strafe
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.entity.effect.StatusEffects
 
 /**
@@ -93,7 +94,7 @@ class SpeedHypixelLowHop(override val parent: ChoiceConfigurable<*>) : Choice("H
         player.strafe(speed = player.sqrtSpeed.coerceAtLeast(atLeast))
     }
 
-    val moveHandler = handler<MovementInputEvent> {
+    val moveHandler = handler<MovementInputEvent> { event ->
         if (!player.isOnGround || !player.moving) {
             return@handler
         }
@@ -102,7 +103,7 @@ class SpeedHypixelLowHop(override val parent: ChoiceConfigurable<*>) : Choice("H
             return@handler
         }
 
-        it.jumping = true
+        event.input = event.input.copy(jump = true)
     }
 
     override fun disable() {

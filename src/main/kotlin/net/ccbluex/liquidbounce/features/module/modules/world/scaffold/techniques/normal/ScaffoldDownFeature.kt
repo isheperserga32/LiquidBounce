@@ -25,19 +25,24 @@ import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.modules.world.scaffold.techniques.ScaffoldNormalTechnique
 import net.ccbluex.liquidbounce.utils.block.canStandOn
 import net.ccbluex.liquidbounce.utils.kotlin.EventPriorityConvention
+import net.ccbluex.liquidbounce.utils.movement.copy
 
 object ScaffoldDownFeature : ToggleableConfigurable(ScaffoldNormalTechnique, "Down", false) {
 
-    val handleMoveInput = handler<MovementInputEvent>(priority = EventPriorityConvention.OBJECTION_AGAINST_EVERYTHING) {
+    val handleMoveInput = handler<MovementInputEvent>(
+        priority = EventPriorityConvention.OBJECTION_AGAINST_EVERYTHING
+    ) { event ->
         if (shouldFallOffBlock()) {
-            it.sneaking = false
+            event.input = event.input.copy(sneak = false)
         }
     }
 
     @Suppress("unused")
-    val handleSafeWalk = handler<PlayerSafeWalkEvent>(priority = EventPriorityConvention.OBJECTION_AGAINST_EVERYTHING) {
+    val handleSafeWalk = handler<PlayerSafeWalkEvent>(
+        priority = EventPriorityConvention.OBJECTION_AGAINST_EVERYTHING
+    ) { event ->
         if (shouldFallOffBlock()) {
-            it.isSafeWalk = false
+            event.isSafeWalk = false
         }
     }
 

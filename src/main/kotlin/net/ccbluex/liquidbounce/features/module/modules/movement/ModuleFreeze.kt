@@ -20,7 +20,10 @@ package net.ccbluex.liquidbounce.features.module.modules.movement
 
 import net.ccbluex.liquidbounce.config.Choice
 import net.ccbluex.liquidbounce.config.ChoiceConfigurable
-import net.ccbluex.liquidbounce.event.events.*
+import net.ccbluex.liquidbounce.event.events.PacketEvent
+import net.ccbluex.liquidbounce.event.events.PlayerTickEvent
+import net.ccbluex.liquidbounce.event.events.TransferOrigin
+import net.ccbluex.liquidbounce.event.events.WorldRenderEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.fakelag.FakeLag.LagResult
 import net.ccbluex.liquidbounce.features.module.Category
@@ -33,7 +36,8 @@ import net.ccbluex.liquidbounce.utils.entity.SimulatedPlayer
 import net.ccbluex.liquidbounce.utils.entity.SimulatedPlayerCache
 import net.ccbluex.liquidbounce.utils.input.InputTracker.isPressedOnAny
 import net.ccbluex.liquidbounce.utils.math.toVec3
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket
 
@@ -93,19 +97,22 @@ object ModuleFreeze : Module("Freeze", Category.MOVEMENT) {
 
         // Create a simulated player from the client player, as we cannot use the player simulation cache
         // since we are going to modify the player's yaw and pitch
-        val directionalInput = DirectionalInput(
-            mc.options.forwardKey.isPressedOnAny,
-            mc.options.backKey.isPressedOnAny,
-            mc.options.leftKey.isPressedOnAny,
-            mc.options.rightKey.isPressedOnAny
+        val directionalInput = PlayerInput(
+            forward = mc.options.forwardKey.isPressedOnAny,
+            backward = mc.options.backKey.isPressedOnAny,
+            left = mc.options.leftKey.isPressedOnAny,
+            right = mc.options.rightKey.isPressedOnAny,
+            jump = mc.options.jumpKey.isPressedOnAny,
+            sneak = mc.options.sneakKey.isPressedOnAny
         )
 
         val simulatedPlayer = SimulatedPlayer.fromClientPlayer(
             SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(
-                directionalInput,
-                mc.options.jumpKey.isPressedOnAny,
-                mc.options.sprintKey.isPressedOnAny || player.isSprinting,
-                mc.options.sneakKey.isPressedOnAny
+                directionalInput.copy(
+                    jump = mc.options.jumpKey.isPressedOnAny,
+                    sneak = mc.options.sneakKey.isPressedOnAny,
+                    sprint = mc.options.sprintKey.isPressedOnAny || player.isSprinting
+                )
             )
         )
 

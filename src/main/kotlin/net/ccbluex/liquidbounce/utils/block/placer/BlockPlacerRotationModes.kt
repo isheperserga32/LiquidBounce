@@ -118,7 +118,7 @@ class NoRotationMode(configurable: ChoiceConfigurable<BlockPlacerRotationMode>, 
             if (send) {
                 val rotation = placementTarget.rotation.fixedSensitivity()
                 network.connection!!.send(
-                    PlayerMoveC2SPacket.LookAndOnGround(rotation.yaw, rotation.pitch, player.isOnGround),
+                    PlayerMoveC2SPacket.LookAndOnGround(rotation.yaw, rotation.pitch, player.isOnGround, player.horizontalCollision),
                     null
                 )
             }

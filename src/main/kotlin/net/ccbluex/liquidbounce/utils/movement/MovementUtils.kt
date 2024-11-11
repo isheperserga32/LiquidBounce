@@ -35,42 +35,15 @@ import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Vec3d
 import kotlin.math.atan2
 
-data class DirectionalInput(
-    val forwards: Boolean,
-    val backwards: Boolean,
-    val left: Boolean,
-    val right: Boolean,
-) {
-    constructor(input: PlayerInput) : this(input.forward, input.backward, input.left, input.right)
-
-    override fun equals(other: Any?): Boolean {
-        return other is DirectionalInput &&
-                forwards == other.forwards &&
-                backwards == other.backwards &&
-                left == other.left &&
-                right == other.right
-    }
-
-    override fun hashCode(): Int {
-        var result = forwards.hashCode()
-        result = 31 * result + backwards.hashCode()
-        result = 31 * result + left.hashCode()
-        result = 31 * result + right.hashCode()
-        return result
-    }
-
-    fun isMoving(): Boolean {
-        return forwards || backwards || left || right
-    }
-
-    companion object {
-        val NONE = DirectionalInput(forwards = false, backwards = false, left = false, right = false)
-        val FORWARDS = DirectionalInput(forwards = true, backwards = false, left = false, right = false)
-        val BACKWARDS = DirectionalInput(forwards = false, backwards = true, left = false, right = false)
-        val LEFT = DirectionalInput(forwards = false, backwards = false, left = true, right = false)
-        val RIGHT = DirectionalInput(forwards = false, backwards = false, left = false, right = true)
-    }
-}
+fun PlayerInput(
+    forward: Boolean = false,
+    backward: Boolean = false,
+    left: Boolean = false,
+    right: Boolean = false,
+    jump: Boolean = false,
+    sneak: Boolean = false,
+    sprint: Boolean = false,
+) = PlayerInput(forward, backward, left, right, jump, sneak, sprint)
 
 fun PlayerInput.copy(
     forward: Boolean = this.forward,
@@ -81,6 +54,12 @@ fun PlayerInput.copy(
     sneak: Boolean = this.sneak,
     sprint: Boolean = this.sprint,
 ) = PlayerInput(forward, backward, left, right, jump, sneak, sprint)
+
+val PlayerInput.noInput: Boolean
+    get() = !forward && !backward && !left && !right && !jump && !sneak && !sprint
+
+val PlayerInput.hasNoMovement: Boolean
+    get() = !forward && !backward && !left && !right
 
 /**
  * Returns the yaw difference the position is from the player position
@@ -99,14 +78,14 @@ fun getDegreesRelativeToView(
 }
 
 fun getDirectionalInputForDegrees(
-    directionalInput: DirectionalInput,
+    playerInput: PlayerInput,
     dgs: Float,
     deadAngle: Float = 20.0F,
-): DirectionalInput {
-    var forwards = directionalInput.forwards
-    var backwards = directionalInput.backwards
-    var left = directionalInput.left
-    var right = directionalInput.right
+): PlayerInput {
+    var forwards = playerInput.forward
+    var backwards = playerInput.backward
+    var left = playerInput.left
+    var right = playerInput.right
 
     if (dgs in -90.0F + deadAngle..90.0F - deadAngle) {
         forwards = true
@@ -120,7 +99,7 @@ fun getDirectionalInputForDegrees(
         left = true
     }
 
-    return DirectionalInput(forwards, backwards, left, right)
+    return playerInput.copy(forward = forwards, backward = backwards, left = left, right = right)
 }
 
 fun findEdgeCollision(

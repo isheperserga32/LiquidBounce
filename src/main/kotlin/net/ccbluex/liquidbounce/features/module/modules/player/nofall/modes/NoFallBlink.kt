@@ -31,7 +31,7 @@ import net.ccbluex.liquidbounce.features.module.modules.render.ModuleDebug
 import net.ccbluex.liquidbounce.render.engine.Color4b
 import net.ccbluex.liquidbounce.utils.client.notification
 import net.ccbluex.liquidbounce.utils.entity.SimulatedPlayer
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 
 /**
@@ -88,12 +88,7 @@ internal object NoFallBlink : Choice("Blink") {
 
         // Check if we fall off in the next 2 ticks
         val simulatedPlayer = SimulatedPlayer.fromClientPlayer(
-            SimulatedPlayer.SimulatedPlayerInput(
-                event.directionalInput,
-                event.jumping,
-                player.isSprinting,
-                true
-            ))
+            SimulatedPlayer.SimulatedPlayerInput(event.input))
 
         repeat(PEEK_TICKS) {
             simulatedPlayer.tick()
@@ -106,12 +101,7 @@ internal object NoFallBlink : Choice("Blink") {
         simulatedPlayer.tick()
 
         // Continue with clean input
-        simulatedPlayer.input = SimulatedPlayer.SimulatedPlayerInput(
-            DirectionalInput.NONE,
-            jumping = false,
-            sprinting = false,
-            sneaking = false
-        )
+        simulatedPlayer.input = SimulatedPlayer.SimulatedPlayerInput(PlayerInput())
 
         // Check if we collect fall distance above 2f in the next 10 ticks
         for (i in 0..MAXIMUM_TICKS) {

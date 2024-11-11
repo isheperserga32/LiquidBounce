@@ -25,8 +25,9 @@ import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.modules.world.scaffold.techniques.ScaffoldNormalTechnique
 import net.ccbluex.liquidbounce.utils.entity.isCloseToEdge
 import net.ccbluex.liquidbounce.utils.kotlin.EventPriorityConvention
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket
+import net.minecraft.util.PlayerInput
 
 object ScaffoldEagleFeature : ToggleableConfigurable(ScaffoldNormalTechnique, "Eagle", false) {
 
@@ -38,13 +39,13 @@ object ScaffoldEagleFeature : ToggleableConfigurable(ScaffoldNormalTechnique, "E
     private var placedBlocks = 0
 
     val stateUpdateHandler =
-        handler<MovementInputEvent>(priority = EventPriorityConvention.SAFETY_FEATURE) {
-            if (mode == EagleMode.INPUT && shouldEagle(it.directionalInput)) {
-                it.sneaking = true
+        handler<MovementInputEvent>(priority = EventPriorityConvention.SAFETY_FEATURE) { event ->
+            if (mode == EagleMode.INPUT && shouldEagle(event.input)) {
+                event.input = event.input.copy(sneak = true)
             }
         }
 
-    fun shouldEagle(input: DirectionalInput): Boolean {
+    fun shouldEagle(input: PlayerInput): Boolean {
         if (ScaffoldDownFeature.shouldFallOffBlock()) {
             return false
         }

@@ -27,15 +27,16 @@ import net.ccbluex.liquidbounce.utils.entity.eyes
 import net.ccbluex.liquidbounce.utils.entity.getMovementDirectionOfInput
 import net.ccbluex.liquidbounce.utils.math.geometry.Line
 import net.ccbluex.liquidbounce.utils.math.plus
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
 import net.ccbluex.liquidbounce.utils.movement.getDegreesRelativeToView
 import net.ccbluex.liquidbounce.utils.movement.getDirectionalInputForDegrees
+import net.minecraft.util.PlayerInput
 import net.minecraft.util.math.Vec3d
 import kotlin.math.cos
 import kotlin.math.sin
 
 data class DodgePlan(
-    val directionalInput: DirectionalInput,
+    val playerInput: PlayerInput,
     /**
      * Should the player jump at the next possible time?
      */
@@ -87,7 +88,7 @@ class DodgePlanner(
 
         val dodgePlanWithoutRotationChange =
             DodgePlan(
-                directionalInput = inputForEvasionWithCurrentRotation,
+                playerInput = inputForEvasionWithCurrentRotation,
                 shouldJump = false,
                 yawChange = null,
                 useTimer = false,
@@ -106,7 +107,7 @@ class DodgePlanner(
     private fun escalateIfNeeded(dodgePlanWithoutRotationChange: DodgePlan): DodgePlan? {
         // Check if the time is sufficient to dodge and apply another fix that will do the evasion.
 
-        val actualAngle = getMovementDirectionOfInput(player.yaw, dodgePlanWithoutRotationChange.directionalInput)
+        val actualAngle = getMovementDirectionOfInput(player.yaw, dodgePlanWithoutRotationChange.playerInput)
 
         val effectivenessLossByAngle = getEffectiveLossByInoptimalAngle(actualAngle)
         val distanceToTravel = optimalDodgePosRelativeToPlayer.length() - (SAFE_DISTANCE_WITH_PADDING - SAFE_DISTANCE)
@@ -153,7 +154,7 @@ class DodgePlanner(
             ).fixedSensitivity()
 
         return DodgePlan(
-            directionalInput = DirectionalInput.FORWARDS,
+            playerInput = PlayerInput(forward = true),
             shouldJump = shouldJumpIfPossible && isJumpEffective,
             yawChange = rotation.yaw,
             useTimer = useTimer,
@@ -192,10 +193,10 @@ class DodgePlanner(
     }
 }
 
-private fun getDodgeMovementWithoutAngleChange(positionRelativeToPlayer: Vec3d): DirectionalInput {
+private fun getDodgeMovementWithoutAngleChange(positionRelativeToPlayer: Vec3d): PlayerInput {
     val dgs = getDegreesRelativeToView(positionRelativeToPlayer)
 
-    return getDirectionalInputForDegrees(DirectionalInput.NONE, dgs, deadAngle = 20.0F)
+    return getDirectionalInputForDegrees(PlayerInput(), dgs, deadAngle = 20.0F)
 }
 
 fun findOptimalDodgePosition(baseLine: Line): Vec3d {

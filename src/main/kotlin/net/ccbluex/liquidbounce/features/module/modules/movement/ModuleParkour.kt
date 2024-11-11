@@ -23,6 +23,7 @@ import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.utils.entity.moving
+import net.ccbluex.liquidbounce.utils.movement.copy
 
 /**
  * Parkour module
@@ -42,7 +43,7 @@ object ModuleParkour : Module("Parkour", Category.MOVEMENT) {
         val movementInput = event.movementEvent
 
         if (shouldJump) {
-            movementInput.jumping = true
+            movementInput.input = movementInput.input.copy(jump = true)
         }
     }
 

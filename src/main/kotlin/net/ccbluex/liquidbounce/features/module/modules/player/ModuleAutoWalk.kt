@@ -22,6 +22,7 @@ import net.ccbluex.liquidbounce.event.events.MovementInputEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
+import net.ccbluex.liquidbounce.utils.movement.copy
 
 /**
  * AutoWalk module
@@ -32,7 +33,7 @@ object ModuleAutoWalk : Module("AutoWalk", Category.PLAYER) {
 
     @Suppress("unused")
     val moveInputHandler = handler<MovementInputEvent>(priority = 1000) {
-        it.directionalInput = it.directionalInput.copy(forwards = true)
+        it.input = it.input.copy(forward = true)
     }
 
 }

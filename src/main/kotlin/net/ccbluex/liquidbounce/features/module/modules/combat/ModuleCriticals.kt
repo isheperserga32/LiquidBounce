@@ -41,7 +41,7 @@ import net.ccbluex.liquidbounce.utils.combat.findEnemies
 import net.ccbluex.liquidbounce.utils.entity.FallingPlayer
 import net.ccbluex.liquidbounce.utils.entity.SimulatedPlayer
 import net.ccbluex.liquidbounce.utils.entity.box
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.block.CobwebBlock
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
@@ -212,7 +212,7 @@ object ModuleCriticals : Module("Criticals", Category.COMBAT) {
          */
         var adjustNextJump = false
 
-        val movementInputEvent = handler<MovementInputEvent> {
+        val movementInputEvent = handler<MovementInputEvent> { event ->
             if (!isActive()) {
                 return@handler
             }
@@ -231,7 +231,7 @@ object ModuleCriticals : Module("Criticals", Category.COMBAT) {
             // Change the jump motion only if the jump is a normal jump (small jumps, i.e. honey blocks
             // are not affected) and currently.
             if (enemies.isNotEmpty() && player.isOnGround) {
-                it.jumping = true
+                event.input = event.input.copy(jump = true)
                 adjustNextJump = true
             }
         }
@@ -350,12 +350,12 @@ object ModuleCriticals : Module("Criticals", Category.COMBAT) {
      * This function simulates a chase between the player and the target. The target continues its motion, the player
      * too but changes their rotation to the target after some reaction time.
      */
-    fun predictPlayerPos(target: PlayerEntity, ticks: Int): Pair<Vec3d, Vec3d> {
+    private fun predictPlayerPos(target: PlayerEntity, ticks: Int): Pair<Vec3d, Vec3d> {
         // Ticks until the player
         val reactionTime = 10
 
         val simulatedPlayer = SimulatedPlayer.fromClientPlayer(
-            SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(DirectionalInput(player.input.playerInput))
+            SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(player.input.playerInput)
         )
         val simulatedTarget = SimulatedPlayer.fromOtherPlayer(
             target,

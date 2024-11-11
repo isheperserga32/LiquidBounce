@@ -28,6 +28,7 @@ import net.ccbluex.liquidbounce.utils.entity.downwards
 import net.ccbluex.liquidbounce.utils.entity.moving
 import net.ccbluex.liquidbounce.utils.entity.strafe
 import net.ccbluex.liquidbounce.utils.entity.upwards
+import net.ccbluex.liquidbounce.utils.movement.copy
 
 class SpeedSpeedYPort(override val parent: ChoiceConfigurable<*>) : Choice("YPort") {
 
@@ -47,7 +48,7 @@ class SpeedLegitHop(override val parent: ChoiceConfigurable<*>) : SpeedBHopBase(
 open class SpeedBHopBase(name: String, override val parent: ChoiceConfigurable<*>) : Choice(name) {
 
     @Suppress("unused")
-    val handleMovementInput = handler<MovementInputEvent> {
+    val handleMovementInput = handler<MovementInputEvent> { event ->
         if (!player.isOnGround || !player.moving) {
             return@handler
         }
@@ -56,7 +57,7 @@ open class SpeedBHopBase(name: String, override val parent: ChoiceConfigurable<*
         if (!mc.options.jumpKey.isPressed && ModuleSpeed.shouldDelayJump())
             return@handler
 
-        it.jumping = true
+        event.input = event.input.copy(jump = true)
     }
 
 }

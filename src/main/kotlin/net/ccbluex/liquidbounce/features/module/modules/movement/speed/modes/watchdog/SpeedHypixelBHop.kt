@@ -33,6 +33,7 @@ import net.ccbluex.liquidbounce.utils.entity.moving
 import net.ccbluex.liquidbounce.utils.entity.sqrtSpeed
 import net.ccbluex.liquidbounce.utils.entity.strafe
 import net.ccbluex.liquidbounce.utils.kotlin.EventPriorityConvention
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket
@@ -105,15 +106,16 @@ class SpeedHypixelBHop(override val parent: ChoiceConfigurable<*>) : Choice("Hyp
         player.strafe(speed = player.sqrtSpeed.coerceAtLeast(atLeast))
     }
 
-    val moveHandler = handler<MovementInputEvent> {
+    val moveHandler = handler<MovementInputEvent> { event ->
         if (!player.isOnGround || !player.moving) {
             return@handler
         }
 
-        if (ModuleSpeed.shouldDelayJump())
+        if (ModuleSpeed.shouldDelayJump()) {
             return@handler
+        }
 
-        it.jumping = true
+        event.input = event.input.copy(jump = true)
     }
 
     /**

@@ -20,15 +20,15 @@
 
 package net.ccbluex.liquidbounce.features.module.modules.render
 
-import net.ccbluex.liquidbounce.config.ToggleableConfigurable
 import net.ccbluex.liquidbounce.event.events.MovementInputEvent
-import net.ccbluex.liquidbounce.event.events.PlayerPostTickEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
-import net.ccbluex.liquidbounce.utils.entity.*
+import net.ccbluex.liquidbounce.utils.entity.eyes
+import net.ccbluex.liquidbounce.utils.entity.getMovementDirectionOfInput
+import net.ccbluex.liquidbounce.utils.entity.strafe
 import net.ccbluex.liquidbounce.utils.math.plus
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
 import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.util.math.Direction
@@ -92,20 +92,18 @@ object ModuleFreeCam : Module("FreeCam", Category.RENDER, disableOnQuit = true) 
     val inputHandler = handler<MovementInputEvent> { event ->
         val speed = this.speed.toDouble()
         val yAxisMovement = when {
-            event.jumping -> 1.0f
-            event.sneaking -> -1.0f
+            mc.options.jumpKey.isPressed -> 1.0f
+            mc.options.sneakKey.isPressed -> -1.0f
             else -> 0.0f
         }
-        val directionYaw = getMovementDirectionOfInput(player.yaw, event.directionalInput)
+        val directionYaw = getMovementDirectionOfInput(player.yaw, event.input)
 
         val velocity = Vec3d.of(Vec3i.ZERO)
             .apply { strafe(directionYaw, speed, keyboardCheck = true) }
             .withAxis(Direction.Axis.Y, yAxisMovement * speed)
         updatePosition(velocity)
 
-        event.directionalInput = DirectionalInput.NONE
-        event.jumping = false
-        event.sneaking = false
+        event.input = PlayerInput()
     }
 
     fun applyCameraPosition(entity: Entity, tickDelta: Float) {

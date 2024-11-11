@@ -29,6 +29,7 @@ import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.event.repeatable
 import net.ccbluex.liquidbounce.features.module.modules.movement.fly.ModuleFly
 import net.ccbluex.liquidbounce.utils.entity.strafe
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 
 /**
@@ -59,8 +60,8 @@ internal object FlySentinel10thMar : Choice("Sentinel10thMar") {
         waitTicks(ticks)
     }
 
-    val moveHandler = handler<MovementInputEvent> {
-        it.jumping = false
+    val moveHandler = handler<MovementInputEvent> { event ->
+        event.input = event.input.copy(jump = false)
     }
 
     val packetHandler = handler<PacketEvent> { event ->

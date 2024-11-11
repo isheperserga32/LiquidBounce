@@ -34,7 +34,8 @@ import net.ccbluex.liquidbounce.utils.entity.rotation
 import net.ccbluex.liquidbounce.utils.kotlin.random
 import net.ccbluex.liquidbounce.utils.math.minus
 import net.ccbluex.liquidbounce.utils.math.times
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.entity.Entity
 import kotlin.math.abs
 
@@ -65,24 +66,20 @@ object FightBot : ToggleableConfigurable(ModuleKillAura, "FightBot", false) {
 
         if (clickScheduler.isClickOnNextTick()) {
             if (distance < ModuleKillAura.range) {
-                ev.directionalInput = DirectionalInput.NONE
+                ev.input = PlayerInput()
                 sideToGo = !sideToGo
             } else {
-                ev.directionalInput = DirectionalInput.FORWARDS
+                ev.input = PlayerInput(forward = true)
             }
         } else if (distance < safeRange) {
-            ev.directionalInput = DirectionalInput.BACKWARDS
+            ev.input = PlayerInput(backward = true)
         } else {
-            ev.directionalInput = DirectionalInput.NONE
+            ev.input = PlayerInput()
         }
 
-        // We are now in range of the player, so try to circle around him
-        ev.directionalInput = ev.directionalInput.copy(left = !sideToGo, right = sideToGo)
-
-        // Jump if we are stuck
-        if (player.horizontalCollision) {
-            ev.jumping = true
-        }
+        // We are now in range of the player,
+        // so try to circle around him
+        ev.input = ev.input.copy(left = !sideToGo, right = sideToGo, jump = player.horizontalCollision)
     }
 
     private val maximumDriftRandom = (10f..30f).random()

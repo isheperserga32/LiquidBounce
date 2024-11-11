@@ -69,7 +69,8 @@ import net.ccbluex.liquidbounce.utils.kotlin.component2
 import net.ccbluex.liquidbounce.utils.math.geometry.Line
 import net.ccbluex.liquidbounce.utils.math.minus
 import net.ccbluex.liquidbounce.utils.math.toVec3d
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.copy
+import net.ccbluex.liquidbounce.utils.movement.hasNoMovement
 import net.ccbluex.liquidbounce.utils.render.placement.PlacementRenderer
 import net.ccbluex.liquidbounce.utils.sorting.ComparatorChain
 import net.minecraft.entity.EntityPose
@@ -287,7 +288,7 @@ object ModuleScaffold : Module("Scaffold", Category.WORLD) {
     private fun updateRenderCount(count: Int? = null) = EventManager.callEvent(BlockCountChangeEvent(count))
 
     @Suppress("unused")
-    val rotationUpdateHandler = handler<SimulatedTickEvent> {
+    val rotationUpdateHandler = handler<SimulatedTickEvent> { event ->
         NoFallBlink.waitUntilGround = true
 
         val blockInHotbar = findBestValidHotbarSlotForTarget()
@@ -303,7 +304,7 @@ object ModuleScaffold : Module("Scaffold", Category.WORLD) {
         val predictedPos = ScaffoldMovementPrediction.getPredictedPlacementPos(optimalLine) ?: player.pos
         // Check if the player is probably going to sneak at the predicted position
         val predictedPose =
-            if (ScaffoldEagleFeature.enabled && ScaffoldEagleFeature.shouldEagle(DirectionalInput(player.input))) {
+            if (ScaffoldEagleFeature.enabled && ScaffoldEagleFeature.shouldEagle(player.input.playerInput)) {
                 EntityPose.CROUCHING
             } else {
                 EntityPose.STANDING
@@ -349,18 +350,18 @@ object ModuleScaffold : Module("Scaffold", Category.WORLD) {
             if (ledge) {
                 val ledgeRotation = rotation ?: RotationManager.currentRotation ?: player.rotation
                 val (requiresJump, requiresSneak) = ledge(
-                    it.simulatedPlayer,
+                    event.simulatedPlayer,
                     target,
                     ledgeRotation,
                     technique as? ScaffoldLedgeExtension
                 )
 
                 if (requiresJump) {
-                    it.movementEvent.jumping = true
+                    event.movementEvent.input = event.movementEvent.input.copy(jump = true)
                 }
 
                 if (requiresSneak > 0) {
-                    it.movementEvent.sneaking = true
+                    event.movementEvent.input = event.movementEvent.input.copy(sneak = true)
                     forceSneak = requiresSneak
                 }
             }
@@ -381,13 +382,13 @@ object ModuleScaffold : Module("Scaffold", Category.WORLD) {
     private val handleMovementInput = handler<MovementInputEvent> { event ->
         this.currentOptimalLine = null
 
-        val currentInput = event.directionalInput
+        val currentInput = event.input
 
-        if (currentInput == DirectionalInput.NONE) {
+        if (currentInput.hasNoMovement) {
             return@handler
         }
 
-        this.currentOptimalLine = ScaffoldMovementPlanner.getOptimalMovementLine(event.directionalInput)
+        this.currentOptimalLine = ScaffoldMovementPlanner.getOptimalMovementLine(event.input)
     }
 
     @Suppress("unused")

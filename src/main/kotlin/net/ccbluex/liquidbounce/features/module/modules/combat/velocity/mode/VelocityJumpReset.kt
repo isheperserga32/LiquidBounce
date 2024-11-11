@@ -21,10 +21,11 @@ package net.ccbluex.liquidbounce.features.module.modules.combat.velocity.mode
 import net.ccbluex.liquidbounce.config.Choice
 import net.ccbluex.liquidbounce.config.ChoiceConfigurable
 import net.ccbluex.liquidbounce.config.ToggleableConfigurable
-import net.ccbluex.liquidbounce.event.*
-import net.ccbluex.liquidbounce.event.events.*
+import net.ccbluex.liquidbounce.event.events.MovementInputEvent
+import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.modules.combat.velocity.ModuleVelocity
 import net.ccbluex.liquidbounce.features.module.modules.combat.velocity.ModuleVelocity.modes
+import net.ccbluex.liquidbounce.utils.movement.copy
 
 /**
  * Jump Reset mode. A technique most players use to minimize the amount of knockback they get.
@@ -50,14 +51,14 @@ internal object VelocityJumpReset : Choice("JumpReset") {
     var limitUntilJump = 0
 
     @Suppress("unused")
-    private val tickJumpHandler = handler<MovementInputEvent> {
+    private val tickJumpHandler = handler<MovementInputEvent> { event ->
         // To be able to alter velocity when receiving knockback, player must be sprinting.
         if (player.hurtTime != 9 || !player.isOnGround || !player.isSprinting || !isCooldownOver()) {
             updateLimit()
             return@handler
         }
 
-        it.jumping = true
+        event.input = event.input.copy(jump = true)
         limitUntilJump = 0
     }
 

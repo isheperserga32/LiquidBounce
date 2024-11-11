@@ -29,7 +29,7 @@ import net.ccbluex.liquidbounce.utils.client.player
 import net.ccbluex.liquidbounce.utils.client.toRadians
 import net.ccbluex.liquidbounce.utils.math.minus
 import net.ccbluex.liquidbounce.utils.math.plus
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.ccbluex.liquidbounce.utils.movement.findEdgeCollision
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.entity.Entity
@@ -46,6 +46,7 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 import net.minecraft.network.packet.c2s.play.VehicleMoveC2SPacket
 import net.minecraft.scoreboard.ScoreboardDisplaySlot
 import net.minecraft.stat.Stats
+import net.minecraft.util.PlayerInput
 import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.*
 import net.minecraft.util.shape.VoxelShapes
@@ -70,16 +71,18 @@ fun ClientPlayerEntity.wouldBeCloseToFallOff(position: Vec3d): Boolean {
 }
 
 fun ClientPlayerEntity.isCloseToEdge(
-    directionalInput: DirectionalInput,
+    playerInput: PlayerInput,
     distance: Double = 0.1,
     pos: Vec3d = this.pos
 ): Boolean {
-    val alpha = (getMovementDirectionOfInput(this.yaw, directionalInput) + 90.0F).toRadians()
+    val alpha = (getMovementDirectionOfInput(this.yaw, playerInput) + 90.0F).toRadians()
 
-    val simulatedInput = SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(directionalInput)
-
-    simulatedInput.jumping = false
-    simulatedInput.sneaking = false
+    val simulatedInput = SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(
+        playerInput.copy(
+            jump = false,
+            sneak = false
+        )
+    )
 
     val simulatedPlayer = SimulatedPlayer.fromClientPlayer(
         simulatedInput
@@ -110,7 +113,7 @@ fun ClientPlayerEntity.isCloseToEdge(
 }
 
 val ClientPlayerEntity.pressingMovementButton
-    get() = input.pressingForward || input.pressingBack || input.pressingLeft || input.pressingRight
+    get() = input.playerInput.forward || input.playerInput.backward || input.playerInput.left || input.playerInput.right
 
 val Entity.exactPosition
     get() = Vec3d(x, y, z)
@@ -119,20 +122,20 @@ val PlayerEntity.ping: Int
     get() = mc.networkHandler?.getPlayerListEntry(uuid)?.latency ?: 0
 
 val ClientPlayerEntity.directionYaw: Float
-    get() = getMovementDirectionOfInput(this.yaw, DirectionalInput(this.input.playerInput))
+    get() = getMovementDirectionOfInput(this.yaw, this.input.playerInput)
 
 val ClientPlayerEntity.isBlockAction: Boolean
     get() = player.isUsingItem && player.activeItem.useAction == UseAction.BLOCK
 
-fun getMovementDirectionOfInput(facingYaw: Float, input: DirectionalInput): Float {
+fun getMovementDirectionOfInput(facingYaw: Float, input: PlayerInput): Float {
     var actualYaw = facingYaw
     var forward = 1f
 
     // Check if client-user tries to walk backwards (+180 to turn around)
-    if (input.backwards) {
+    if (input.backward) {
         actualYaw += 180f
         forward = -0.5f
-    } else if (input.forwards) {
+    } else if (input.forward) {
         forward = 0.5f
     }
 
@@ -555,9 +558,9 @@ fun ClientPlayerEntity.warp(pos: Vec3d? = null, onGround: Boolean = false) {
     }
 
     if (pos != null) {
-        network.sendPacket(PlayerMoveC2SPacket.PositionAndOnGround(pos.x, pos.y, pos.z, onGround))
+        network.sendPacket(PlayerMoveC2SPacket.PositionAndOnGround(pos.x, pos.y, pos.z, onGround, horizontalCollision))
     } else {
-        network.sendPacket(PlayerMoveC2SPacket.OnGroundOnly(onGround))
+        network.sendPacket(PlayerMoveC2SPacket.OnGroundOnly(onGround, horizontalCollision))
     }
 }
 

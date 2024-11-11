@@ -353,10 +353,7 @@ object RotationManager : Listenable {
      * to the server.
      */
     val tickHandler = handler<MovementInputEvent>(priority = EventPriorityConvention.READ_FINAL_STATE) { event ->
-        val input = SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(event.directionalInput)
-
-        input.sneaking = event.sneaking
-        input.jumping = event.jumping
+        val input = SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(event.input)
 
         val simulatedPlayer = SimulatedPlayer.fromClientPlayer(input)
         simulatedPlayer.tick()
@@ -396,7 +393,7 @@ object RotationManager : Listenable {
 
                 Rotation(packet.yaw, packet.pitch)
             }
-            is PlayerPositionLookS2CPacket -> Rotation(packet.yaw, packet.pitch)
+            is PlayerPositionLookS2CPacket -> Rotation(packet.change.yaw, packet.change.pitch)
             is PlayerInteractItemC2SPacket -> Rotation(packet.yaw, packet.pitch)
             else -> return@handler
         }

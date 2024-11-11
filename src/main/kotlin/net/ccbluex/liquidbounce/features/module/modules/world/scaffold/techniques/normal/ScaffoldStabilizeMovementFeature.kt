@@ -24,7 +24,8 @@ import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.modules.world.scaffold.ModuleScaffold
 import net.ccbluex.liquidbounce.features.module.modules.world.scaffold.techniques.ScaffoldNormalTechnique
 import net.ccbluex.liquidbounce.utils.kotlin.EventPriorityConvention
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.ccbluex.liquidbounce.utils.movement.getDegreesRelativeToView
 import net.ccbluex.liquidbounce.utils.movement.getDirectionalInputForDegrees
 import net.minecraft.util.math.Vec3d
@@ -37,12 +38,12 @@ object ScaffoldStabilizeMovementFeature : ToggleableConfigurable(ScaffoldNormalT
     @Suppress("unused")
     val moveEvent = handler<MovementInputEvent>(priority = EventPriorityConvention.MODEL_STATE) { event ->
         // Prevents the stabilization from giving the player a boost before jumping that cannot be corrected mid-air.
-        if (event.jumping && player.isOnGround) {
+        if (event.input.jump && player.isOnGround) {
             return@handler
         }
 
         val optimalLine = ModuleScaffold.currentOptimalLine ?: return@handler
-        val currentInput = event.directionalInput
+        val currentInput = event.input
 
         val nearestPointOnLine = optimalLine.getNearestPointTo(player.pos)
 
@@ -63,17 +64,17 @@ object ScaffoldStabilizeMovementFeature : ToggleableConfigurable(ScaffoldNormalT
 
         val dgs = getDegreesRelativeToView(nearestPointOnLine.subtract(player.pos), player.yaw)
 
-        val newDirectionalInput = getDirectionalInputForDegrees(DirectionalInput.NONE, dgs, deadAngle = 0.0F)
+        val newDirectionalInput = getDirectionalInputForDegrees(PlayerInput(), dgs, deadAngle = 0.0F)
 
-        val frontalAxisBlocked = currentInput.forwards || currentInput.backwards
+        val frontalAxisBlocked = currentInput.forward || currentInput.backward
         val sagitalAxisBlocked = currentInput.right || currentInput.left
 
-        event.directionalInput =
-            DirectionalInput(
-                if (frontalAxisBlocked) currentInput.forwards else newDirectionalInput.forwards,
-                if (frontalAxisBlocked) currentInput.backwards else newDirectionalInput.backwards,
-                if (sagitalAxisBlocked) currentInput.left else newDirectionalInput.left,
-                if (sagitalAxisBlocked) currentInput.right else newDirectionalInput.right,
+        event.input =
+            event.input.copy(
+                forward = if (frontalAxisBlocked) currentInput.forward else newDirectionalInput.forward,
+                backward = if (frontalAxisBlocked) currentInput.backward else newDirectionalInput.backward,
+                left = if (sagitalAxisBlocked) currentInput.left else newDirectionalInput.left,
+                right = if (sagitalAxisBlocked) currentInput.right else newDirectionalInput.right,
             )
     }
 }

@@ -128,8 +128,7 @@ private class ItemFramebufferRenderer(
         val fb = SimpleFramebuffer(
             NATIVE_ITEM_SIZE * scale * itemsPerDimension,
             NATIVE_ITEM_SIZE * scale * itemsPerDimension,
-            true,
-            MinecraftClient.IS_SYSTEM_MAC
+            true
         )
 
         fb.setClearColor(0.0f, 0.0f, 0.0f, 0.0f)

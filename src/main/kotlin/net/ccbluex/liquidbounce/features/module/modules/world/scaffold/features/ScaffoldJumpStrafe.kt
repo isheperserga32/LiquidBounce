@@ -27,7 +27,6 @@ import net.ccbluex.liquidbounce.utils.entity.getMovementDirectionOfInput
 import net.ccbluex.liquidbounce.utils.entity.sqrtSpeed
 import net.ccbluex.liquidbounce.utils.entity.strafe
 import net.ccbluex.liquidbounce.utils.kotlin.random
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
 import kotlin.math.round
 
 object ScaffoldJumpStrafe : ToggleableConfigurable(ModuleScaffold, "StrafeOnJump", false) {
@@ -46,10 +45,8 @@ object ScaffoldJumpStrafe : ToggleableConfigurable(ModuleScaffold, "StrafeOnJump
     private val diagonalSpeed by floatRange("DiagonalSpeed", 0.48f..0.49f, 0.1f..1f)
 
     val afterJumpHandler = handler<PlayerAfterJumpEvent> {
-        val dirInput = DirectionalInput(player.input.playerInput)
-
         // Taken from GodBridge feature
-        val direction = getMovementDirectionOfInput(player.yaw, dirInput) + 180
+        val direction = getMovementDirectionOfInput(player.yaw, player.input.playerInput) + 180
 
         // Round to 45°-steps (NORTH, NORTH_EAST, etc.)
         val movingYaw = round(direction / 45) * 45

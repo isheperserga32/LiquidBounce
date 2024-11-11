@@ -34,7 +34,7 @@ import net.ccbluex.liquidbounce.utils.aiming.Rotation
 import net.ccbluex.liquidbounce.utils.aiming.RotationManager
 import net.ccbluex.liquidbounce.utils.aiming.RotationsConfigurable
 import net.ccbluex.liquidbounce.utils.kotlin.Priority
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
 import net.minecraft.entity.MovementType
 
 object FlyFireballCustomTechnique : Choice("Custom") {
@@ -82,8 +82,10 @@ object FlyFireballCustomTechnique : Choice("Custom") {
 
     @Suppress("unused")
     private val movementInputHandler = sequenceHandler<MovementInputEvent> { event ->
-        if (stopMove && !canMove)
-            event.directionalInput = DirectionalInput.BACKWARDS // Cancel out movement.
+        if (stopMove && !canMove) {
+            // Cancel out movement.
+            event.input = PlayerInput(backward = true)
+        }
     }
 
     @Suppress("unused")

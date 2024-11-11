@@ -34,7 +34,7 @@ import net.ccbluex.liquidbounce.utils.aiming.Rotation
 import net.ccbluex.liquidbounce.utils.aiming.RotationManager
 import net.ccbluex.liquidbounce.utils.aiming.RotationsConfigurable
 import net.ccbluex.liquidbounce.utils.kotlin.Priority
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
 
 object FlyFireballLegitTechnique : Choice("Legit") {
 
@@ -75,7 +75,8 @@ object FlyFireballLegitTechnique : Choice("Legit") {
     @Suppress("unused")
     private val movementInputHandler = sequenceHandler<MovementInputEvent> { event ->
         if (stopMove && !canMove) {
-            event.directionalInput = DirectionalInput.BACKWARDS // Cancel out movement.
+            // Cancel out movement.
+            event.input = PlayerInput(backward = true)
         }
     }
 

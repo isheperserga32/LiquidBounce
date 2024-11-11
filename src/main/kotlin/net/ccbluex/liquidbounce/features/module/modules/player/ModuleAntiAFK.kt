@@ -29,14 +29,14 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.modules.player.ModuleAntiAFK.CustomMode.Rotate.angle
 import net.ccbluex.liquidbounce.features.module.modules.player.ModuleAntiAFK.CustomMode.Rotate.ignoreOpenInventory
 import net.ccbluex.liquidbounce.features.module.modules.player.ModuleAntiAFK.CustomMode.Rotate.rotationsConfigurable
-import net.ccbluex.liquidbounce.features.module.modules.world.scaffold.ModuleScaffold
 import net.ccbluex.liquidbounce.utils.aiming.Rotation
 import net.ccbluex.liquidbounce.utils.aiming.RotationManager
 import net.ccbluex.liquidbounce.utils.aiming.RotationsConfigurable
 import net.ccbluex.liquidbounce.utils.client.EventScheduler
 import net.ccbluex.liquidbounce.utils.kotlin.Priority
 import net.ccbluex.liquidbounce.utils.kotlin.random
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.util.Hand
 import kotlin.random.Random
 
@@ -67,8 +67,8 @@ object ModuleAntiAFK : Module("AntiAFK", Category.PLAYER) {
 
         @Suppress("unused")
         val movementInputEvent = handler<MovementInputEvent> {
-            it.directionalInput = it.directionalInput.copy(
-                forwards = true
+            it.input = it.input.copy(
+                forward = true
             )
         }
 
@@ -79,14 +79,14 @@ object ModuleAntiAFK : Module("AntiAFK", Category.PLAYER) {
         override val parent: ChoiceConfigurable<Choice>
             get() = modes
 
-        var randomDirection = DirectionalInput.NONE
+        var randomDirection = PlayerInput()
 
         @Suppress("unused")
         val repeatable = repeatable {
             when (Random.nextInt(0, 6)) {
                 0 -> {
-                    EventScheduler.schedule<MovementInputEvent>(ModuleScaffold) {
-                        it.jumping = true
+                    EventScheduler.schedule<MovementInputEvent>(ModuleAntiAFK) { event ->
+                        event.input = event.input.copy(jump = true)
                     }
                 }
 
@@ -98,14 +98,14 @@ object ModuleAntiAFK : Module("AntiAFK", Category.PLAYER) {
 
                 2 -> {
                     // Allows every kind of direction
-                    randomDirection = DirectionalInput(
+                    randomDirection = PlayerInput(
                         Random.nextBoolean(),
                         Random.nextBoolean(),
                         Random.nextBoolean(),
                         Random.nextBoolean()
                     )
                     waitTicks((3..7).random())
-                    randomDirection = DirectionalInput.NONE
+                    randomDirection = PlayerInput()
                 }
 
                 3 -> {
@@ -125,7 +125,7 @@ object ModuleAntiAFK : Module("AntiAFK", Category.PLAYER) {
 
         @Suppress("unused")
         val movementInputEvent = handler<MovementInputEvent> {
-            it.directionalInput = randomDirection
+            it.input = randomDirection
         }
 
     }
@@ -169,8 +169,8 @@ object ModuleAntiAFK : Module("AntiAFK", Category.PLAYER) {
             }
 
             if (jump && player.isOnGround) {
-                EventScheduler.schedule<MovementInputEvent>(ModuleScaffold) {
-                    it.jumping = true
+                EventScheduler.schedule<MovementInputEvent>(ModuleAntiAFK) { event ->
+                    event.input = event.input.copy(jump = true)
                 }
             }
 

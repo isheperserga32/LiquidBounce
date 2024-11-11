@@ -25,7 +25,6 @@ import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.modules.player.ModuleBlink
 import net.ccbluex.liquidbounce.features.module.modules.render.murdermystery.ModuleMurderMystery
-import net.ccbluex.liquidbounce.features.module.modules.world.scaffold.ModuleScaffold
 import net.ccbluex.liquidbounce.utils.client.EventScheduler
 import net.ccbluex.liquidbounce.utils.client.Timer
 import net.ccbluex.liquidbounce.utils.entity.CachedPlayerSimulation
@@ -33,6 +32,7 @@ import net.ccbluex.liquidbounce.utils.entity.PlayerSimulation
 import net.ccbluex.liquidbounce.utils.entity.PlayerSimulationCache
 import net.ccbluex.liquidbounce.utils.entity.SimulatedArrow
 import net.ccbluex.liquidbounce.utils.kotlin.Priority
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.projectile.ArrowEntity
 import net.minecraft.util.math.Box
@@ -76,15 +76,15 @@ object ModuleAutoDodge : Module("AutoDodge", Category.COMBAT) {
             planEvasion(DodgePlannerConfig(allowRotations = AllowRotationChange.enabled), inflictedHit)
                 ?: return@handler
 
-        event.directionalInput = dodgePlan.directionalInput
+        event.input = dodgePlan.playerInput
 
         dodgePlan.yawChange?.let { yawChange ->
             player.yaw = yawChange
         }
 
         if (dodgePlan.shouldJump && AllowRotationChange.allowJump && player.isOnGround) {
-            EventScheduler.schedule<MovementInputEvent>(ModuleScaffold) {
-                it.jumping = true
+            EventScheduler.schedule<MovementInputEvent>(ModuleAutoDodge) { event ->
+                event.input = event.input.copy(jump = true)
             }
         }
 
@@ -98,7 +98,7 @@ object ModuleAutoDodge : Module("AutoDodge", Category.COMBAT) {
             if (it !is ArrowEntity) {
                 return@mapNotNull null
             }
-            if (it.inGround) {
+            if (it.isInGround) {
                 return@mapNotNull null
             }
 

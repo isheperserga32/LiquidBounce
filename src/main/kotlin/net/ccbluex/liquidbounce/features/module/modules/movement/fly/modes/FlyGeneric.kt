@@ -40,6 +40,7 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket
 import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket
 import net.minecraft.util.shape.VoxelShapes
+import kotlin.jvm.optionals.getOrNull
 
 internal object FlyVanilla : Choice("Vanilla") {
 
@@ -227,9 +228,13 @@ internal object FlyExplosion : Choice("Explosion") {
             waitTicks(1)
             strafeSince = startStrafe
         } else if (packet is ExplosionS2CPacket) { // Check if explosion affects velocity
-            packet.playerVelocityX = 0f
-            packet.playerVelocityY *= vertical
-            packet.playerVelocityZ = 0f
+            val playerKnockback = packet.playerKnockback.getOrNull() ?: return@sequenceHandler
+
+            // Modify packet according to the specified values
+            playerKnockback.multiply(0.0, vertical.toDouble(), 0.0)
+
+            // todo: change record data somehow
+            // packet.playerKnockback = playerKnockback
 
             waitTicks(1)
             strafeSince = startStrafe
@@ -244,7 +249,7 @@ internal object FlyJetpack : Choice("Jetpack") {
         get() = ModuleFly.modes
 
     val repeatable = repeatable {
-        if (player.input.jumping) {
+        if (player.input.playerInput.jump) {
             player.velocity.x *= 1.1
             player.velocity.y += 0.15
             player.velocity.z *= 1.1
