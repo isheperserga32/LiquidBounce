@@ -52,11 +52,10 @@ public abstract class MixinInGameHud {
 
     @Final
     @Shadow
-    private static Identifier PUMPKIN_BLUR;
-
-    @Final
-    @Shadow
     private static Identifier POWDER_SNOW_OUTLINE;
+
+    @Unique
+    private static final Identifier PUMPKIN_BLUR = Identifier.ofVanilla("misc/pumpkinblur");
 
     @Shadow
     @Nullable

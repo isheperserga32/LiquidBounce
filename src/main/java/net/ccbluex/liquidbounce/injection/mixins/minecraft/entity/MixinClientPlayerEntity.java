@@ -29,8 +29,8 @@ import net.ccbluex.liquidbounce.features.module.modules.combat.killaura.ModuleKi
 import net.ccbluex.liquidbounce.features.module.modules.exploit.ModuleAntiHunger;
 import net.ccbluex.liquidbounce.features.module.modules.exploit.ModulePortalMenu;
 import net.ccbluex.liquidbounce.features.module.modules.movement.ModuleEntityControl;
-import net.ccbluex.liquidbounce.features.module.modules.movement.noslow.ModuleNoSlow;
 import net.ccbluex.liquidbounce.features.module.modules.movement.ModuleSprint;
+import net.ccbluex.liquidbounce.features.module.modules.movement.noslow.ModuleNoSlow;
 import net.ccbluex.liquidbounce.features.module.modules.movement.step.ModuleStep;
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleFreeCam;
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleNoSwing;
@@ -283,9 +283,9 @@ public abstract class MixinClientPlayerEntity extends MixinPlayerEntity {
         return !ModuleFreeCam.INSTANCE.getEnabled() && original;
     }
 
-    @ModifyVariable(method = "sendMovementPackets", at = @At("STORE"), ordinal = 2)
-    private boolean hookFreeCamPreventRotations(boolean bl4) {
-        return (!ModuleFreeCam.INSTANCE.shouldDisableRotations() ||  ModuleRotations.INSTANCE.shouldSendCustomRotation())  && bl4;
+    @ModifyVariable(method = "sendMovementPackets", at = @At("STORE"), ordinal = 1)
+    private boolean hookFreeCamPreventRotations(boolean bl2) {
+        return (!ModuleFreeCam.INSTANCE.shouldDisableRotations() || ModuleRotations.INSTANCE.shouldSendCustomRotation()) && bl2;
     }
 
     @ModifyConstant(method = "canSprint", constant = @Constant(floatValue = 6.0F), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/HungerManager;getFoodLevel()I", ordinal = 0)))
