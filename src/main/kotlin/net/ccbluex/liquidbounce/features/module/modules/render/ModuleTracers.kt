@@ -107,7 +107,7 @@ object ModuleTracers : Module("Tracers", Category.RENDER) {
                     EntityTaggingManager.getTag(entity).color ?: modes.activeChoice.getColor(entity) ?: continue
                 }
 
-                val pos = relativeToCamera(entity.interpolateCurrentPosition(event.partialTicks)).toVec3()
+                val pos = relativeToCamera(entity.interpolateCurrentPosition(event.delta)).toVec3()
 
                 withColor(color) {
                     drawLines(eyeVector, pos, pos, pos + Vec3(0f, entity.height, 0f))

@@ -130,7 +130,7 @@ object ModuleStorageESP : Module("StorageESP", Category.RENDER, aliases = arrayO
             for (entity in world.entities) {
                 val type = entity.categorize() ?: continue
 
-                val pos = entity.interpolateCurrentPosition(event.partialTicks)
+                val pos = entity.interpolateCurrentPosition(event.delta)
 
                 val dimensions = entity.getDimensions(entity.pose)
                 val d = dimensions.width.toDouble() / 2.0

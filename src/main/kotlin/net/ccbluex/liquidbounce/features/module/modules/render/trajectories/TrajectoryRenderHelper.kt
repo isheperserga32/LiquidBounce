@@ -33,7 +33,7 @@ fun drawLandingPos(
     } else if (landingPosition is EntityHitResult) {
         val entities = listOf(landingPosition.entity)
 
-        drawHitEntities(event.matrixStack, entityHitColor, entities, event.partialTicks)
+        drawHitEntities(event.matrixStack, entityHitColor, entities, event.delta)
     }
 
     if (trajectoryInfo != TrajectoryInfo.POTION) {
@@ -52,7 +52,7 @@ fun drawLandingPos(
             .takeWhile { it.squaredDistanceTo(landingPosition.pos) <= 16.0 }
             .filter { it.isAffectedBySplashPotions }
 
-    drawHitEntities(event.matrixStack, entityHitColor, hitTargets, event.partialTicks)
+    drawHitEntities(event.matrixStack, entityHitColor, hitTargets, event.delta)
 }
 
 private fun drawHitEntities(

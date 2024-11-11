@@ -8,74 +8,49 @@ import net.ccbluex.liquidbounce.features.module.modules.render.ModuleHud
 import net.ccbluex.liquidbounce.render.ui.ItemImageAtlas
 import net.ccbluex.liquidbounce.utils.client.Chronometer
 import net.ccbluex.liquidbounce.utils.client.mc
+import net.ccbluex.liquidbounce.utils.math.Easing
 import net.minecraft.client.gl.SimpleFramebuffer
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.gui.screen.ChatScreen
-import kotlin.math.sin
 
+object OverlayRenderer {
 
-object UIRenderer {
+    private var isDrawingFramebuffer: Boolean = false
 
-    private var isDrawingHudFramebuffer: Boolean = false
-
-    val overlayFramebuffer: SimpleFramebuffer by lazy {
-        val fb = SimpleFramebuffer(
+    private val overlayFramebuffer: SimpleFramebuffer by lazy {
+        val framebuffer = SimpleFramebuffer(
             mc.window.framebufferWidth,
             mc.window.framebufferHeight,
             true
         )
 
-        fb.setClearColor(0.0f, 0.0f, 0.0f, 0.0f)
-
-        fb
+        framebuffer.setClearColor(0.0f, 0.0f, 0.0f, 0.0f)
+        framebuffer
     }
 
     private val lastTimeScreenOpened = Chronometer()
     private var wasScreenOpen = false
 
-    fun easeFunction(x: Float): Float {
-        return sin((x * Math.PI) / 2.0).toFloat()
-    }
-
-    private fun getBlurRadiusFactor(): Float {
-        val isScreenOpen = mc.currentScreen != null && mc.currentScreen !is ChatScreen
-
-        if (isScreenOpen && !wasScreenOpen) {
-            lastTimeScreenOpened.reset()
-        }
-
-        wasScreenOpen = isScreenOpen
-
-        return if (isScreenOpen) {
-            easeFunction((lastTimeScreenOpened.elapsed.toFloat() / 500.0F + 0.1F).coerceIn(0.0F..1.0F))
-        } else {
-            1.0F
-        }
-    }
-
-    fun getBlurRadius(): Float {
-        return (this.getBlurRadiusFactor() * 20.0F).coerceIn(5.0F..20.0F)
-    }
-
-    fun startUIOverlayDrawing(context: DrawContext, tickDelta: Float) {
+    fun start(context: DrawContext, tickDelta: Float) {
         ItemImageAtlas.updateAtlas(context)
 
         if (ModuleHud.isBlurable) {
-            this.isDrawingHudFramebuffer = true
-
-            this.overlayFramebuffer.clear()
-            this.overlayFramebuffer.beginWrite(true)
+            // todo: fix this
+//            this.isDrawingFramebuffer = true
+//
+//            this.overlayFramebuffer.clear()
+//            this.overlayFramebuffer.beginWrite(true)
         }
 
         callEvent(OverlayRenderEvent(context, tickDelta))
     }
 
-    fun endUIOverlayDrawing() {
-        if (!this.isDrawingHudFramebuffer) {
+    fun end() {
+        if (!this.isDrawingFramebuffer) {
             return
         }
 
-        this.isDrawingHudFramebuffer = false
+        this.isDrawingFramebuffer = false
 
         RenderSystem.enableBlend()
         RenderSystem.blendFunc(GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA)
@@ -98,5 +73,23 @@ object UIRenderer {
     fun setupDimensions(width: Int, height: Int) {
         this.overlayFramebuffer.resize(width, height)
     }
+
+    private fun getBlurRadiusFactor(): Float {
+        val isScreenOpen = mc.currentScreen != null && mc.currentScreen !is ChatScreen
+
+        if (isScreenOpen && !wasScreenOpen) {
+            lastTimeScreenOpened.reset()
+        }
+
+        wasScreenOpen = isScreenOpen
+
+        return if (isScreenOpen) {
+            Easing.SINE_IN.transform((lastTimeScreenOpened.elapsed.toFloat() / 500.0F + 0.1F).coerceIn(0.0F..1.0F))
+        } else {
+            1.0F
+        }
+    }
+
+    fun getBlurRadius() = (getBlurRadiusFactor() * 20.0F).coerceIn(5.0F..20.0F)
 
 }

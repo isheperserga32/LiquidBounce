@@ -18,9 +18,13 @@
  */
 package net.ccbluex.liquidbounce.integration.browser.supports.tab
 
+import net.ccbluex.liquidbounce.integration.browser.supports.JcefBrowser
 import net.ccbluex.liquidbounce.mcef.MCEF
 import net.ccbluex.liquidbounce.mcef.MCEFBrowser
-import net.ccbluex.liquidbounce.integration.browser.supports.JcefBrowser
+import net.ccbluex.liquidbounce.utils.client.mc
+import net.minecraft.client.texture.AbstractTexture
+import net.minecraft.resource.ResourceManager
+import net.minecraft.util.Identifier
 
 @Suppress("TooManyFunctions")
 class JcefTab(
@@ -53,8 +57,17 @@ class JcefTab(
         zoomLevel = 1.0
     }
 
+    private val texture = Identifier.of("liquidbounce", "browser/tab/${mcefBrowser.hashCode()}")
+
     override var drawn = false
     override var preferOnTop = false
+
+    init {
+        mc.textureManager.registerTexture(texture, object : AbstractTexture() {
+            override fun getGlId() = mcefBrowser.renderer.textureID
+            override fun load(manager: ResourceManager) { }
+        })
+    }
 
     override fun forceReload() {
         mcefBrowser.reloadIgnoreCache()
@@ -81,9 +94,10 @@ class JcefTab(
     override fun closeTab() {
         mcefBrowser.close()
         jcefBrowser.removeTab(this)
+        mc.textureManager.destroyTexture(texture)
     }
 
-    override fun getTexture() = mcefBrowser.renderer.textureID
+    override fun getTexture(): Identifier = texture
 
     override fun resize(width: Int, height: Int) {
         if (!position.fullScreen) {

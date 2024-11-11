@@ -18,19 +18,15 @@
  */
 package net.ccbluex.liquidbounce.integration.browser
 
-import com.mojang.blaze3d.platform.GlStateManager
-import com.mojang.blaze3d.systems.RenderSystem
 import net.ccbluex.liquidbounce.event.Listenable
 import net.ccbluex.liquidbounce.event.events.*
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.integration.browser.supports.IBrowser
 import net.ccbluex.liquidbounce.utils.client.mc
 import net.ccbluex.liquidbounce.utils.kotlin.EventPriorityConvention
-import net.minecraft.client.gl.ShaderProgramKeys
-import net.minecraft.client.render.BufferRenderer.drawWithGlobalProgram
-import net.minecraft.client.render.Tessellator
-import net.minecraft.client.render.VertexFormat
-import net.minecraft.client.render.VertexFormats
+import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.render.RenderLayer
+import net.minecraft.util.Identifier
 
 class BrowserDrawer(val browser: () -> IBrowser?) : Listenable {
 
@@ -66,7 +62,7 @@ class BrowserDrawer(val browser: () -> IBrowser?) : Listenable {
             val w = tab.position.width.toFloat() / scaleFactor
             val h = tab.position.height.toFloat() / scaleFactor
 
-            renderTexture(x, y, w, h, tab.getTexture())
+            renderTexture(it.context, x, y, w, h, tab.getTexture())
             tab.drawn = true
         }
     }
@@ -103,36 +99,14 @@ class BrowserDrawer(val browser: () -> IBrowser?) : Listenable {
             val w = tab.position.width.toFloat() / scaleFactor
             val h = tab.position.height.toFloat() / scaleFactor
 
-            renderTexture(x, y, w, h, tab.getTexture())
+            renderTexture(it.context, x, y, w, h, tab.getTexture())
             tab.drawn = true
         }
     }
 
-    private fun renderTexture(x: Float, y: Float, width: Float, height: Float, texture: Int) {
-        RenderSystem.disableDepthTest()
-        RenderSystem.enableBlend()
-        RenderSystem.blendFunc(GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA)
-        RenderSystem.setShader(ShaderProgramKeys.POSITION_TEX_COLOR)
-        RenderSystem.setShaderTexture(0, texture)
-        val tessellator = Tessellator.getInstance()
-        val buffer = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR)
-        buffer.vertex(x, y + height, 0.0f)
-            .texture(0.0f, 1.0f)
-            .color(255, 255, 255, 255)
-        buffer.vertex(x + width, y + height, 0.0f)
-            .texture(1.0f, 1.0f)
-            .color(255, 255, 255, 255)
-        buffer.vertex(x + width, y, 0.0f)
-            .texture(1.0f, 0.0f)
-            .color(255, 255, 255, 255)
-        buffer.vertex(x, y, 0.0f)
-            .texture(0.0f, 0.0f)
-            .color(255, 255, 255, 255)
-        drawWithGlobalProgram(buffer.end())
-        RenderSystem.setShaderTexture(0, 0)
-        RenderSystem.enableDepthTest()
-        RenderSystem.defaultBlendFunc()
-        RenderSystem.enableBlend()
+    private fun renderTexture(context: DrawContext, x: Float, y: Float, width: Float, height: Float, texture: Identifier) {
+        context.drawTexture(RenderLayer::getGuiTextured, texture, x.toInt(), y.toInt(), 0f, 0f, width.toInt(),
+            height.toInt(), width.toInt(), height.toInt())
     }
 
 }

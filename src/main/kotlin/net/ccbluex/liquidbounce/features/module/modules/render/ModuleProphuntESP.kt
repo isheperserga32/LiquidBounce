@@ -95,7 +95,7 @@ object ModuleProphuntESP : Module("ProphuntESP", Category.RENDER,
             drawBoxMode(event.matrixStack, this.outline, false)
 
             renderEnvironmentForWorld(event.matrixStack) {
-                drawEntities(this, event.partialTicks, colorMode.activeChoice, true)
+                drawEntities(this, event.delta, colorMode.activeChoice, true)
             }
         }
     }

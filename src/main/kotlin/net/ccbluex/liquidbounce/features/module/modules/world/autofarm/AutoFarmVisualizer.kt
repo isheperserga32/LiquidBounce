@@ -39,7 +39,7 @@ object AutoFarmVisualizer : ToggleableConfigurable(ModuleAutoFarm, "Visualize", 
                 withColor(color){
                     AutoFarmAutoWalk.walkTarget?.let { target ->
                         drawLines(
-                            relativeToCamera(player.interpolateCurrentPosition(event.partialTicks)).toVec3(),
+                            relativeToCamera(player.interpolateCurrentPosition(event.delta)).toVec3(),
                             relativeToCamera(target).toVec3()
                         )
                     }

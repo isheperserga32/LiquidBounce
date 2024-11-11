@@ -71,7 +71,7 @@ object ModuleItemESP : Module("ItemESP", Category.RENDER) {
             renderEnvironmentForWorld(matrixStack) {
                 BoxRenderer.drawWith(this) {
                     for (entity in filtered) {
-                        val pos = entity.interpolateCurrentPosition(event.partialTicks)
+                        val pos = entity.interpolateCurrentPosition(event.delta)
 
                         withPositionRelativeToCamera(pos) {
                             drawBox(box, baseColor, outlineColor)

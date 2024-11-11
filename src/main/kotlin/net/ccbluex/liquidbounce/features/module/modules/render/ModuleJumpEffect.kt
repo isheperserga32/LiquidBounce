@@ -59,7 +59,7 @@ object ModuleJumpEffect : Module("JumpEffect", Category.RENDER) {
         renderEnvironmentForWorld(matrixStack) {
             circles.forEach {
                 val progress = animCurve
-                    .transform((it.right + event.partialTicks) / lifetime)
+                    .transform((it.right + event.delta) / lifetime)
                     .coerceIn(0f..1f)
 
                 withPositionRelativeToCamera(it.left) {

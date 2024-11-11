@@ -106,7 +106,7 @@ object ModuleAimbot : Module("Aimbot", Category.COMBAT, aliases = arrayOf("AimAs
 
     val renderHandler = handler<WorldRenderEvent> { event ->
         val matrixStack = event.matrixStack
-        val partialTicks = event.partialTicks
+        val partialTicks = event.delta
         val target = targetTracker.lockedOnTarget ?: return@handler
 
         renderEnvironmentForWorld(matrixStack) {
