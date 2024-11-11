@@ -92,7 +92,7 @@ public abstract class MixinLivingEntity extends MixinEntity {
     )
     public @Nullable StatusEffectInstance hookTravelStatusEffect(@Nullable StatusEffectInstance original) {
         // If we get anyting other than levitation, the injection went wrong
-        assert original == StatusEffects.LEVITATION;
+        assert original != StatusEffects.LEVITATION;
 
         if (ModuleAntiLevitation.INSTANCE.getEnabled()) {
             return null;
