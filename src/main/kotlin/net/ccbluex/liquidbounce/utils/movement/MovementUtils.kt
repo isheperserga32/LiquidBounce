@@ -55,11 +55,8 @@ fun PlayerInput.copy(
     sprint: Boolean = this.sprint,
 ) = PlayerInput(forward, backward, left, right, jump, sneak, sprint)
 
-val PlayerInput.noInput: Boolean
-    get() = !forward && !backward && !left && !right && !jump && !sneak && !sprint
-
-val PlayerInput.hasNoMovement: Boolean
-    get() = !forward && !backward && !left && !right
+val PlayerInput.isMoving: Boolean
+    get() = forward || backward || left || right
 
 /**
  * Returns the yaw difference the position is from the player position

@@ -35,7 +35,7 @@ import net.ccbluex.liquidbounce.utils.client.toRadians
 import net.ccbluex.liquidbounce.utils.entity.getMovementDirectionOfInput
 import net.ccbluex.liquidbounce.utils.math.geometry.Line
 import net.ccbluex.liquidbounce.utils.math.toBlockPos
-import net.ccbluex.liquidbounce.utils.movement.hasNoMovement
+import net.ccbluex.liquidbounce.utils.movement.isMoving
 import net.minecraft.entity.EntityPose
 import net.minecraft.item.ItemStack
 import net.minecraft.util.math.Direction
@@ -115,7 +115,7 @@ object ScaffoldGodBridgeTechnique : ScaffoldTechnique("GodBridge"), ScaffoldLedg
     override fun getRotations(target: BlockPlacementTarget?): Rotation? {
         val dirInput = player.input.playerInput
 
-        if (dirInput.hasNoMovement) {
+        if (!dirInput.isMoving) {
             target ?: return null
 
             return getRotationForNoInput(target)
