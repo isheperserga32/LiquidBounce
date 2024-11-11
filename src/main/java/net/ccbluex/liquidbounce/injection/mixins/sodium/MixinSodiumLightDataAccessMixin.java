@@ -19,12 +19,9 @@
 
 package net.ccbluex.liquidbounce.injection.mixins.sodium;
 
-import net.ccbluex.liquidbounce.features.module.modules.render.ModuleXRay;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 import org.spongepowered.asm.mixin.*;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 @Pseudo
 @Mixin(targets = "me.jellysquid.mods.sodium.client.model.light.data.LightDataAccess", remap = false)
@@ -46,19 +43,19 @@ public class MixinSodiumLightDataAccessMixin {
     @Unique
     private static final int MAX_LIGHT_LEVEL = 15 | 15 << 4 | 15 << 8;
 
-    @ModifyVariable(method = "compute", at = @At(value = "TAIL"), name = "bl")
-    private int modifyLightLevel(int original) {
-        var xray = ModuleXRay.INSTANCE;
-        if (xray.getEnabled() && xray.getFullBright()) {
-            var blockState = world.getBlockState(pos);
-
-            if (xray.shouldRender(blockState, pos)) {
-                // Ensures that the brightness is on max for all color channels
-                return MAX_LIGHT_LEVEL;
-            }
-        }
-
-        return original;
-    }
+//    @ModifyVariable(method = "compute", at = @At(value = "TAIL"), name = "bl")
+//    private int modifyLightLevel(int original) {
+//        var xray = ModuleXRay.INSTANCE;
+//        if (xray.getEnabled() && xray.getFullBright()) {
+//            var blockState = world.getBlockState(pos);
+//
+//            if (xray.allowDrawingSide(blockState, pos)) {
+//                // Ensures that the brightness is on max for all color channels
+//                return MAX_LIGHT_LEVEL;
+//            }
+//        }
+//
+//        return original;
+//    }
 
 }
