@@ -184,6 +184,7 @@ object ModuleXRay : Module("XRay", Category.RENDER) {
         }
 
         // Check if the block has to be exposed and if it is not, we don't want to render it
+        // todo: fix that exposed only will not work with all directions
         if (exposedOnly && otherState.isOpaque) {
             return false
         }
