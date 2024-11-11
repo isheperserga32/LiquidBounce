@@ -19,8 +19,8 @@
 package net.ccbluex.liquidbounce.utils.block
 
 import it.unimi.dsi.fastutil.booleans.BooleanObjectPair
-import it.unimi.dsi.fastutil.ints.IntObjectPair
 import it.unimi.dsi.fastutil.doubles.DoubleObjectPair
+import it.unimi.dsi.fastutil.ints.IntObjectPair
 import net.ccbluex.liquidbounce.config.NamedChoice
 import net.ccbluex.liquidbounce.event.EventManager
 import net.ccbluex.liquidbounce.event.events.BlockBreakingProgressEvent
@@ -418,12 +418,14 @@ private inline fun handleActionsOnAccept(
     onPlacementSuccess: () -> Boolean,
     swingMode: SwingMode = SwingMode.DO_NOT_HIDE,
 ) {
-    if (!interactionResult.shouldSwingHand()) {
+    if (interactionResult !is ActionResult.Success) {
         return
     }
 
     if (onPlacementSuccess()) {
-        swingMode.swing(hand)
+        if (interactionResult.swingSource == ActionResult.SwingSource.CLIENT) {
+            swingMode.swing(hand)
+        }
     }
 
     if (wasStackUsed) {

@@ -70,8 +70,8 @@ fun clickBlockWithSlot(
     } else {
         actionResult = itemStack.useOnBlock(itemUsageContext)
     }
-
-    if (actionResult.shouldSwingHand()) {
+    
+    if (actionResult is ActionResult.Success && actionResult.swingSource == ActionResult.SwingSource.CLIENT) {
         placementSwingMode.swing(hand)
     }
 

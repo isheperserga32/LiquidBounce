@@ -197,7 +197,7 @@ object ChunkScanner : Listenable {
 
             val start = System.nanoTime()
 
-            (chunk.bottomY until chunk.topY).map { y ->
+            (chunk.bottomY until chunk.topYInclusive).map { y ->
                 scope.launch {
                     val pos = BlockPos.Mutable(chunk.pos.startX, y, chunk.pos.startZ)
                     repeat(16) {

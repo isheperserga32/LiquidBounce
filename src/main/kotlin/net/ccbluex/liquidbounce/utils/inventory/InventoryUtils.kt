@@ -40,6 +40,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket
 import net.minecraft.registry.Registries
 import net.minecraft.registry.tag.ItemTags
+import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import kotlin.math.abs
 
@@ -197,8 +198,8 @@ fun useHotbarSlotOrOffhand(item: HotbarItemSlot) = when (item) {
 fun interactItem(hand: Hand, preInteraction: () -> Unit = { }) {
     preInteraction()
 
-    interaction.interactItem(player, hand).takeIf { it.isAccepted }?.let {
-        if (it.shouldSwingHand()) {
+    interaction.interactItem(player, hand).takeIf { it.isAccepted }?.let { actionResult ->
+        if (actionResult is ActionResult.Success && actionResult.swingSource == ActionResult.SwingSource.CLIENT) {
             player.swingHand(hand)
         }
 
