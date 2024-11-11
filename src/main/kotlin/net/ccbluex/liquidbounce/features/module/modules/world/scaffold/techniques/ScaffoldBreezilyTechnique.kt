@@ -32,7 +32,7 @@ import net.ccbluex.liquidbounce.utils.kotlin.random
 import net.ccbluex.liquidbounce.utils.math.geometry.Line
 import net.ccbluex.liquidbounce.utils.math.toBlockPos
 import net.ccbluex.liquidbounce.utils.movement.PlayerInput
-import net.ccbluex.liquidbounce.utils.movement.hasNoMovement
+import net.ccbluex.liquidbounce.utils.movement.isMoving
 import net.minecraft.block.Blocks
 import net.minecraft.entity.EntityPose
 import net.minecraft.item.ItemStack
@@ -127,7 +127,7 @@ object ScaffoldBreezilyTechnique : ScaffoldTechnique("Breezily") {
     override fun getRotations(target: BlockPlacementTarget?): Rotation? {
         val dirInput = player.input.playerInput
 
-        if (dirInput.hasNoMovement) {
+        if (!dirInput.isMoving) {
             target ?: return null
 
             return getRotationForNoInput(target)

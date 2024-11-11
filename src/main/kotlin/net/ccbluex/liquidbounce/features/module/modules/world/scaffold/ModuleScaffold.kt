@@ -70,7 +70,7 @@ import net.ccbluex.liquidbounce.utils.math.geometry.Line
 import net.ccbluex.liquidbounce.utils.math.minus
 import net.ccbluex.liquidbounce.utils.math.toVec3d
 import net.ccbluex.liquidbounce.utils.movement.copy
-import net.ccbluex.liquidbounce.utils.movement.hasNoMovement
+import net.ccbluex.liquidbounce.utils.movement.isMoving
 import net.ccbluex.liquidbounce.utils.render.placement.PlacementRenderer
 import net.ccbluex.liquidbounce.utils.sorting.ComparatorChain
 import net.minecraft.entity.EntityPose
@@ -388,7 +388,7 @@ object ModuleScaffold : Module("Scaffold", Category.WORLD) {
 
         val currentInput = event.input
 
-        if (currentInput.hasNoMovement) {
+        if (!currentInput.isMoving) {
             return@handler
         }
 
