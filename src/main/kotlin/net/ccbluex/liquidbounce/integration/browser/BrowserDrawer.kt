@@ -18,6 +18,8 @@
  */
 package net.ccbluex.liquidbounce.integration.browser
 
+import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.systems.RenderSystem
 import net.ccbluex.liquidbounce.event.Listenable
 import net.ccbluex.liquidbounce.event.events.*
 import net.ccbluex.liquidbounce.event.handler
@@ -26,7 +28,13 @@ import net.ccbluex.liquidbounce.utils.client.mc
 import net.ccbluex.liquidbounce.utils.kotlin.EventPriorityConvention
 import net.minecraft.client.gui.DrawContext
 import net.minecraft.client.render.RenderLayer
+import net.minecraft.client.render.RenderPhase
+import net.minecraft.client.render.VertexFormat
+import net.minecraft.client.render.VertexFormats
 import net.minecraft.util.Identifier
+import net.minecraft.util.TriState
+import net.minecraft.util.Util
+import java.util.function.Function
 
 class BrowserDrawer(val browser: () -> IBrowser?) : Listenable {
 
@@ -50,7 +58,9 @@ class BrowserDrawer(val browser: () -> IBrowser?) : Listenable {
     }
 
     @Suppress("unused")
-    val onScreenRender = handler<ScreenRenderEvent> {
+    val handleScreenRender = handler<ScreenRenderEvent>(
+        priority = EventPriorityConvention.READ_FINAL_STATE
+    ) { event ->
         for (tab in tabs) {
             if (tab.drawn) {
                 continue
@@ -62,7 +72,7 @@ class BrowserDrawer(val browser: () -> IBrowser?) : Listenable {
             val w = tab.position.width.toFloat() / scaleFactor
             val h = tab.position.height.toFloat() / scaleFactor
 
-            renderTexture(it.context, x, y, w, h, tab.getTexture())
+            renderTexture(event.context, tab.getTexture(), x, y, w, h)
             tab.drawn = true
         }
     }
@@ -75,7 +85,9 @@ class BrowserDrawer(val browser: () -> IBrowser?) : Listenable {
     }
 
     @Suppress("unused")
-    val onOverlayRender = handler<OverlayRenderEvent>(priority = EventPriorityConvention.READ_FINAL_STATE) {
+    val handleOverlayRender = handler<OverlayRenderEvent>(
+        priority = EventPriorityConvention.READ_FINAL_STATE
+    ) { event ->
         if (this.shouldReload) {
             for (tab in tabs) {
                 tab.forceReload()
@@ -99,13 +111,36 @@ class BrowserDrawer(val browser: () -> IBrowser?) : Listenable {
             val w = tab.position.width.toFloat() / scaleFactor
             val h = tab.position.height.toFloat() / scaleFactor
 
-            renderTexture(it.context, x, y, w, h, tab.getTexture())
+            renderTexture(event.context, tab.getTexture(), x, y, w, h)
             tab.drawn = true
         }
     }
 
-    private fun renderTexture(context: DrawContext, x: Float, y: Float, width: Float, height: Float, texture: Identifier) {
-        context.drawTexture(RenderLayer::getGuiTextured, texture, x.toInt(), y.toInt(), 0f, 0f, width.toInt(),
+    private val browserTextureLayer: Function<Identifier, RenderLayer> = Util.memoize { texture ->
+        RenderLayer.of(
+            "browser_textured",
+            VertexFormats.POSITION_TEXTURE_COLOR,
+            VertexFormat.DrawMode.QUADS,
+            786432,
+            RenderLayer.MultiPhaseParameters.builder()
+                .texture(RenderPhase.Texture(texture, TriState.FALSE, false))
+                .program(RenderPhase.POSITION_TEXTURE_COLOR_PROGRAM)
+                .transparency(browserTransparency)
+                .depthTest(RenderPhase.LEQUAL_DEPTH_TEST)
+                .build(false)
+        )
+    }
+
+    private val browserTransparency: RenderPhase.Transparency = RenderPhase.Transparency("browser_transparency", {
+        RenderSystem.enableBlend()
+        RenderSystem.blendFunc(GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA)
+    }, {
+        RenderSystem.disableBlend()
+        RenderSystem.defaultBlendFunc()
+    })
+
+    private fun renderTexture(context: DrawContext, texture: Identifier, x: Float, y: Float, width: Float, height: Float) {
+        context.drawTexture(browserTextureLayer, texture, x.toInt(), y.toInt(), 0f, 0f, width.toInt(),
             height.toInt(), width.toInt(), height.toInt())
     }
 
