@@ -396,9 +396,9 @@ object ModuleScaffold : Module("Scaffold", Category.WORLD) {
     }
 
     @Suppress("unused")
-    private val movementInputHandler = handler<MovementInputEvent>(priority = EventPriorityConvention.SAFETY_FEATURE) {
+    private val movementInputHandler = handler<MovementInputEvent>(priority = EventPriorityConvention.SAFETY_FEATURE) { event ->
         if (forceSneak > 0) {
-            it.sneaking = true
+            event.input = event.input.copy(sneak = true)
             forceSneak--
         }
     }
@@ -482,8 +482,11 @@ object ModuleScaffold : Module("Scaffold", Category.WORLD) {
             if (currentRotation != RotationManager.serverRotation) {
                 network.sendPacket(
                     Full(
-                        player.x, player.y, player.z, currentRotation.yaw, currentRotation.pitch,
-                        player.isOnGround
+                        player.x, player.y, player.z,
+                        currentRotation.yaw,
+                        currentRotation.pitch,
+                        player.isOnGround,
+                        player.horizontalCollision
                     )
                 )
 
@@ -515,8 +518,11 @@ object ModuleScaffold : Module("Scaffold", Category.WORLD) {
         if (rotationTiming == ON_TICK && RotationManager.serverRotation != player.rotation) {
             network.sendPacket(
                 Full(
-                    player.x, player.y, player.z, player.withFixedYaw(currentRotation),
-                    player.pitch, player.isOnGround
+                    player.x, player.y, player.z,
+                    player.withFixedYaw(currentRotation),
+                    player.pitch,
+                    player.isOnGround,
+                    player.horizontalCollision
                 )
             )
         }

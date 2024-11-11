@@ -50,7 +50,7 @@ class Region(from: BlockPos, to: BlockPos) : ClosedRange<BlockPos>, Iterable<Blo
             val pos = chunk.pos
             return Region(
                 BlockPos(pos.x shl 4, chunk.bottomY, pos.z shl 4),
-                BlockPos(pos.x shl 4 or 15, chunk.topY, pos.z shl 4 or 15)
+                BlockPos(pos.x shl 4 or 15, chunk.topYInclusive, pos.z shl 4 or 15)
             )
         }
 

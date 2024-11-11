@@ -174,7 +174,7 @@ class ItemCategorization(
             is BowItem -> arrayOf(BowItemFacet(slot))
             is CrossbowItem -> arrayOf(CrossbowItemFacet(slot))
             is ArrowItem -> arrayOf(ArrowItemFacet(slot))
-            is MiningToolItem -> arrayOf(ToolItemFacet(slot))
+            is MiningToolItem -> arrayOf(MiningToolItemFacet(slot))
             is FishingRodItem -> arrayOf(RodItemFacet(slot), ThrowableItemFacet(slot))
             is ShieldItem -> arrayOf(ShieldItemFacet(slot))
             is BlockItem -> {

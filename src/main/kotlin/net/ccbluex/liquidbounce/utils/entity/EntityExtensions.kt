@@ -51,7 +51,6 @@ import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.*
 import net.minecraft.util.shape.VoxelShapes
 import net.minecraft.world.Difficulty
-import net.minecraft.world.GameRules
 import net.minecraft.world.RaycastContext
 import net.minecraft.world.explosion.Explosion
 import net.minecraft.world.explosion.ExplosionBehavior
@@ -323,7 +322,7 @@ fun PlayerEntity.wouldBlockHit(source: PlayerEntity): Boolean {
 fun LivingEntity.getEffectiveDamage(source: DamageSource, damage: Float, ignoreShield: Boolean = false): Float {
     val world = this.world
 
-    if (this.isInvulnerableTo(source))
+    if (this.isAlwaysInvulnerableTo(source))
         return 0.0F
 
     // EDGE CASE!!! Might cause weird bugs
@@ -379,7 +378,7 @@ fun LivingEntity.getExplosionDamageFromEntity(entity: Entity): Float {
         }
 
         is CreeperEntity -> {
-            val f = if (entity.shouldRenderOverlay()) 2f else 1f
+            val f = if (entity.isCharged) 2f else 1f
             getDamageFromExplosion(entity.pos, entity, entity.explosionRadius * f)
         }
 
@@ -407,7 +406,7 @@ fun LivingEntity.getDamageFromExplosion(
         ShapeFlag.noShapeChange = true
 
         val distanceDecay = 1.0 - (sqrt(this.squaredDistanceTo(pos)) / explosionRange.toDouble())
-        val exposure = exclude?.let { getExposureToExplosion(pos, it) } ?: Explosion.getExposure(pos, this)
+        val exposure = getExposureToExplosion(pos, exclude ?: emptyArray())
         val pre1 = exposure.toDouble() * distanceDecay
 
         val preprocessedDamage = (pre1 * pre1 + pre1) / 2.0 * 7.0 * explosionRange.toDouble() + 1.0
@@ -415,18 +414,20 @@ fun LivingEntity.getDamageFromExplosion(
             return 0f
         }
 
-        val explosion = Explosion(
-            world,
-            exploding,
-            pos.x,
-            pos.y,
-            pos.z,
-            power,
-            false,
-            world.getDestructionType(GameRules.BLOCK_EXPLOSION_DROP_DECAY)
-        )
+        // todo: fix explosion
+//        val explosion = ExplosionImpl(
+//            world,
+//            exploding,
+//            pos.x,
+//            pos.y,
+//            pos.z,
+//            power,
+//            false,
+//            world.getDestructionType(GameRules.BLOCK_EXPLOSION_DROP_DECAY)
+//        )
 
-        return getEffectiveDamage(world.damageSources.explosion(explosion), preprocessedDamage.toFloat())
+//        return getEffectiveDamage(world.damageSources.explosion(explosion), preprocessedDamage.toFloat())
+        return preprocessedDamage.toFloat()
     } finally {
         ShapeFlag.noShapeChange = false
     }

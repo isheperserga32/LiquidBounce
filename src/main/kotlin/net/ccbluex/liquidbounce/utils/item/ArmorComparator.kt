@@ -23,7 +23,6 @@ import net.ccbluex.liquidbounce.utils.sorting.compareByCondition
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.enchantment.Enchantments
 import net.minecraft.entity.EquipmentSlot
-import net.minecraft.item.ArmorItem
 import net.minecraft.item.ItemStack
 import net.minecraft.registry.RegistryKey
 import net.minecraft.util.math.MathHelper
@@ -108,7 +107,7 @@ class ArmorComparator(
         compareByDescending { round(getThresholdedDamageReduction(it.itemSlot.itemStack).toDouble(), 3) },
         compareBy { round(getEnchantmentThreshold(it.itemSlot.itemStack).toDouble(), 3) },
         compareBy { it.itemSlot.itemStack.getEnchantmentCount() },
-        compareBy { (it.itemSlot.itemStack.item as ArmorItem).enchantability },
+//        compareBy { (it.itemSlot.itemStack.item as ArmorItem).enchantability },
         compareByCondition(ArmorPiece::isAlreadyEquipped),
         compareByCondition(ArmorPiece::isReachableByHand)
     )
@@ -118,14 +117,17 @@ class ArmorComparator(
     }
 
     private fun getThresholdedDamageReduction(itemStack: ItemStack): Float {
-        val item = itemStack.item as ArmorItem
-        val parameters = this.armorKitParametersForSlot.getParametersForSlot(item.slotType)
+        val item = itemStack.item
+        val equipmentSlot = item.equipmentType!!
+        val parameters = this.armorKitParametersForSlot.getParametersForSlot(equipmentSlot)
 
-        return getDamageFactor(
-            damage = expectedDamage,
-            defensePoints = parameters.defensePoints + item.material.value().getProtection(item.type),
-            toughness = parameters.toughness + item.material.value().toughness
-        ) * (1 - getThresholdedEnchantmentDamageReduction(itemStack))
+        // todo: someone send help what is going on here
+//        return getDamageFactor(
+//            damage = expectedDamage,
+//            defensePoints = parameters.defensePoints + item.material.value().getProtection(item.type),
+//            toughness = parameters.toughness + item.material.value().toughness
+//        ) * (1 - getThresholdedEnchantmentDamageReduction(itemStack))
+        return 0.0f
     }
 
     /**

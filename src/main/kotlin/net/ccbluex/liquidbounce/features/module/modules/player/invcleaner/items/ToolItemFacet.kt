@@ -23,8 +23,9 @@ import net.ccbluex.liquidbounce.utils.item.EnchantmentValueEstimator
 import net.ccbluex.liquidbounce.utils.item.type
 import net.ccbluex.liquidbounce.utils.sorting.ComparatorChain
 import net.minecraft.enchantment.Enchantments
+import net.minecraft.item.MiningToolItem
 
-class ToolItemFacet(itemSlot: ItemSlot) : ItemFacet(itemSlot) {
+class MiningToolItemFacet(itemSlot: ItemSlot) : ItemFacet(itemSlot) {
     companion object {
         val VALUE_ESTIMATOR =
             EnchantmentValueEstimator(
@@ -33,9 +34,9 @@ class ToolItemFacet(itemSlot: ItemSlot) : ItemFacet(itemSlot) {
                 EnchantmentValueEstimator.WeightedEnchantment(Enchantments.FORTUNE, 0.33f),
             )
         private val COMPARATOR =
-            ComparatorChain<ToolItemFacet>(
+            ComparatorChain<MiningToolItemFacet>(
                 // todo: needs to be checked differently now
-//                compareBy { (it.itemStack.item as MiningToolItem).material.miningSpeedMultiplier },
+//                compareBy { (it.itemStack.item as MiningMiningToolItem).material.miningSpeedMultiplier },
                 compareBy { VALUE_ESTIMATOR.estimateValue(it.itemStack) },
                 PREFER_BETTER_DURABILITY,
                 PREFER_ITEMS_IN_HOTBAR,
@@ -44,9 +45,9 @@ class ToolItemFacet(itemSlot: ItemSlot) : ItemFacet(itemSlot) {
     }
 
     override val category: ItemCategory
-        get() = ItemCategory(ItemType.TOOL, (this.itemStack.item as ToolItem).type)
+        get() = ItemCategory(ItemType.TOOL, (this.itemStack.item as MiningToolItem).type)
 
     override fun compareTo(other: ItemFacet): Int {
-        return COMPARATOR.compare(this, other as ToolItemFacet)
+        return COMPARATOR.compare(this, other as MiningToolItemFacet)
     }
 }

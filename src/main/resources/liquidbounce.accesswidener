@@ -169,3 +169,5 @@ accessible method net/minecraft/client/network/ClientPlayerInteractionManager sy
 
 accessible method net/minecraft/entity/projectile/PersistentProjectileEntity isInGround ()Z
 
+accessible method net/minecraft/entity/Entity isAlwaysInvulnerableTo (Lnet/minecraft/entity/damage/DamageSource;)Z
+

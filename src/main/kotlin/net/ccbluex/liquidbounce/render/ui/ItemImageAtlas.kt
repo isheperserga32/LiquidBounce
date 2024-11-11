@@ -1,7 +1,7 @@
 package net.ccbluex.liquidbounce.render.ui
 
+import com.mojang.blaze3d.systems.ProjectionType
 import com.mojang.blaze3d.systems.RenderSystem
-import com.mojang.blaze3d.systems.VertexSorter
 import net.ccbluex.liquidbounce.event.Listenable
 import net.ccbluex.liquidbounce.event.events.ResourceReloadEvent
 import net.ccbluex.liquidbounce.event.handler
@@ -158,7 +158,7 @@ private class ItemFramebufferRenderer(
             21000.0f
         )
 
-        RenderSystem.setProjectionMatrix(matrix4f, VertexSorter.BY_Z)
+        RenderSystem.setProjectionMatrix(matrix4f, ProjectionType.ORTHOGRAPHIC)
 
         val map = this.items.mapIndexed { idx, item ->
             val from = Vec2i(
@@ -181,7 +181,7 @@ private class ItemFramebufferRenderer(
 
         MinecraftClient.getInstance().framebuffer.beginWrite(true)
 
-        RenderSystem.setProjectionMatrix(projectionMatrix, VertexSorter.BY_Z)
+        RenderSystem.setProjectionMatrix(projectionMatrix, ProjectionType.ORTHOGRAPHIC)
 
         return map
     }
