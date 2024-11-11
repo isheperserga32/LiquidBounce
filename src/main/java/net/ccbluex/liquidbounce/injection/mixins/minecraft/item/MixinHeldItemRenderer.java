@@ -85,7 +85,7 @@ public abstract class MixinHeldItemRenderer {
 
     @Redirect(method = "renderFirstPersonItem", at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/item/ItemStack;getUseAction()Lnet/minecraft/util/UseAction;",
+            target = "Lnet/minecraft/item/ItemStack;getUseAction()Lnet/minecraft/item/consume/UseAction;",
             ordinal = 0
     ))
     private UseAction hookUseAction(ItemStack instance) {
@@ -156,7 +156,7 @@ public abstract class MixinHeldItemRenderer {
     }
 
     @Inject(method = "renderFirstPersonItem",
-            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getUseAction()Lnet/minecraft/util/UseAction;")),
+            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getUseAction()Lnet/minecraft/item/consume/UseAction;")),
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/HeldItemRenderer;applyEquipOffset(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/util/Arm;F)V", ordinal = 2, shift = At.Shift.AFTER))
     private void transformLegacyBlockAnimations(AbstractClientPlayerEntity player, float tickDelta, float pitch,
                                                 Hand hand, float swingProgress, ItemStack item, float equipProgress,

@@ -23,7 +23,6 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.ccbluex.liquidbounce.event.EventManager;
-import net.ccbluex.liquidbounce.event.events.PlayerJumpEvent;
 import net.ccbluex.liquidbounce.event.events.PlayerSafeWalkEvent;
 import net.ccbluex.liquidbounce.event.events.PlayerStrideEvent;
 import net.ccbluex.liquidbounce.features.command.commands.client.fakeplayer.FakePlayer;
@@ -121,19 +120,6 @@ public abstract class MixinPlayerEntity extends MixinLivingEntity {
         var clip = ModuleNoClip.INSTANCE;
         if (!this.noClip && clip.getEnabled() && !clip.paused()) {
             this.noClip = true;
-        }
-    }
-
-    @Inject(method = "jump", at = @At("HEAD"), cancellable = true)
-    private void hookJumpEvent(CallbackInfo ci) {
-        if ((Object) this != MinecraftClient.getInstance().player) {
-            return;
-        }
-
-        final PlayerJumpEvent jumpEvent = new PlayerJumpEvent(getJumpVelocity());
-        EventManager.INSTANCE.callEvent(jumpEvent);
-        if (jumpEvent.isCancelled()) {
-            ci.cancel();
         }
     }
 

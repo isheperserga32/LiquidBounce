@@ -22,10 +22,10 @@ import net.ccbluex.liquidbounce.event.EventManager;
 import net.ccbluex.liquidbounce.event.events.OverlayMessageEvent;
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleAntiBlind;
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleFreeCam;
-import net.ccbluex.liquidbounce.render.engine.UIRenderer;
 import net.ccbluex.liquidbounce.integration.theme.component.ComponentOverlay;
 import net.ccbluex.liquidbounce.integration.theme.component.FeatureTweak;
 import net.ccbluex.liquidbounce.integration.theme.component.types.IntegratedComponent;
+import net.ccbluex.liquidbounce.render.engine.UIRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -49,11 +49,10 @@ public abstract class MixinInGameHud {
 
     @Final
     @Shadow
-    private static Identifier PUMPKIN_BLUR;
-
-    @Final
-    @Shadow
     private static Identifier POWDER_SNOW_OUTLINE;
+
+    @Unique
+    private static final Identifier PUMPKIN_BLUR = Identifier.ofVanilla("misc/pumpkinblur");
 
     @Shadow
     @Nullable

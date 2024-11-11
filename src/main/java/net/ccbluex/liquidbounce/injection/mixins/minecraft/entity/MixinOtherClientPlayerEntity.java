@@ -35,7 +35,9 @@ public abstract class MixinOtherClientPlayerEntity extends AbstractClientPlayerE
 
     @Override
     public boolean liquid_bounce$actuallyDamage(DamageSource source, float amount) {
-        return super.damage(source, amount);
+        // todo: fix this
+        return false;
+//        return super.damage(source, amount);
     }
 
 }
