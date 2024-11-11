@@ -69,8 +69,8 @@ object MinimapComponent : Component("Minimap", true) {
 
         val matStack = MatrixStack()
 
-        val playerPos = player.interpolateCurrentPosition(event.tickDelta)
-        val playerRotation = player.interpolateCurrentRotation(event.tickDelta)
+        val playerPos = player.interpolateCurrentPosition(event.delta)
+        val playerRotation = player.interpolateCurrentRotation(event.delta)
 
         val minimapSize = size
 
@@ -125,7 +125,7 @@ object MinimapComponent : Component("Minimap", true) {
             ) { matrix ->
                 for (renderedEntity in ModuleESP.findRenderedEntities()) {
                     drawEntityOnMinimap(
-                        this, matStack, renderedEntity, event.tickDelta, Vec2f(baseX.toFloat(), baseZ.toFloat())
+                        this, matStack, renderedEntity, event.delta, Vec2f(baseX.toFloat(), baseZ.toFloat())
                     )
                 }
             }

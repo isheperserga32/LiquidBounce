@@ -70,7 +70,7 @@ object ModuleNametags : Module("Nametags", Category.RENDER) {
             val nametagRenderer = NametagRenderer()
 
             try {
-                drawNametags(nametagRenderer, event.tickDelta)
+                drawNametags(nametagRenderer, event.delta)
             } finally {
                 nametagRenderer.commit(this)
             }

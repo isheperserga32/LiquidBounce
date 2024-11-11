@@ -109,7 +109,7 @@ public class MixinSplashOverlay {
 
     @Inject(method = "render", at = @At("RETURN"))
     private void render(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        EventManager.INSTANCE.callEvent(new ScreenRenderEvent());
+        EventManager.INSTANCE.callEvent(new ScreenRenderEvent(context, delta));
     }
 
     @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Ljava/util/function/Function;Lnet/minecraft/util/Identifier;IIFFIIIIIII)V"))

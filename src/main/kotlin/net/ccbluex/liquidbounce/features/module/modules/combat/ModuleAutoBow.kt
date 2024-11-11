@@ -266,7 +266,7 @@ object ModuleAutoBow : Module("AutoBow", Category.COMBAT, aliases = arrayOf("Bow
             val target = targetTracker.lockedOnTarget ?: return@handler
 
             renderEnvironmentForGUI {
-                targetRenderer.render(this, target, event.tickDelta)
+                targetRenderer.render(this, target, event.delta)
             }
         }
 

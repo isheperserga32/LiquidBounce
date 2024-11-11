@@ -204,7 +204,7 @@ object ModuleAutoShoot : Module("AutoShoot", Category.COMBAT) {
         val target = targetTracker.lockedOnTarget ?: return@handler
 
         renderEnvironmentForWorld(matrixStack) {
-            targetRenderer.render(this, target, event.partialTicks)
+            targetRenderer.render(this, target, event.delta)
         }
     }
 

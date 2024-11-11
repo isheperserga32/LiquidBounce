@@ -25,7 +25,7 @@ import net.ccbluex.liquidbounce.features.module.modules.render.ModuleFreeCam;
 import net.ccbluex.liquidbounce.integration.theme.component.ComponentOverlay;
 import net.ccbluex.liquidbounce.integration.theme.component.FeatureTweak;
 import net.ccbluex.liquidbounce.integration.theme.component.types.IntegratedComponent;
-import net.ccbluex.liquidbounce.render.engine.UIRenderer;
+import net.ccbluex.liquidbounce.render.engine.OverlayRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -71,7 +71,7 @@ public abstract class MixinInGameHud {
      */
     @Inject(method = "renderMainHud", at = @At("HEAD"))
     private void hookRenderEventStart(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
-        UIRenderer.INSTANCE.startUIOverlayDrawing(context, tickCounter.getTickDelta(false));
+        OverlayRenderer.INSTANCE.start(context, tickCounter.getTickDelta(false));
 
         // Draw after overlay event
         var component = ComponentOverlay.getComponentWithTweak(FeatureTweak.TWEAK_HOTBAR);
@@ -114,8 +114,7 @@ public abstract class MixinInGameHud {
         }
     }
 
-
-    @Inject(method = "renderScoreboardSidebar", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", at = @At("HEAD"), cancellable = true)
     private void renderScoreboardSidebar(CallbackInfo ci) {
         if (ComponentOverlay.isTweakEnabled(FeatureTweak.DISABLE_SCOREBOARD)) {
             ci.cancel();

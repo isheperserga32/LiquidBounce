@@ -19,6 +19,8 @@
 package net.ccbluex.liquidbounce.utils.math
 
 import net.ccbluex.liquidbounce.config.NamedChoice
+import kotlin.math.PI
+import kotlin.math.cos
 import kotlin.math.pow
 
 /**
@@ -44,6 +46,9 @@ enum class Easing(override val choiceName: String) : NamedChoice {
     },
     EXPONENTIAL_OUT("ExponentialOut") {
         override fun transform(x: Float) = if (x == 1f) 1f else 1f - 2f.pow(-10f * x)
+    },
+    SINE_IN("SineIn") {
+        override fun transform(x: Float) = 1 - cos(x * PI / 2).toFloat()
     },
     NONE("None") {
         override fun transform(x: Float) = 1f

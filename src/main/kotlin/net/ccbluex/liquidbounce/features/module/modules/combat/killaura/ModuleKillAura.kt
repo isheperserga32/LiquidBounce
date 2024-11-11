@@ -142,7 +142,7 @@ object ModuleKillAura : Module("KillAura", Category.COMBAT) {
     val renderHandler = handler<WorldRenderEvent> { event ->
         val matrixStack = event.matrixStack
 
-        renderTarget(matrixStack, event.partialTicks)
+        renderTarget(matrixStack, event.delta)
         renderFailedHits(matrixStack)
     }
 

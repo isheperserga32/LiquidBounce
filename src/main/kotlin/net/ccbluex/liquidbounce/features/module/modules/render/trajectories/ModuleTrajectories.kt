@@ -98,7 +98,7 @@ object ModuleTrajectories : Module("Trajectories", Category.RENDER) {
         val yawRadians = rotation.yaw / 180f * Math.PI.toFloat()
         val pitchRadians = rotation.pitch / 180f * Math.PI.toFloat()
 
-        val interpolatedOffset = otherPlayer.interpolateCurrentPosition(event.partialTicks) - otherPlayer.pos
+        val interpolatedOffset = otherPlayer.interpolateCurrentPosition(event.delta) - otherPlayer.pos
 
         // Positions
         val pos = Vec3d(

@@ -30,10 +30,13 @@ import net.minecraft.client.util.math.MatrixStack
 class GameRenderEvent : Event()
 
 @Nameable("screenRender")
-class ScreenRenderEvent : Event()
+class ScreenRenderEvent(val context: DrawContext, val delta: Float) : Event()
+
+@Nameable("overlayRender")
+class OverlayRenderEvent(val context: DrawContext, val delta: Float) : Event()
 
 @Nameable("worldRender")
-class WorldRenderEvent(val matrixStack: MatrixStack, val camera: Camera, val partialTicks: Float) : Event()
+class WorldRenderEvent(val matrixStack: MatrixStack, val camera: Camera, val delta: Float) : Event()
 
 /**
  * Sometimes, modules might want to contribute something to the glow framebuffer. They can hook this event
@@ -64,5 +67,3 @@ class DrawOutlinesEvent(
     }
 }
 
-@Nameable("overlayRender")
-class OverlayRenderEvent(val context: DrawContext, val tickDelta: Float) : Event()

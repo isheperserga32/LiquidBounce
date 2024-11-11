@@ -94,7 +94,7 @@ object ModuleCrystalAura : Module("CrystalAura", Category.COMBAT, disableOnQuit 
         val target = currentTarget ?: return@handler
 
         renderEnvironmentForWorld(it.matrixStack) {
-            targetRenderer.render(this, target, it.partialTicks)
+            targetRenderer.render(this, target, it.delta)
         }
     }
 

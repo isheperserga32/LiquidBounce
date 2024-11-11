@@ -27,13 +27,13 @@ import net.ccbluex.liquidbounce.event.events.WorldRenderEvent;
 import net.ccbluex.liquidbounce.features.module.modules.fun.ModuleDankBobbing;
 import net.ccbluex.liquidbounce.features.module.modules.render.*;
 import net.ccbluex.liquidbounce.features.module.modules.world.ModuleLiquidPlace;
-import net.ccbluex.liquidbounce.interfaces.LightmapTextureManagerAddition;
-import net.ccbluex.liquidbounce.render.engine.UIRenderer;
+import net.ccbluex.liquidbounce.render.engine.OverlayRenderer;
 import net.ccbluex.liquidbounce.utils.aiming.RaytracingExtensionsKt;
 import net.ccbluex.liquidbounce.utils.aiming.Rotation;
 import net.ccbluex.liquidbounce.utils.aiming.RotationManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.PostEffectProcessor;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
@@ -141,8 +141,8 @@ public abstract class MixinGameRenderer {
     @Inject(method = "render", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/gui/screen/Screen;renderWithTooltip(Lnet/minecraft/client/gui/DrawContext;IIF)V",
             shift = At.Shift.AFTER))
-    public void hookScreenRender(CallbackInfo ci) {
-        EventManager.INSTANCE.callEvent(new ScreenRenderEvent());
+    public void hookScreenRender(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci, @Local DrawContext drawContext) {
+        EventManager.INSTANCE.callEvent(new ScreenRenderEvent(drawContext, tickCounter.getLastDuration()));
     }
 
     @Inject(method = "tiltViewWhenHurt", at = @At("HEAD"), cancellable = true)
@@ -184,7 +184,7 @@ public abstract class MixinGameRenderer {
 //            this.blurPostEffectProcessor.setupDimensions(width, height);
 //        }
 
-        UIRenderer.INSTANCE.setupDimensions(width, height);
+        OverlayRenderer.INSTANCE.setupDimensions(width, height);
     }
 
 //    @Inject(method = "loadPrograms", at = @At("TAIL"))
@@ -225,14 +225,14 @@ public abstract class MixinGameRenderer {
 //        this.blurPostEffectProcessor.render(tickCounter.getTickDelta(false));
 //    }
 
-    @Inject(method = "render", at = @At(value = "RETURN"))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;draw()V"))
     private void hookRenderEventStop(RenderTickCounter tickCounter, boolean tick, CallbackInfo ci) {
-        UIRenderer.INSTANCE.endUIOverlayDrawing();
+        OverlayRenderer.INSTANCE.end();
     }
 
     @Inject(method = "renderBlur", at = @At("HEAD"))
     private void injectRenderBlur(CallbackInfo ci) {
-        UIRenderer.INSTANCE.endUIOverlayDrawing();
+        OverlayRenderer.INSTANCE.end();
     }
 
     @Inject(method = "showFloatingItem", at = @At("HEAD"), cancellable = true)
@@ -244,7 +244,7 @@ public abstract class MixinGameRenderer {
 
     @Inject(method = "renderWorld", at = @At(value = "RETURN"))
     private void hookRestoreLightMap(RenderTickCounter tickCounter, CallbackInfo ci) {
-        ((LightmapTextureManagerAddition) lightmapTextureManager).liquid_bounce$restoreLightMap();
+//        ((LightmapTextureManagerAddition) lightmapTextureManager).liquid_bounce$restoreLightMap();
     }
   
     @ModifyExpressionValue(method = "getFov", at = @At(value = "INVOKE", target = "Ljava/lang/Integer;intValue()I", remap = false))
