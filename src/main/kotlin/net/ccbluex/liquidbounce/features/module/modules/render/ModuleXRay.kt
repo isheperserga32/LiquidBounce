@@ -20,11 +20,10 @@ package net.ccbluex.liquidbounce.features.module.modules.render
 
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
-import net.ccbluex.liquidbounce.utils.block.getState
 import net.minecraft.block.BlockState
 import net.minecraft.block.Blocks.*
-import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
+import net.minecraft.util.shape.VoxelShapes
 
 /**
  * XRay module
@@ -175,14 +174,22 @@ object ModuleXRay : Module("XRay", Category.RENDER) {
         deafultBlocks
     )
 
-    fun shouldRender(blockState: BlockState, blockPos: BlockPos) = when {
-        blockState.block !in blocks -> false
-
-        exposedOnly -> Direction.entries.any {
-            blockPos.add(it.vector)?.let { pos -> pos.getState()?.isSolidBlock(world, pos) } == false
+    /**
+     * Check if the block should be drawn
+     */
+    fun allowDrawingSide(state: BlockState, otherState: BlockState, side: Direction): Boolean {
+        // Check if the block is in the list, if not, we don't want to render it
+        if (state.block !in blocks) {
+            return false
         }
 
-        else -> true
+        // Check if the block has to be exposed and if it is not, we don't want to render it
+        if (exposedOnly && otherState.isOpaque) {
+            return false
+        }
+
+        return otherState.getCullingFace(side.opposite) != VoxelShapes.fullCube() ||
+            otherState.block != state.block || !otherState.isOpaque
     }
 
     fun resetBlocks() {
