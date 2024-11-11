@@ -179,18 +179,16 @@ object ModuleBacktrack : Module("Backtrack", Category.COMBAT) {
 
             renderEnvironmentForWorld(event.matrixStack) {
                 withPositionRelativeToCamera(pos) {
-                    // todo: fix later
-//                    mc.entityRenderDispatcher.render(
-//                        entity,
-//                        0.0,
-//                        0.0,
-//                        0.0,
-//                        entity.yaw,
-//                        1.0f,
-//                        event.matrixStack,
-//                        mc.bufferBuilders.entityVertexConsumers,
-//                        reducedLight
-//                    )
+                    mc.entityRenderDispatcher.render(
+                        entity,
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0f,
+                        event.matrixStack,
+                        mc.bufferBuilders.entityVertexConsumers,
+                        reducedLight
+                    )
                 }
             }
         }
