@@ -37,7 +37,6 @@ import net.ccbluex.liquidbounce.utils.entity.boxedDistanceTo
 import net.ccbluex.liquidbounce.utils.entity.squareBoxedDistanceTo
 import net.ccbluex.liquidbounce.utils.entity.squaredBoxedDistanceTo
 import net.ccbluex.liquidbounce.utils.render.WireframePlayer
-import net.minecraft.client.MinecraftClient
 import net.minecraft.entity.Entity
 import net.minecraft.entity.TrackedPosition
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket
@@ -175,24 +174,21 @@ object ModuleBacktrack : Module("Backtrack", Category.COMBAT) {
         val renderHandler = handler<WorldRenderEvent> { event ->
             val (entity, pos) = getEntityPosition() ?: return@handler
 
-            val light = mc.world!!.getLightLevel(BlockPos.ORIGIN)
+            val light = world.getLightLevel(BlockPos.ORIGIN)
             val reducedLight = (light * lightAmount.toDouble()).toInt()
-            val mc = MinecraftClient.getInstance()
 
             renderEnvironmentForWorld(event.matrixStack) {
                 withPositionRelativeToCamera(pos) {
-                    // todo: fix later
-//                    mc.entityRenderDispatcher.render(
-//                        entity,
-//                        0.0,
-//                        0.0,
-//                        0.0,
-//                        entity.yaw,
-//                        1.0f,
-//                        event.matrixStack,
-//                        mc.bufferBuilders.entityVertexConsumers,
-//                        reducedLight
-//                    )
+                    mc.entityRenderDispatcher.render(
+                        entity,
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0f,
+                        event.matrixStack,
+                        mc.bufferBuilders.entityVertexConsumers,
+                        reducedLight
+                    )
                 }
             }
         }
