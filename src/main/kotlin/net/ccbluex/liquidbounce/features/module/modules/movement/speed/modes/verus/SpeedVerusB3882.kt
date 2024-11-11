@@ -33,6 +33,7 @@ import net.ccbluex.liquidbounce.utils.entity.directionYaw
 import net.ccbluex.liquidbounce.utils.entity.moving
 import net.ccbluex.liquidbounce.utils.entity.strafe
 import net.ccbluex.liquidbounce.utils.kotlin.Priority
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.entity.MovementType
 
 /**
@@ -42,9 +43,9 @@ import net.minecraft.entity.MovementType
  */
 class SpeedVerusB3882(override val parent: ChoiceConfigurable<*>) : Choice("VerusB3882") {
 
-    val movementInputEvent = handler<MovementInputEvent> {
+    val movementInputEvent = handler<MovementInputEvent> { event ->
         if (player.moving) {
-            it.jumping = true
+            event.input = event.input.copy(jump = true)
         }
     }
 

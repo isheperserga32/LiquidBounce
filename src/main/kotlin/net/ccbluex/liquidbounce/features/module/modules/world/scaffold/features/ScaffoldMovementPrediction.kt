@@ -25,7 +25,6 @@ import net.ccbluex.liquidbounce.utils.math.geometry.Line
 import net.ccbluex.liquidbounce.utils.math.minus
 import net.ccbluex.liquidbounce.utils.math.plus
 import net.ccbluex.liquidbounce.utils.math.times
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
 import net.ccbluex.liquidbounce.utils.movement.findEdgeCollision
 import net.minecraft.util.math.Vec3d
 import kotlin.math.atan2
@@ -85,7 +84,7 @@ object ScaffoldMovementPrediction : ToggleableConfigurable(ModuleScaffold, "Pred
         val optimalEdgeDist = 0.0
 
         // When we are close to the edge, we are able to place right now. Thus, we don't want to use a future position
-        if (player.isCloseToEdge(DirectionalInput(player.input.playerInput), distance = optimalEdgeDist)) {
+        if (player.isCloseToEdge(player.input.playerInput, distance = optimalEdgeDist)) {
             return null
         }
 

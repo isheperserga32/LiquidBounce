@@ -29,7 +29,8 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.utils.entity.SimulatedPlayer
 import net.ccbluex.liquidbounce.utils.entity.isCloseToEdge
 import net.ccbluex.liquidbounce.utils.kotlin.EventPriorityConvention
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
+import net.ccbluex.liquidbounce.utils.movement.copy
 
 /**
  * SafeWalk module
@@ -54,16 +55,12 @@ object ModuleSafeWalk : Module("SafeWalk", Category.MOVEMENT) {
         val inputHandler = handler<MovementInputEvent> { event ->
             if (eagleOnLedge) {
                 val simulatedPlayer = SimulatedPlayer.fromClientPlayer(
-                    SimulatedPlayer.SimulatedPlayerInput(
-                        event.directionalInput,
-                        event.jumping,
-                        player.isSprinting,
-                        true
-                    ))
+                    SimulatedPlayer.SimulatedPlayerInput(event.input.copy(sneak = true))
+                )
                 simulatedPlayer.tick()
 
                 if (simulatedPlayer.clipLedged) {
-                    event.sneaking = true
+                    event.input = event.input.copy(sneak = true)
                 }
             }
         }
@@ -86,12 +83,8 @@ object ModuleSafeWalk : Module("SafeWalk", Category.MOVEMENT) {
         val inputHandler = handler<MovementInputEvent> { event ->
             if (player.isOnGround && !player.isSneaking) {
                 val simulatedPlayer = SimulatedPlayer.fromClientPlayer(
-                    SimulatedPlayer.SimulatedPlayerInput(
-                        event.directionalInput,
-                        event.jumping,
-                        player.isSprinting,
-                        true
-                    ))
+                    SimulatedPlayer.SimulatedPlayerInput(event.input.copy(sneak = true))
+                )
 
                 // TODO: Calculate the required ticks early that prevent the player from falling off the edge
                 //  instead of relying on the static predict value.
@@ -99,7 +92,7 @@ object ModuleSafeWalk : Module("SafeWalk", Category.MOVEMENT) {
                     simulatedPlayer.tick()
 
                     if (simulatedPlayer.clipLedged) {
-                        event.directionalInput = DirectionalInput.NONE
+                        event.input = PlayerInput()
                     }
                 }
             }
@@ -120,8 +113,8 @@ object ModuleSafeWalk : Module("SafeWalk", Category.MOVEMENT) {
         ) { event ->
             val shouldBeActive = player.isOnGround && !player.isSneaking
 
-            if (shouldBeActive && player.isCloseToEdge(event.directionalInput, edgeDistance.toDouble())) {
-                event.directionalInput = DirectionalInput.NONE
+            if (shouldBeActive && player.isCloseToEdge(event.input, edgeDistance.toDouble())) {
+                event.input = PlayerInput()
             }
         }
 

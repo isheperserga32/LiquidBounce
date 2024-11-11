@@ -5,7 +5,6 @@ import net.ccbluex.liquidbounce.event.events.GameTickEvent
 import net.ccbluex.liquidbounce.event.events.MovementInputEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.utils.client.player
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.math.Vec3d
 import java.util.concurrent.ConcurrentHashMap
@@ -23,7 +22,7 @@ object PlayerSimulationCache: Listenable {
 
     private val movementHandler = handler<MovementInputEvent> {
         val simulatedPlayer = SimulatedPlayer.fromClientPlayer(
-            SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(it.directionalInput)
+            SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(it.input)
         )
 
         localPlayerCache = SimulatedPlayerCache(simulatedPlayer)
@@ -48,7 +47,7 @@ object PlayerSimulationCache: Listenable {
         }
 
         val simulatedPlayer = SimulatedPlayer.fromClientPlayer(
-            SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(DirectionalInput(player.input.playerInput))
+            SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(player.input.playerInput)
         )
 
         val simulatedPlayerCache = SimulatedPlayerCache(simulatedPlayer)

@@ -22,7 +22,6 @@ package net.ccbluex.liquidbounce.utils.entity
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleArrayMap
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap
-import net.ccbluex.liquidbounce.event.EventManager
 import net.ccbluex.liquidbounce.event.EventManager.callEvent
 import net.ccbluex.liquidbounce.event.events.PlayerMoveEvent
 import net.ccbluex.liquidbounce.event.events.PlayerSafeWalkEvent
@@ -32,7 +31,8 @@ import net.ccbluex.liquidbounce.utils.client.player
 import net.ccbluex.liquidbounce.utils.client.toRadians
 import net.ccbluex.liquidbounce.utils.math.plus
 import net.ccbluex.liquidbounce.utils.math.toBlockPos
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.ccbluex.liquidbounce.utils.movement.getDegreesRelativeToView
 import net.ccbluex.liquidbounce.utils.movement.getDirectionalInputForDegrees
 import net.minecraft.block.*
@@ -52,6 +52,7 @@ import net.minecraft.registry.entry.RegistryEntry
 import net.minecraft.registry.tag.BlockTags
 import net.minecraft.registry.tag.FluidTags
 import net.minecraft.registry.tag.TagKey
+import net.minecraft.util.PlayerInput
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.MathHelper
@@ -396,7 +397,7 @@ class SimulatedPlayer(
     private fun getAirStrafingSpeed(): Float {
         val speed = 0.02f
 
-        if (this.input.sprinting) {
+        if (this.input.playerInput.sprint) {
             return (speed + 0.005999999865889549).toFloat()
         }
 
@@ -634,7 +635,7 @@ class SimulatedPlayer(
     }
 
     protected fun shouldClipAtLedge(): Boolean {
-        return this.input.sneaking || this.input.forceSafeWalk
+        return this.input.playerInput.sneak || this.input.forceSafeWalk
     }
 
     private fun method_30263(): Boolean {
@@ -877,32 +878,20 @@ class SimulatedPlayer(
     }
 
     class SimulatedPlayerInput(
-        directionalInput: DirectionalInput,
-        jumping: Boolean,
-        var sprinting: Boolean,
-        sneaking: Boolean
+        val playerInput: PlayerInput
     ) : Input() {
         var forceSafeWalk: Boolean = false
 
-        init {
-            this.pressingForward = directionalInput.forwards
-            this.pressingBack = directionalInput.backwards
-            this.pressingLeft = directionalInput.left
-            this.pressingRight = directionalInput.right
-            this.jumping = jumping
-            this.sneaking = sneaking
-        }
-
         fun update() {
-            if (this.pressingForward != this.pressingBack) {
-                this.movementForward = if (this.pressingForward) 1.0f else -1.0f
+            if (this.playerInput.forward != this.playerInput.backward) {
+                this.movementForward = if (this.playerInput.forward) 1.0f else -1.0f
             } else {
                 this.movementForward = 0.0f
             }
 
-            movementSideways = if (pressingLeft == pressingRight) 0.0f else if (pressingLeft) 1.0f else -1.0f
+            movementSideways = if (playerInput.left == playerInput.right) 0.0f else if (playerInput.left) 1.0f else -1.0f
 
-            if (sneaking) {
+            if (playerInput.sneak) {
                 movementSideways = (movementSideways.toDouble() * 0.3).toFloat()
                 movementForward = (movementForward.toDouble() * 0.3).toFloat()
             }
@@ -912,22 +901,11 @@ class SimulatedPlayer(
             private const val MAX_WALKING_SPEED = 0.121
 
             fun fromClientPlayer(
-                directionalInput: DirectionalInput,
-                jumping: Boolean = player.input.playerInput.jump,
-                sprinting: Boolean = player.isSprinting,
-                sneaking: Boolean = player.isSneaking
+                playerInput: PlayerInput
             ): SimulatedPlayerInput {
-                val input = SimulatedPlayerInput(
-                    directionalInput,
-                    jumping,
-                    sprinting,
-                    sneaking
-                )
+                val input = SimulatedPlayerInput(playerInput)
 
-                val safeWalkEvent = PlayerSafeWalkEvent()
-
-                EventManager.callEvent(safeWalkEvent)
-
+                val safeWalkEvent = callEvent(PlayerSafeWalkEvent())
                 if (safeWalkEvent.isSafeWalk) {
                     input.forceSafeWalk = true
                 }
@@ -950,18 +928,15 @@ class SimulatedPlayer(
 
                     val velocityAngle1 = MathHelper.wrapDegrees(velocityAngle)
 
-                    getDirectionalInputForDegrees(DirectionalInput.NONE, velocityAngle1)
+                    getDirectionalInputForDegrees(PlayerInput(), velocityAngle1)
                 } else {
-                    DirectionalInput.NONE
+                    PlayerInput()
                 }
 
                 val jumping = !entity.isOnGround
 
                 return SimulatedPlayerInput(
-                    input,
-                    jumping,
-                    sprinting,
-                    sneaking=entity.isSneaking
+                    input.copy(jump = jumping, sprint = sprinting, sneak = entity.isSneaking)
                 )
             }
         }

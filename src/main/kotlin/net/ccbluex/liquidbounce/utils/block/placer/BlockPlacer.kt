@@ -42,6 +42,7 @@ import net.ccbluex.liquidbounce.utils.client.player
 import net.ccbluex.liquidbounce.utils.collection.getSlot
 import net.ccbluex.liquidbounce.utils.kotlin.Priority
 import net.ccbluex.liquidbounce.utils.math.sq
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.ccbluex.liquidbounce.utils.render.placement.PlacementRenderer
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.item.BlockItem
@@ -128,7 +129,7 @@ class BlockPlacer(
     private var sneakTimes = 0
 
     @Suppress("unused")
-    private val targetUpdater = handler<SimulatedTickEvent>(priority = -20) {
+    private val targetUpdater = handler<SimulatedTickEvent>(priority = -20) { event ->
         if (ticksToWait > 0) {
             ticksToWait--
         } else if (ranAction) {
@@ -146,7 +147,7 @@ class BlockPlacer(
 
         if (sneakTimes > 0) {
             sneakTimes--
-            it.movementEvent.sneaking = true
+            event.movementEvent.input = event.movementEvent.input.copy(sneak = true)
         }
 
         if (blocks.isEmpty()) {
@@ -160,14 +161,14 @@ class BlockPlacer(
 
         inaccessible.clear()
         rotationMode.activeChoice.onTickStart()
-        if (scheduleCurrentPlacements(itemStack, it)) {
+        if (scheduleCurrentPlacements(itemStack, event)) {
             return@handler
         }
 
         // no possible position found, now a support placement can be considered
 
         if (support.enabled && support.chronometer.hasElapsed(support.delay.toLong())) {
-            findSupportPath(itemStack, it)
+            findSupportPath(itemStack, event)
         }
     }
 
@@ -221,7 +222,7 @@ class BlockPlacer(
         support.chronometer.reset()
     }
 
-    private fun scheduleCurrentPlacements(itemStack: ItemStack, it: SimulatedTickEvent): Boolean {
+    private fun scheduleCurrentPlacements(itemStack: ItemStack, event: SimulatedTickEvent): Boolean {
         var hasPlaced = false
 
         val iterator = blocks.iterator()
@@ -267,7 +268,7 @@ class BlockPlacer(
                 )
             ) {
                 sneakTimes = sneak - 1
-                it.movementEvent.sneaking = true
+                event.movementEvent.input = event.movementEvent.input.copy(sneak = true)
             }
 
             if (rotationMode.activeChoice(entry.value, pos, placementTarget)) {

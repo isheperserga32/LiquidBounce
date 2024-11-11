@@ -37,6 +37,7 @@ import net.ccbluex.liquidbounce.utils.entity.moving
 import net.ccbluex.liquidbounce.utils.entity.sqrtSpeed
 import net.ccbluex.liquidbounce.utils.entity.strafe
 import net.ccbluex.liquidbounce.utils.kotlin.Priority
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket
 
 /**
@@ -193,12 +194,12 @@ class SpeedCustom(override val parent: ChoiceConfigurable<*>) : Choice("Custom")
         }
     }
 
-    val handleJump = handler<MovementInputEvent> {
+    val handleJump = handler<MovementInputEvent> { event ->
         if (!player.moving || doOptimizationsPreventJump()) {
             return@handler
         }
 
-        it.jumping = true
+        event.input = event.input.copy(jump = true)
     }
 
     private fun doOptimizationsPreventJump(): Boolean {

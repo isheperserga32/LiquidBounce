@@ -33,6 +33,7 @@ import net.ccbluex.liquidbounce.utils.entity.boxedDistanceTo
 import net.ccbluex.liquidbounce.utils.entity.directionYaw
 import net.ccbluex.liquidbounce.utils.entity.moving
 import net.ccbluex.liquidbounce.utils.entity.strafe
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket
 import net.minecraft.util.Hand
 import net.minecraft.util.math.Vec3d
@@ -119,9 +120,9 @@ object ModuleVehicleControl : Module("VehicleControl", Category.MOVEMENT, aliase
             val isVehicleSafe = player.controllingVehicle?.let { it.isOnGround || it.isTouchingWater } == true
 
             // Do not quit vehicle if not safe to do so
-            event.sneaking = event.sneaking && isVehicleSafe
+            event.input = event.input.copy(sneak = event.input.sneak && isVehicleSafe)
 
-            if (event.sneaking) {
+            if (event.input.sneak) {
                 Rehook.vehicleId = -1
             }
         }

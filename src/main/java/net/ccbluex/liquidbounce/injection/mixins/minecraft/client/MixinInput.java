@@ -21,6 +21,7 @@ package net.ccbluex.liquidbounce.injection.mixins.minecraft.client;
 
 import net.ccbluex.liquidbounce.features.module.modules.movement.ModuleSprint;
 import net.minecraft.client.input.Input;
+import net.minecraft.util.PlayerInput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -45,6 +46,8 @@ public class MixinInput {
     public boolean jumping;
 
     @Shadow public boolean sneaking;
+
+    @Shadow public PlayerInput playerInput;
 
     @Inject(method = "hasForwardMovement", cancellable = true, at = @At("RETURN"))
     private void hookOmnidirectionalSprintA(final CallbackInfoReturnable<Boolean> callbackInfoReturnable) {

@@ -30,7 +30,7 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.utils.block.getBlock
 import net.ccbluex.liquidbounce.utils.entity.FallingPlayer
 import net.ccbluex.liquidbounce.utils.entity.SimulatedPlayer
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
 import net.minecraft.block.Blocks
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
 import net.minecraft.util.shape.VoxelShapes
@@ -89,7 +89,7 @@ object ModuleReverseStep : Module("ReverseStep", Category.MOVEMENT) {
                     return@repeatable
                 }
 
-                val simInput = SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(DirectionalInput.NONE)
+                val simInput = SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(PlayerInput())
                 val simulatePlayer = SimulatedPlayer.fromClientPlayer(simInput)
 
                 val simulationQueue = mutableListOf<PlayerMoveC2SPacket>()

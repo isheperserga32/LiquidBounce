@@ -26,6 +26,7 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.modules.world.scaffold.ScaffoldBlockItemSelection.isValidBlock
 import net.ccbluex.liquidbounce.utils.entity.isCloseToEdge
 import net.ccbluex.liquidbounce.utils.kotlin.EventPriorityConvention
+import net.ccbluex.liquidbounce.utils.movement.copy
 
 /**
  * An eagle module
@@ -47,15 +48,15 @@ object ModuleEagle : Module("Eagle", Category.PLAYER, aliases = arrayOf("FastBri
         val backwards by boolean("Backwards", false)
 
         fun shouldSneak(event: MovementInputEvent): Boolean = when {
-            !enabled || event.sneaking -> true
+            !enabled || event.input.sneak -> true
             holdingBlocks && !isValidBlock(player.mainHandStack) && !isValidBlock(player.offHandStack) -> false
             onGround && !player.isOnGround -> false
             player.pitch !in pitch -> false
-            sneak && !event.sneaking -> false
-            left && !event.directionalInput.left -> false
-            right && !event.directionalInput.right -> false
-            forwards && !event.directionalInput.forwards -> false
-            backwards && !event.directionalInput.backwards -> false
+            sneak && !event.input.sneak -> false
+            left && !event.input.left -> false
+            right && !event.input.right -> false
+            forwards && !event.input.forward -> false
+            backwards && !event.input.backward -> false
             else -> true
         }
     }
@@ -70,7 +71,8 @@ object ModuleEagle : Module("Eagle", Category.PLAYER, aliases = arrayOf("FastBri
     ) { event ->
         val shouldBeActive = !player.abilities.flying && Conditional.shouldSneak(event)
 
-        event.sneaking = shouldBeActive && player.isCloseToEdge(event.directionalInput, edgeDistance.toDouble())
+        val sneak = shouldBeActive && player.isCloseToEdge(event.input, edgeDistance.toDouble())
+        event.input = event.input.copy(sneak = sneak)
     }
 
 }

@@ -22,6 +22,7 @@ import net.ccbluex.liquidbounce.event.events.MovementInputEvent
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
+import net.ccbluex.liquidbounce.utils.movement.copy
 
 /**
  * Twerk module
@@ -38,9 +39,8 @@ object ModuleTwerk : Module("Twerk", Category.FUN) {
     /**
      * Handles sneaking and unsneaking, has a high priority so that more important modules can override it.
      */
-    val movementInputHandler = handler<MovementInputEvent>(priority = 10) {
-        val sneaking = player.age % (delay * 2) < delay
-        it.sneaking = sneaking
+    val movementInputHandler = handler<MovementInputEvent>(priority = 10) { event ->
+        event.input.copy(sneak = player.age % (delay * 2) < delay)
     }
 
 }

@@ -28,7 +28,7 @@ import net.ccbluex.liquidbounce.utils.entity.getMovementDirectionOfInput
 import net.ccbluex.liquidbounce.utils.math.geometry.Line
 import net.ccbluex.liquidbounce.utils.math.toBlockPos
 import net.ccbluex.liquidbounce.utils.math.toVec3d
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.minecraft.util.PlayerInput
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Box
 import net.minecraft.util.math.MathHelper
@@ -45,12 +45,12 @@ object ScaffoldMovementPlanner {
      * When using scaffold the player wants to follow the line and the scaffold should support them in doing so.
      * This function calculates this ideal line that the player should move on.
      */
-    fun getOptimalMovementLine(directionalInput: DirectionalInput): Line? {
+    fun getOptimalMovementLine(input: PlayerInput): Line? {
         val direction =
             chooseDirection(
                 getMovementDirectionOfInput(
                     player.yaw,
-                    directionalInput,
+                    input,
                 ),
             )
 

@@ -33,7 +33,8 @@ import net.ccbluex.liquidbounce.utils.aiming.RotationManager
 import net.ccbluex.liquidbounce.utils.aiming.RotationsConfigurable
 import net.ccbluex.liquidbounce.utils.entity.strafe
 import net.ccbluex.liquidbounce.utils.kotlin.Priority
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket
 
 /**
@@ -58,9 +59,9 @@ internal object NoCheatPlusBow : Choice("NoCheatPlusBow") {
 
     var stopMovement = false
 
-    val movementInputHandler = handler<MovementInputEvent> {
+    val movementInputHandler = handler<MovementInputEvent> { event ->
         if (stopMovement) {
-            it.directionalInput = DirectionalInput.NONE
+            event.input = PlayerInput()
             stopMovement = false
         }
     }
@@ -99,13 +100,13 @@ internal object NoCheatPlusBow : Choice("NoCheatPlusBow") {
     }
 
     // what, why two events here?
-    val handleMovementInput = handler<MovementInputEvent> {
+    val handleMovementInput = handler<MovementInputEvent> { event ->
         if (arrowBoost <= arrowsToShoot) {
             return@handler
         }
 
         if (player.fallDistance >= fallDistance) {
-            it.jumping = true
+            event.input = event.input.copy(jump = true)
             player.fallDistance = 0f
         }
     }

@@ -37,7 +37,7 @@ import net.ccbluex.liquidbounce.utils.client.notification
 import net.ccbluex.liquidbounce.utils.entity.FallingPlayer
 import net.ccbluex.liquidbounce.utils.entity.SimulatedPlayer
 import net.ccbluex.liquidbounce.utils.math.toBlockPos
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket
 import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket
 
@@ -81,7 +81,7 @@ object ModuleAntiVoid : Module("AntiVoid", Category.PLAYER) {
     @Suppress("unused")
     val movementInputHandler = handler<MovementInputEvent> {
         val simulatedPlayer = SimulatedPlayer.fromClientPlayer(
-            SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(it.directionalInput)
+            SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(it.input)
         )
 
         // Analyzes if the player might be falling into the void soon.
@@ -127,12 +127,7 @@ object ModuleAntiVoid : Module("AntiVoid", Category.PLAYER) {
                 repeat(ticksToVoid) {
                     // 1 s is enough to stop touching keyboard
                     if (ticksPassed >= 20) {
-                        simulatedPlayer.input = SimulatedPlayer.SimulatedPlayerInput(
-                            DirectionalInput.NONE,
-                            jumping = false,
-                            sprinting = false,
-                            sneaking = false
-                        )
+                        simulatedPlayer.input = SimulatedPlayer.SimulatedPlayerInput(PlayerInput())
                     }
                     simulatedPlayer.tick()
                     ticksPassed++

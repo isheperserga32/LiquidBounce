@@ -31,7 +31,8 @@ import net.ccbluex.liquidbounce.utils.entity.getMovementDirectionOfInput
 import net.ccbluex.liquidbounce.utils.kotlin.random
 import net.ccbluex.liquidbounce.utils.math.geometry.Line
 import net.ccbluex.liquidbounce.utils.math.toBlockPos
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
+import net.ccbluex.liquidbounce.utils.movement.PlayerInput
+import net.ccbluex.liquidbounce.utils.movement.hasNoMovement
 import net.minecraft.block.Blocks
 import net.minecraft.entity.EntityPose
 import net.minecraft.item.ItemStack
@@ -70,7 +71,7 @@ object ScaffoldBreezilyTechnique : ScaffoldTechnique("Breezily") {
 
     @Suppress("unused")
     private val handleMovementInput = handler<MovementInputEvent> { event ->
-        if (!event.directionalInput.forwards || player.isSneaking) {
+        if (!event.input.forward || player.isSneaking) {
             return@handler
         }
 
@@ -115,18 +116,18 @@ object ScaffoldBreezilyTechnique : ScaffoldTechnique("Breezily") {
             currentEdgeDistanceRandom = edgeDistance.random()
         }
 
-        event.directionalInput = DirectionalInput(
-            event.directionalInput.forwards,
-            event.directionalInput.backwards,
+        event.input = PlayerInput(
+            event.input.forward,
+            event.input.backward,
             lastSideways == -1f,
             lastSideways == 1f
         )
     }
 
     override fun getRotations(target: BlockPlacementTarget?): Rotation? {
-        val dirInput = DirectionalInput(player.input.playerInput)
+        val dirInput = player.input.playerInput
 
-        if (dirInput == DirectionalInput.NONE) {
+        if (dirInput.hasNoMovement) {
             target ?: return null
 
             return getRotationForNoInput(target)

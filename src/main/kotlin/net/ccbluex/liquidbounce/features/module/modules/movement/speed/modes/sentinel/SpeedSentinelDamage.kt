@@ -32,6 +32,7 @@ import net.ccbluex.liquidbounce.features.module.modules.movement.speed.ModuleSpe
 import net.ccbluex.liquidbounce.utils.entity.directionYaw
 import net.ccbluex.liquidbounce.utils.entity.moving
 import net.ccbluex.liquidbounce.utils.entity.strafe
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.ccbluex.liquidbounce.utils.movement.zeroXZ
 import net.minecraft.entity.MovementType
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket
@@ -112,9 +113,9 @@ class SpeedSentinelDamage(override val parent: ChoiceConfigurable<*>) : Choice("
     }
 
     @Suppress("unused")
-    private val movementInputHandler = handler<MovementInputEvent> {
+    private val movementInputHandler = handler<MovementInputEvent> { event ->
         if (player.moving && hasBeenHurt) {
-            it.jumping = true
+            event.input = event.input.copy(jump = true)
         }
     }
 
@@ -126,7 +127,7 @@ class SpeedSentinelDamage(override val parent: ChoiceConfigurable<*>) : Choice("
         network.sendPacket(
             PlayerMoveC2SPacket.PositionAndOnGround(
                 player.x, player.y + 3.25, player.z,
-            false))
+            false, player.horizontalCollision))
         network.sendPacket(PlayerMoveC2SPacket.PositionAndOnGround(player.x, player.y, player.z, false, player.horizontalCollision))
         network.sendPacket(PlayerMoveC2SPacket.PositionAndOnGround(player.x, player.y, player.z, true, player.horizontalCollision))
     }

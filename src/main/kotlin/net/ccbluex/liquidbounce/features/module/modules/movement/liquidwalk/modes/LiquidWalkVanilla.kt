@@ -29,6 +29,7 @@ import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.modules.movement.liquidwalk.ModuleLiquidWalk
 import net.ccbluex.liquidbounce.utils.block.isBlockAtPosition
 import net.ccbluex.liquidbounce.utils.entity.box
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.block.FluidBlock
 import net.minecraft.util.shape.VoxelShapes
 
@@ -39,12 +40,12 @@ internal object LiquidWalkVanilla : Choice("Vanilla") {
 
     @Suppress("unused")
     val inputHandler = handler<MovementInputEvent> { event ->
-        if (event.sneaking || !player.box.isBlockAtPosition { it is FluidBlock }) {
+        if (event.input.sneak || !player.box.isBlockAtPosition { it is FluidBlock }) {
             return@handler
         }
 
         // Swims up
-        event.jumping = true
+        event.input = event.input.copy(jump = true)
     }
 
     @Suppress("unused")

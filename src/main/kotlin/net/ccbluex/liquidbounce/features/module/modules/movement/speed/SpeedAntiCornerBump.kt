@@ -21,7 +21,6 @@ package net.ccbluex.liquidbounce.features.module.modules.movement.speed
 import net.ccbluex.liquidbounce.features.module.QuickImports
 import net.ccbluex.liquidbounce.utils.block.getState
 import net.ccbluex.liquidbounce.utils.entity.SimulatedPlayer
-import net.ccbluex.liquidbounce.utils.movement.DirectionalInput
 import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.block.BlockState
 import net.minecraft.entity.EntityPose
@@ -37,9 +36,9 @@ object SpeedAntiCornerBump : QuickImports {
      * Called when the speed mode might jump. Decides if the jump should be delayed.
      */
     fun shouldDelayJump(): Boolean {
-        val input = SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(DirectionalInput(player.input.playerInput.copy(
+        val input = SimulatedPlayer.SimulatedPlayerInput.fromClientPlayer(player.input.playerInput.copy(
             jump = true
-        )))
+        ))
 
         val simulatedPlayer = SimulatedPlayer.fromClientPlayer(input)
 

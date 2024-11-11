@@ -27,6 +27,7 @@ import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.module.Category
 import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.utils.entity.moving
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket
 
 /**
@@ -45,13 +46,13 @@ object ModuleSneak : Module("Sneak", Category.MOVEMENT) {
             get() = modes
 
         @Suppress("unused")
-        val inputHandler = handler<MovementInputEvent> {
+        val inputHandler = handler<MovementInputEvent> { event ->
             if (player.moving && notDuringMove) {
                 return@handler
             }
 
             // Temporarily override sneaking
-            it.sneaking = true
+            event.input = event.input.copy(sneak = true)
         }
 
     }

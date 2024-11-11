@@ -33,6 +33,7 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.features.module.modules.render.ModuleDebug
 import net.ccbluex.liquidbounce.utils.client.MovePacketType
 import net.ccbluex.liquidbounce.utils.entity.strafe
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.stat.Stats
 
 /**
@@ -162,9 +163,9 @@ object ModuleStep : Module("Step", Category.MOVEMENT) {
         private var stepCounter = 0
         private var stepping = false
 
-        val movementInputHandler = sequenceHandler<MovementInputEvent> {
+        val movementInputHandler = sequenceHandler<MovementInputEvent> { event ->
             if (player.isOnGround && player.horizontalCollision && !stepping) {
-                it.jumping = true
+                event.input = event.input.copy(jump = true)
                 stepCounter++
 
                 stepping = true

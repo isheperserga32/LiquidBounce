@@ -29,10 +29,10 @@ import net.ccbluex.liquidbounce.utils.entity.eyes
 import net.ccbluex.liquidbounce.utils.inventory.Hotbar
 import net.ccbluex.liquidbounce.utils.inventory.hasInventorySpace
 import net.ccbluex.liquidbounce.utils.kotlin.Priority
+import net.ccbluex.liquidbounce.utils.movement.copy
 import net.minecraft.client.gui.screen.ingame.HandledScreen
 import net.minecraft.entity.ItemEntity
 import net.minecraft.util.math.Vec3d
-import net.minecraft.util.math.Vec3i
 
 object AutoFarmAutoWalk : ToggleableConfigurable(ModuleAutoFarm, "AutoWalk", false) {
 
@@ -119,7 +119,7 @@ object AutoFarmAutoWalk : ToggleableConfigurable(ModuleAutoFarm, "AutoWalk", fal
 
         // We want to swim up in water, so we don't drown and can move onwards
         if (player.isTouchingWater) {
-            event.jumping = true
+            event.input = event.input.copy(jump = true)
         }
     }
 }
