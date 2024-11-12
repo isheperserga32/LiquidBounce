@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with LiquidBounce. If not, see <https://www.gnu.org/licenses/>.
  */
+@file:Suppress("NOTHING_TO_INLINE")
 package net.ccbluex.liquidbounce.config.types
 
 import net.ccbluex.liquidbounce.event.Listenable
@@ -56,7 +57,7 @@ open class Configurable(
         for (currentValue in this.inner) {
             if (currentValue is ToggleableConfigurable) {
                 output.add(currentValue)
-                output.addAll(currentValue.inner.filter { it.name.equals("Enabled", true) })
+                currentValue.inner.filterTo(output) { it.name.equals("Enabled", true) }
             } else {
                 if (currentValue is Configurable) {
                     currentValue.getContainedValuesRecursivelyInternal(output)
@@ -89,6 +90,10 @@ open class Configurable(
         return configurable
     }
 
+    fun <T : Configurable> treeAll(vararg configurable: T) {
+        configurable.forEach(inner::add)
+    }
+
     fun <T : Any> value(
         name: String,
         default: T,
@@ -97,8 +102,7 @@ open class Configurable(
     ) = Value(name, default, valueType, listType).apply { this@Configurable.inner.add(this) }
 
     fun <T : Any> rangedValue(name: String, default: T, range: ClosedRange<*>, suffix: String,
-                              valueType: ValueType
-    ) =
+                                      valueType: ValueType) =
         RangedValue(name, default, range, suffix, valueType).apply { this@Configurable.inner.add(this) }
 
     // Fixed data types
@@ -125,6 +129,8 @@ open class Configurable(
 
     fun bind(name: String, default: InputBind) = value(name, default, ValueType.BIND)
 
+    fun key(name: String, default: InputUtil.Key) = value(name, default, ValueType.KEY)
+
     fun intRange(name: String, default: IntRange, range: IntRange, suffix: String = "") =
         rangedValue(name, default, range, suffix, ValueType.INT_RANGE)
 
@@ -135,18 +141,16 @@ open class Configurable(
 
     fun curve(name: String, default: Easing) = enumChoice(name, default)
 
-    fun font(name: String, default: String) = value(name, default, ValueType.FONT)
-
     fun color(name: String, default: Color4b) = value(name, default, ValueType.COLOR)
 
     fun block(name: String, default: Block) = value(name, default, ValueType.BLOCK)
 
-    fun blocks(name: String, default: MutableSet<Block>) =
-        value(name, default, ValueType.BLOCKS, ListValueType.Block)
-
     fun vec3i(name: String, default: Vec3i) = value(name, default, ValueType.VECTOR_I)
 
     fun vec3d(name: String, default: Vec3d) = value(name, default, ValueType.VECTOR_D)
+
+    fun blocks(name: String, default: MutableSet<Block>) =
+        value(name, default, ValueType.BLOCKS, ListValueType.Block)
 
     fun item(name: String, default: Item) = value(name, default, ValueType.ITEM)
 
@@ -168,7 +172,7 @@ open class Configurable(
         name: String,
         activeCallback: (ChoiceConfigurable<T>) -> T,
         choicesCallback: (ChoiceConfigurable<T>) -> Array<T>
-    ) = ChoiceConfigurable<T>(listenable, name, activeCallback, choicesCallback).apply {
+    ) = ChoiceConfigurable(listenable, name, activeCallback, choicesCallback).apply {
         this@Configurable.inner.add(this)
     }
 

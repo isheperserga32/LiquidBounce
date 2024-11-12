@@ -46,8 +46,8 @@ object ModuleVelocity : Module("Velocity", Category.COMBAT) {
         enableLock()
     }
 
-    val modes = choices<Choice>("Mode", { VelocityModify }) {
-        arrayOf(
+    val modes = choices(
+        "Mode", VelocityModify, arrayOf(
             VelocityModify,
             VelocityWatchdog,
             VelocityStrafe,
@@ -57,7 +57,7 @@ object ModuleVelocity : Module("Velocity", Category.COMBAT) {
             VelocityJumpReset,
             VelocityIntave
         )
-    }.apply { tagBy(this) }
+    ).apply(::tagBy)
 
     private val delay by intRange("Delay", 0..0, 0..40, "ticks")
     private val pauseOnFlag by int("PauseOnFlag", 0, 0..20, "ticks")

@@ -12,9 +12,9 @@ import net.ccbluex.liquidbounce.features.module.Module
 import net.ccbluex.liquidbounce.utils.client.*
 import net.ccbluex.liquidbounce.utils.io.HttpClient
 import net.ccbluex.liquidbounce.utils.kotlin.EventPriorityConvention
+import net.ccbluex.liquidbounce.utils.kotlin.virtualThread
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket
-import kotlin.concurrent.thread
 
 /**
  * Notifies you about staff actions.
@@ -110,7 +110,7 @@ object ModuleAntiStaff : Module("AntiStaff", Category.MISC) {
 
         private fun loadStaffList(address: String) {
             // Loads the server config
-            thread(name = "staff-loader") {
+            virtualThread(name = "staff-loader") {
                 runCatching {
                     val (code, staffList) =
                         HttpClient.requestWithCode("$CLIENT_CLOUD/staffs/$address", "GET")
@@ -170,7 +170,10 @@ object ModuleAntiStaff : Module("AntiStaff", Category.MISC) {
         val messageKey = if (username == null) "staffDetected" else "specificStaffDetected"
         val message = message(messageKey, username ?: "")
         notification("Staff Detected", message, NotificationEvent.Severity.INFO)
-        chat(warning(message(messageKey, username ?: "")))
+        chat(
+            warning(message(messageKey, username ?: "")),
+            metadata = MessageMetadata(id = "${this.name}#${username ?: "generic"}")
+        )
     }
 
 }

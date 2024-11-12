@@ -19,11 +19,11 @@
 package net.ccbluex.liquidbounce.injection.mixins.minecraft.render;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.ccbluex.liquidbounce.LiquidBounce;
 import net.ccbluex.liquidbounce.event.EventManager;
 import net.ccbluex.liquidbounce.event.events.GameRenderEvent;
+import net.ccbluex.liquidbounce.event.events.PerspectiveEvent;
 import net.ccbluex.liquidbounce.event.events.ScreenRenderEvent;
 import net.ccbluex.liquidbounce.event.events.WorldRenderEvent;
 import net.ccbluex.liquidbounce.features.module.modules.fun.ModuleDankBobbing;
@@ -38,6 +38,7 @@ import net.ccbluex.liquidbounce.utils.aiming.RotationManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.PostEffectProcessor;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.option.Perspective;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;
@@ -53,6 +54,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -61,6 +63,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(GameRenderer.class)
 public abstract class MixinGameRenderer {
@@ -255,7 +258,7 @@ public abstract class MixinGameRenderer {
     private void hookRestoreLightMap(RenderTickCounter tickCounter, CallbackInfo ci) {
         ((LightmapTextureManagerAddition) lightmapTextureManager).liquid_bounce$restoreLightMap();
     }
-  
+
     @ModifyExpressionValue(method = "getFov", at = @At(value = "INVOKE", target = "Ljava/lang/Integer;intValue()I", remap = false))
     private int hookGetFov(int original) {
         int result;
@@ -271,6 +274,44 @@ public abstract class MixinGameRenderer {
         }
 
         return result;
+    }
+
+    @Inject(method = "renderNausea", at = @At("HEAD"), cancellable = true)
+    private void hookNauseaOverlay(DrawContext context, float distortionStrength, CallbackInfo ci) {
+        var antiBlind = ModuleAntiBlind.INSTANCE;
+        if (antiBlind.getEnabled() && antiBlind.getAntiNausea()) {
+            ci.cancel();
+        }
+    }
+
+    @ModifyExpressionValue(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/MathHelper;lerp(FFF)F"))
+    private float hookNausea(float original) {
+        var antiBlind = ModuleAntiBlind.INSTANCE;
+        if (antiBlind.getEnabled() && antiBlind.getAntiNausea()) {
+            return 0f;
+        }
+
+        return original;
+    }
+
+    @ModifyExpressionValue(method = "renderWorld",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/option/GameOptions;getPerspective()Lnet/minecraft/client/option/Perspective;"
+            )
+    )
+    private Perspective hookPerspectiveEventOnCamera(Perspective original) {
+        return EventManager.INSTANCE.callEvent(new PerspectiveEvent(original)).getPerspective();
+    }
+
+    @ModifyExpressionValue(method = "renderHand",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/option/GameOptions;getPerspective()Lnet/minecraft/client/option/Perspective;"
+            )
+    )
+    private Perspective hookPerspectiveEventOnHand(Perspective original) {
+        return EventManager.INSTANCE.callEvent(new PerspectiveEvent(original)).getPerspective();
     }
 
 }

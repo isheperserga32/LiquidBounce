@@ -76,12 +76,18 @@ object CommandClient {
     private fun infoCommand() = CommandBuilder
         .begin("info")
         .handler { command, _ ->
-            chat(regular(command.result("clientName", variable(LiquidBounce.CLIENT_NAME))),
-                prefix = false)
-            chat(regular(command.result("clientVersion", variable(LiquidBounce.clientVersion))),
-                prefix = false)
-            chat(regular(command.result("clientAuthor", variable(LiquidBounce.CLIENT_AUTHOR))),
-                prefix = false)
+            chat(
+                regular(command.result("clientName", variable(LiquidBounce.CLIENT_NAME))),
+                metadata = MessageMetadata(prefix = false)
+            )
+            chat(
+                regular(command.result("clientVersion", variable(LiquidBounce.clientVersion))),
+                metadata = MessageMetadata(prefix = false)
+            )
+            chat(
+                regular(command.result("clientAuthor", variable(LiquidBounce.CLIENT_AUTHOR))),
+                metadata = MessageMetadata(prefix = false)
+            )
         }.build()
 
     private fun browserCommand() = CommandBuilder.begin("browser")
@@ -125,10 +131,12 @@ object CommandClient {
                                     )
                                 )
                         }),
-                    prefix = false
+                    metadata = MessageMetadata(
+                        prefix = false
+                    )
                 )
 
-                chat(prefix = false)
+                chat(metadata = MessageMetadata(prefix = false))
                 chat(regular("Integration Menu:"))
                 for (screenType in VirtualScreenType.entries) {
                     var url = runCatching {
@@ -166,7 +174,9 @@ object CommandClient {
                                     )
                             })
                             .append(regular(")")),
-                        prefix = false
+                        metadata = MessageMetadata(
+                            prefix = false
+                        )
                     )
                 }
 
