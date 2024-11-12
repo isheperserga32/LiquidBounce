@@ -79,7 +79,7 @@ object ModuleRotations : Module("Rotations", Category.RENDER) {
     @Suppress("unused")
     private val renderHandler = handler<WorldRenderEvent> { event ->
         val matrixStack = event.matrixStack
-        val partialTicks = event.partialTicks
+        val delta = event.delta
 
         val drawVectorLine = vectorLine.a > 0
         val drawVectorDot = vectorDot.a > 0
@@ -90,7 +90,7 @@ object ModuleRotations : Module("Rotations", Category.RENDER) {
             val camera = mc.gameRenderer.camera
 
             val interpolatedRotationVec = previousRotation.rotationVec.lerp(currentRotation.rotationVec,
-                partialTicks.toDouble()
+                delta.toDouble()
             )
 
             val eyeVector = Vec3(0.0, 0.0, 1.0)
