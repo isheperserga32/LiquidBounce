@@ -22,7 +22,7 @@ package net.ccbluex.liquidbounce.integration.theme.component.types.minimap
 
 import net.ccbluex.liquidbounce.render.engine.Color4b
 import net.ccbluex.liquidbounce.utils.block.ChunkScanner
-import net.ccbluex.liquidbounce.utils.client.world
+import net.ccbluex.liquidbounce.utils.client.mc
 import net.ccbluex.liquidbounce.utils.math.Vec2i
 import net.minecraft.block.BlockState
 import net.minecraft.block.MapColor.Brightness
@@ -88,24 +88,25 @@ object ChunkRenderer {
             }
         }
 
-        private fun getColor(x: Int, z: Int): Color4b {
-            val height = heightmapManager.getHeight(x, z)
-            val offsetsToCheck =
-                arrayOf(
-                    Vec2i(-1, 0),
-                    Vec2i(1, 0),
-                    Vec2i(0, -1),
-                    Vec2i(0, 1),
-                    Vec2i(-1, 1),
-                    Vec2i(1, 1),
-                    Vec2i(-1, -1),
-                    Vec2i(1, -1),
-                )
+        private val offsetsToCheck = arrayOf(
+            Vec2i(-1, 0),
+            Vec2i(1, 0),
+            Vec2i(0, -1),
+            Vec2i(0, 1),
+            Vec2i(-1, 1),
+            Vec2i(1, 1),
+            Vec2i(-1, -1),
+            Vec2i(1, -1),
+        )
 
-            val higherOffsets =
-                offsetsToCheck.filter { offset ->
-                    heightmapManager.getHeight(x + offset.x, z + offset.y) > height
-                }
+        private fun getColor(x: Int, z: Int): Color4b {
+            val world = mc.world!!
+
+            val height = heightmapManager.getHeight(x, z)
+
+            val higherOffsets = offsetsToCheck.filter { offset ->
+                heightmapManager.getHeight(x + offset.x, z + offset.y) > height
+            }
 
             val higherOffsetVec = higherOffsets.fold(Vec2i(0, 0)) { acc, vec -> acc.add(vec) }
 

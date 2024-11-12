@@ -43,6 +43,7 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.math.Direction
 import net.minecraft.util.math.Vec3d
 import net.minecraft.world.chunk.Chunk
+import java.util.NavigableSet
 import java.util.concurrent.ConcurrentSkipListSet
 import kotlin.math.max
 
@@ -285,7 +286,7 @@ object ModuleHoleESP : Module("HoleESP", Category.RENDER) {
                     return@forEach
                 }
 
-                val surroundings = fullSurroundings.filterTo(HashSet(4)) { direction ->
+                val surroundings = fullSurroundings.filterTo(HashSet(4, 1.0F)) { direction ->
                     buffer.cache(mutable.set(pos, direction)) == UNBREAKABLE
                 }
 
