@@ -49,9 +49,8 @@ import net.ccbluex.liquidbounce.integration.browser.BrowserManager
 import net.ccbluex.liquidbounce.integration.interop.ClientInteropServer
 import net.ccbluex.liquidbounce.integration.interop.protocol.rest.v1.game.ActiveServerList
 import net.ccbluex.liquidbounce.integration.theme.ThemeManager
-import net.ccbluex.liquidbounce.integration.theme.component.ComponentOverlay
 import net.ccbluex.liquidbounce.lang.LanguageManager
-import net.ccbluex.liquidbounce.render.Fonts
+import net.ccbluex.liquidbounce.render.FontManager
 import net.ccbluex.liquidbounce.render.ui.ItemImageAtlas
 import net.ccbluex.liquidbounce.script.ScriptManager
 import net.ccbluex.liquidbounce.utils.aiming.PostRotationExecutor
@@ -62,13 +61,13 @@ import net.ccbluex.liquidbounce.utils.combat.CombatManager
 import net.ccbluex.liquidbounce.utils.combat.combatTargetsConfigurable
 import net.ccbluex.liquidbounce.utils.input.InputTracker
 import net.ccbluex.liquidbounce.utils.inventory.InventoryManager
-import net.ccbluex.liquidbounce.utils.kotlin.Render
 import net.ccbluex.liquidbounce.utils.kotlin.virtualThread
 import net.ccbluex.liquidbounce.utils.mappings.EnvironmentRemapper
 import net.ccbluex.liquidbounce.utils.render.WorldToScreen
 import net.minecraft.resource.ReloadableResourceManagerImpl
 import net.minecraft.resource.SynchronousResourceReloader
 import org.apache.logging.log4j.LogManager
+import kotlin.time.measureTime
 
 /**
  * LiquidBounce
@@ -159,12 +158,10 @@ object LiquidBounce : Listenable {
         ConfigSystem.root(LanguageManager)
         ConfigSystem.root(ClientAccountManager)
         BrowserManager
-        Fonts
         PostRotationExecutor
 
         // Load theme and component overlay
         ThemeManager
-        mc.renderTaskQueue.add(ComponentOverlay::insertComponents)
 
         // Netty WebSocket
         ClientInteropServer.start()
@@ -235,15 +232,17 @@ object LiquidBounce : Listenable {
         }
 
         fun reload() {
-            runCatching {
-                val duration = measureTime {
-                    runBlocking {
-                        FontManager.workOnQueue()
+            mc.renderTaskQueue.add {
+                runCatching {
+                    val duration = measureTime {
+                        runBlocking {
+                            FontManager.workOnQueue()
+                        }
                     }
-                }
 
-                logger.info("Completed loading fonts in ${duration.inWholeMilliseconds} ms.")
-            }.onFailure(ErrorHandler::fatal)
+                    logger.info("Completed loading fonts in ${duration.inWholeMilliseconds} ms.")
+                }.onFailure(ErrorHandler::fatal)
+            }
 
             // Check for newest version
             if (updateAvailable) {

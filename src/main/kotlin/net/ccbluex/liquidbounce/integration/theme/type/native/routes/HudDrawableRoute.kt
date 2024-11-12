@@ -46,7 +46,7 @@ class HudDrawableRoute : NativeDrawableRoute() {
                         box.yMin.toInt() - BORDER_GAP,
                         (box.xMax - box.xMin).toInt() + BORDER_GAP,
                         (box.yMax - box.yMin).toInt() + BORDER_GAP,
-                        Color4b.WHITE.toRGBA()
+                        Color4b.WHITE.toARGB()
                     )
                 }
             }

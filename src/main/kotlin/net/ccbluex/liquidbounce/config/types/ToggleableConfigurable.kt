@@ -23,7 +23,7 @@ import net.ccbluex.liquidbounce.config.gson.stategies.Exclude
 import net.ccbluex.liquidbounce.config.gson.stategies.ProtocolExclude
 import net.ccbluex.liquidbounce.event.Listenable
 import net.ccbluex.liquidbounce.features.module.QuickImports
-import net.ccbluex.liquidbounce.script.ScriptApi
+import net.ccbluex.liquidbounce.script.ScriptApiRequired
 
 /**
  * A [ToggleableConfigurable] has a state that can be toggled on and off. It also allows
@@ -66,8 +66,7 @@ abstract class ToggleableConfigurable(
 
     override fun parent() = parent
 
-    @ScriptApi
+    @ScriptApiRequired
     @Suppress("unused")
     fun getEnabledValue(): Value<*> = this.inner[0]
-
 }

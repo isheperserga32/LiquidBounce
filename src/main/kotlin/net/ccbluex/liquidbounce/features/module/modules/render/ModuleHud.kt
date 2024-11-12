@@ -18,6 +18,7 @@
  */
 package net.ccbluex.liquidbounce.features.module.modules.render
 
+import com.mojang.blaze3d.systems.RenderSystem
 import net.ccbluex.liquidbounce.event.EventManager
 import net.ccbluex.liquidbounce.event.events.ScreenEvent
 import net.ccbluex.liquidbounce.event.events.SpaceSeperatedNamesChangeEvent
@@ -56,7 +57,9 @@ object ModuleHud : Module("HUD", Category.RENDER, state = true, hide = true) {
         get() = blur && !(mc.options.hudHidden && mc.currentScreen == null)
 
     init {
-        ChunkRenderer
+        RenderSystem.recordRenderCall {
+            ChunkRenderer
+        }
     }
 
     val screenHandler = handler<ScreenEvent>(ignoreCondition = true) { event ->
