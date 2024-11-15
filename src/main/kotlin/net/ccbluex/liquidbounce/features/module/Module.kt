@@ -27,15 +27,11 @@ import net.ccbluex.liquidbounce.event.events.*
 import net.ccbluex.liquidbounce.event.handler
 import net.ccbluex.liquidbounce.features.misc.HideAppearance.isDestructed
 import net.ccbluex.liquidbounce.features.module.modules.misc.antibot.ModuleAntiBot
-import net.ccbluex.liquidbounce.features.module.modules.world.fucker.IsSelfBedColorChoice
-import net.ccbluex.liquidbounce.features.module.modules.world.fucker.IsSelfBedNoneChoice
-import net.ccbluex.liquidbounce.features.module.modules.world.fucker.IsSelfBedSpawnLocationChoice
 import net.ccbluex.liquidbounce.lang.LanguageManager
 import net.ccbluex.liquidbounce.lang.translation
 import net.ccbluex.liquidbounce.script.ScriptApiRequired
 import net.ccbluex.liquidbounce.utils.client.*
 import net.ccbluex.liquidbounce.utils.input.InputBind
-import net.ccbluex.liquidbounce.utils.kotlin.mapArray
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.client.network.ClientPlayerEntity
@@ -123,6 +119,8 @@ open class Module(
                 disable()
             }
         }.onSuccess {
+            EventManager.callEvent(ModuleActivationEvent(name))
+
             // Save new module state when module activation is enabled
             if (disableActivation) {
                 return@onChange false
@@ -138,7 +136,7 @@ open class Module(
             }
 
             // Call out module event
-            EventManager.callEvent(ToggleModuleEvent(name, hidden, new))
+            EventManager.callEvent(ModuleToggleEvent(name, hidden, new))
 
             // Call to state-aware sub-configurables
             inner.filterIsInstance<ChoiceConfigurable<*>>().forEach { it.newState(new) }

@@ -2,7 +2,7 @@
     import type {Module} from "../../integration/types";
     import {getModuleSettings, setModuleEnabled} from "../../integration/rest";
     import {listen} from "../../integration/ws";
-    import type {KeyboardKeyEvent, ToggleModuleEvent} from "../../integration/events";
+    import type {KeyboardKeyEvent, ModuleToggleEvent} from "../../integration/events";
     import {highlightModuleName} from "./clickgui_store";
     import {onMount} from "svelte";
     import {convertToSpacedString, spaceSeperatedNames} from "../../theme/theme_config";
@@ -104,7 +104,7 @@
         }
     });
 
-    listen("toggleModule", (e: ToggleModuleEvent) => {
+    listen("moduleToggle", (e: ModuleToggleEvent) => {
         const mod = filteredModules.find((m) => m.name === e.moduleName);
         if (!mod) {
             return;
