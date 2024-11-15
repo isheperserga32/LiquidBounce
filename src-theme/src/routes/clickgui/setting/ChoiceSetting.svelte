@@ -6,6 +6,7 @@
     import GenericSetting from "./common/GenericSetting.svelte";
     import { setItem } from "../../../integration/persistent_storage";
     import {convertToSpacedString, spaceSeperatedNames} from "../../../theme/theme_config";
+    import {animationsEnabled} from "../clickgui_store";
 
     export let setting: ModuleSetting;
     export let path: string;
@@ -40,7 +41,7 @@
 <div class="setting">
     {#if nestedSettings.length > 0}
         <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <div class="head expand" class:expanded on:contextmenu|preventDefault={toggleExpanded}>
+        <div class="head expand" class:expanded on:contextmenu|preventDefault={toggleExpanded} class:animate={$animationsEnabled}>
             <Dropdown
                 bind:value={cSetting.active}
                 {options}
@@ -50,7 +51,7 @@
             <ExpandArrow bind:expanded on:click={() => skipAnimationDelay = true} />
         </div>
     {:else}
-        <div class="head">
+        <div class="head" class:animate={$animationsEnabled}>
             <Dropdown
                 bind:value={cSetting.active}
                 {options}
@@ -76,7 +77,9 @@
         padding: 7px 0px;
 
         .head {
-          transition: ease margin-bottom .2s;
+          &.animate {
+            transition: ease margin-bottom .2s;
+          }
 
           &.expand {
               display: grid;

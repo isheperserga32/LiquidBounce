@@ -43,6 +43,9 @@ object ModuleClickGui :
     @Suppress("UnusedPrivateProperty")
     private val searchBarAutoFocus by boolean("SearchBarAutoFocus", true)
 
+    @Suppress("UnusedPrivateProperty")
+    private val animations by boolean("Animations", true)
+
     override fun enable() {
         // Pretty sure we are not in a game, so we can't open the clickgui
         if (mc.player == null || mc.world == null) {

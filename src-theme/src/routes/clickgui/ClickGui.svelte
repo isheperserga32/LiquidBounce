@@ -9,12 +9,13 @@
     import {fade} from "svelte/transition";
     import {listen} from "../../integration/ws";
     import type {ClickGuiScaleChangeEvent, ScaleFactorChangeEvent} from "../../integration/events";
-    import {scaleFactor} from "./clickgui_store";
+    import {animationsEnabled, scaleFactor} from "./clickgui_store";
 
     let categories: GroupedModules = {};
     let modules: Module[] = [];
     let minecraftScaleFactor = 2;
     let clickGuiScaleFactor = 1;
+
     $: {
         scaleFactor.set(minecraftScaleFactor * clickGuiScaleFactor);
     }
@@ -28,6 +29,7 @@
 
         const clickGuiSettings = await getModuleSettings("ClickGUI");
         clickGuiScaleFactor = clickGuiSettings.value.find(v => v.name === "Scale")?.value as number ?? 1
+        $animationsEnabled = clickGuiSettings.value.find(v => v.name === "Animations")?.value as boolean ?? true;
     });
 
     listen("scaleFactorChange", (e: ScaleFactorChangeEvent) => {

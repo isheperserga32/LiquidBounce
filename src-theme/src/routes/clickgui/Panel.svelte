@@ -6,9 +6,10 @@
     import type {ToggleModuleEvent} from "../../integration/events";
     import {fly} from "svelte/transition";
     import {quintOut} from "svelte/easing";
-    import {highlightModuleName, maxPanelZIndex} from "./clickgui_store";
+    import {animationsEnabled, highlightModuleName, maxPanelZIndex} from "./clickgui_store";
     import {setItem} from "../../integration/persistent_storage";
     import {scaleFactor} from "./clickgui_store";
+    import {maybe} from "./util";
 
     export let category: string;
     export let modules: TModule[];
@@ -170,8 +171,8 @@
         class="panel"
         style="left: {panelConfig.left}px; top: {panelConfig.top}px; z-index: {panelConfig.zIndex};"
         bind:this={panelElement}
-        in:fly|global={{y: -30, duration: 200, easing: quintOut}}
-        out:fly|global={{y: -30, duration: 200, easing: quintOut}}
+        in:maybe|global={{y: -30, duration: 200, easing: quintOut, fn: fly, animate: $animationsEnabled}}
+        out:maybe|global={{y: -30, duration: 200, easing: quintOut, fn: fly, animate: $animationsEnabled}}
 >
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div

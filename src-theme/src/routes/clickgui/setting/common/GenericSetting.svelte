@@ -18,6 +18,8 @@
     import BindSetting from "../BindSetting.svelte";
     import VectorSetting from "../VectorSetting.svelte";
     import KeySetting from "../KeySetting.svelte";
+    import {maybe} from "../../util";
+    import {animationsEnabled} from "../../clickgui_store";
 
     export let setting: ModuleSetting;
     export let path: string;
@@ -33,7 +35,8 @@
 </script>
 
 {#if ready}
-    <div in:slide|global={{duration: 200, axis: "y"}} out:slide|global={{duration: 200, axis: "y"}}>
+    <div in:maybe|global={{duration: 200, axis: "y", fn: slide, animate: $animationsEnabled}}
+         out:maybe|global={{duration: 200, axis: "y", fn: slide, animate: $animationsEnabled}}>
         {#if setting.valueType === "BOOLEAN"}
             <BooleanSetting bind:setting={setting} on:change/>
         {:else if setting.valueType === "CHOICE"}

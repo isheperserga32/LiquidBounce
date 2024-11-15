@@ -8,6 +8,7 @@
     import ExpandArrow from "./common/ExpandArrow.svelte";
     import { setItem } from "../../../integration/persistent_storage";
     import {convertToSpacedString, spaceSeperatedNames} from "../../../theme/theme_config";
+    import {animationsEnabled} from "../clickgui_store";
 
     export let setting: ModuleSetting;
     export let path: string;
@@ -35,7 +36,7 @@
 
 <div class="setting">
     <!-- svelte-ignore a11y-no-static-element-interactions -->
-    <div class="head" class:expanded on:contextmenu|preventDefault={toggleExpanded}>
+    <div class="head" class:expanded on:contextmenu|preventDefault={toggleExpanded} class:animate={$animationsEnabled}>
         <div class="title">{$spaceSeperatedNames ? convertToSpacedString(cSetting.name) : cSetting.name}</div>
         <ExpandArrow bind:expanded on:click={() => skipAnimationDelay = true} />
     </div>
@@ -65,7 +66,10 @@
   .head {
     display: flex;
     justify-content: space-between;
-    transition: ease margin-bottom .2s;
+
+    &.animate {
+      transition: ease margin-bottom .2s;
+    }
 
     &.expanded {
       margin-bottom: 10px;
