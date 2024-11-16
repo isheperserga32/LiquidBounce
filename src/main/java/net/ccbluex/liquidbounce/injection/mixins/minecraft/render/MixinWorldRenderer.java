@@ -26,6 +26,7 @@ import net.ccbluex.liquidbounce.event.events.DrawOutlinesEvent;
 import net.ccbluex.liquidbounce.features.module.modules.render.*;
 import net.ccbluex.liquidbounce.render.engine.Color4b;
 import net.ccbluex.liquidbounce.render.engine.RenderingFlags;
+import net.ccbluex.liquidbounce.render.shader.shaders.GlowShader;
 import net.ccbluex.liquidbounce.render.shader.shaders.OutlineShader;
 import net.ccbluex.liquidbounce.utils.client.ClientUtilsKt;
 import net.ccbluex.liquidbounce.utils.combat.CombatExtensionsKt;
@@ -71,6 +72,12 @@ public abstract class MixinWorldRenderer {
     @Inject(method = "loadEntityOutlinePostProcessor", at = @At("RETURN"))
     private void onLoadEntityOutlineShader(CallbackInfo info) {
         try {
+            GlowShader.INSTANCE.load();
+        } catch (Throwable e) {
+            ClientUtilsKt.getLogger().error("Failed to load glow shader", e);
+        }
+
+        try {
             OutlineShader.INSTANCE.load();
         } catch (Throwable e) {
             ClientUtilsKt.getLogger().error("Failed to load outline shader", e);
@@ -78,14 +85,18 @@ public abstract class MixinWorldRenderer {
     }
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void onRender(RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, Matrix4f matrix4f2, CallbackInfo ci) {
+    private void hookOutlineShader(RenderTickCounter tickCounter,
+                                   boolean renderBlockOutline, Camera camera,
+                                   GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager,
+                                   Matrix4f matrix4f, Matrix4f matrix4f2, CallbackInfo ci
+    ) {
         try {
             if (!OutlineShader.INSTANCE.isReady()) {
                 return;
             }
 
             OutlineShader outlineShader = OutlineShader.INSTANCE;
-            outlineShader.begin(2.0F);
+            outlineShader.begin();
             outlineShader.getFramebuffer().beginWrite(false);
 
             var event = new DrawOutlinesEvent(new MatrixStack(), camera, tickCounter.getTickDelta(false), DrawOutlinesEvent.OutlineType.INBUILT_OUTLINE);
@@ -102,7 +113,11 @@ public abstract class MixinWorldRenderer {
     }
 
     @Inject(method = "renderEntity", at = @At("HEAD"))
-    private void injectOutlineESP(Entity entity, double cameraX, double cameraY, double cameraZ, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, CallbackInfo info) {
+    private void injectOutlineESP(Entity entity,
+                                  double cameraX, double cameraY, double cameraZ, float tickDelta,
+                                  MatrixStack matrices, VertexConsumerProvider vertexConsumers,
+                                  CallbackInfo info
+    ) {
         // Prevent stack overflow
         if (RenderingFlags.isCurrentlyRenderingEntityOutline().get() || !OutlineShader.INSTANCE.isReady()) {
             return;
@@ -120,8 +135,8 @@ public abstract class MixinWorldRenderer {
             return;
         }
 
-        OutlineShader outlineShader = OutlineShader.INSTANCE;
-        Framebuffer originalBuffer = this.entityOutlinesFramebuffer;
+        var outlineShader = OutlineShader.INSTANCE;
+        var originalBuffer = this.entityOutlinesFramebuffer;
 
         this.entityOutlinesFramebuffer = outlineShader.getFramebuffer();
 

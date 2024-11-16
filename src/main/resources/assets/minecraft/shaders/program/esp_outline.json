@@ -5,7 +5,7 @@
     "dstrgb": "1-srcalpha"
   },
   "vertex": "sobel",
-  "fragment": "outline_shader",
+  "fragment": "esp_outline",
   "attributes": [
     "Position"
   ],
@@ -57,11 +57,11 @@
       ]
     },
     {
-      "name": "radius",
+      "name": "Radius",
       "type": "float",
       "count": 1,
       "values": [
-        1.0
+        2.0
       ]
     }
   ]

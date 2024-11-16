@@ -5,9 +5,15 @@
   ],
   "passes": [
     {
-      "name": "dithering_shader",
+      "name": "esp_outline",
       "intarget": "final",
-      "outtarget": "swap"
+      "outtarget": "swap",
+      "uniforms": [
+        {
+          "name": "Radius",
+          "values": [ 2.0 ]
+        }
+      ]
     },
     {
       "name": "blit",

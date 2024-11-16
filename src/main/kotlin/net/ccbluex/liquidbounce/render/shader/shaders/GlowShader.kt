@@ -18,14 +18,23 @@
  */
 package net.ccbluex.liquidbounce.render.shader.shaders
 
+import net.ccbluex.liquidbounce.render.engine.Color4b
 import net.ccbluex.liquidbounce.render.engine.MinecraftFramebufferShader
 
-object DitheringShader : MinecraftFramebufferShader("dithering_shader") {
+/**
+ * A glow [Smoother Glowing](https://modrinth.com/shader/smoother-glowing) shader
+ * by [MelonRind](https://modrinth.com/user/MelonRind), licensed with [MIT License](https://opensource.org/licenses/MIT)
+ *
+ * This shader is used to render outlines around entities and blocks.
+ */
+object GlowShader : MinecraftFramebufferShader("esp_glow") {
 
-    fun begin(ditherAmount: Float) {
-        this.setUniform1f("ditherAmount", ditherAmount)
-//        this.vertexConsumerProvider!!.setColor(255, 255, 255, 255)
+    fun begin() {
         this.beginInternal()
+    }
+
+    fun setColor(color: Color4b) {
+        this.vertexConsumerProvider?.setColor(color.r, color.g, color.b, color.a)
     }
 
 }

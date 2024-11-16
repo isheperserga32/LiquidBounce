@@ -21,10 +21,14 @@ package net.ccbluex.liquidbounce.render.shader.shaders
 import net.ccbluex.liquidbounce.render.engine.Color4b
 import net.ccbluex.liquidbounce.render.engine.MinecraftFramebufferShader
 
-object OutlineShader : MinecraftFramebufferShader("outline_shader") {
+/**
+ * A generic outline shader
+ *
+ * @author superblaubeere27
+ */
+object OutlineShader : MinecraftFramebufferShader("esp_outline") {
 
-    fun begin(width: Float) {
-        this.setUniform1f("radius", width)
+    fun begin() {
         this.beginInternal()
     }
 
