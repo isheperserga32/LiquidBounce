@@ -1,29 +1,24 @@
 <script lang="ts">
-    import Header from "./header/Header.svelte";
-    import {fly} from "svelte/transition";
-    import {onMount} from "svelte";
+  import Header from "./header/Header.svelte";
+  import {onMount} from "svelte";
 
-    const transitionDuration = 700; // TODO: suboptimal
+  let ready = false;
 
-    let ready = false;
-
-    onMount(() => {
-        setTimeout(() => {
-            ready = true;
-        }, transitionDuration);
-    });
+  onMount(() => {
+      ready = true;
+  });
 </script>
 
 <div class="menu">
-    {#if ready}
-        <div transition:fly|global={{duration: 700, y: -100}}>
-            <Header/>
-        </div>
+  {#if ready}
+      <div>
+          <Header/>
+      </div>
 
-        <div class="menu-wrapper">
-            <slot/>
-        </div>
-    {/if}
+      <div class="menu-wrapper">
+          <slot/>
+      </div>
+  {/if}
 </div>
 
 <style lang="scss">

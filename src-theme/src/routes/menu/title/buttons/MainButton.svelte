@@ -1,85 +1,144 @@
 <script lang="ts">
-    import {fade, fly} from "svelte/transition";
-    import {createEventDispatcher} from "svelte";
-    import {backIn, backOut} from "svelte/easing";
+  import {fade} from "svelte/transition";
+  import {createEventDispatcher} from "svelte";
 
-    export let title: string;
-    export let icon: string;
-    export let index: number;
+  export let title: string;
+  export let icon: string;
 
-    let hovered = false;
-
-    const dispatch = createEventDispatcher();
+  let hovered = false;
+  const dispatch = createEventDispatcher();
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="main-button" on:mouseenter={() => hovered = true} on:mouseleave={() => hovered = false}
-     on:click={() => dispatch("click")} out:fly|global={{duration: 400, x: -500, delay: index * 100, easing: backIn}}
-     in:fly|global={{duration: 400, x: -500, delay: index * 100, easing: backOut}}>
-    <div class="icon">
-        {#if !hovered}
-            <img transition:fade={{duration: 200}} src="img/menu/icon-{icon}.svg" alt={icon}>
-        {:else}
-            <img transition:fade={{duration: 200}} src="img/menu/icon-{icon}-hover.svg" alt={icon}>
-        {/if}
-    </div>
+<div class="main-button" 
+   on:mouseenter={() => hovered = true}
+   on:mouseleave={() => hovered = false}
+   on:click={() => dispatch("click")}>
+  
+  <div class="button-content">
+      <div class="icon-wrapper">
+          <div class="icon">
+              {#if !hovered}
+                  <img  
+                       src="img/menu/icon-{icon}.svg" alt={icon}>
+              {:else}
+                  <img  
+                       src="img/menu/icon-{icon}-hover.svg" alt={icon}>
+              {/if}
+          </div>
+      </div>
 
-    <div class="title">{title}</div>
+      <span class="title">{title}</span>
 
-    <div class="wrapped-content">
-        <slot parentHovered={hovered}/>
-    </div>
+      <div class="child-wrapper" class:show={hovered}>
+          <slot parentHovered={hovered}/>
+      </div>
+  </div>
+
+  <div class="hover-indicator" class:show={hovered}></div>
 </div>
 
 <style lang="scss">
   @import "../../../../colors.scss";
 
   .main-button {
-    background-color: rgba($menu-base-color, 0.68);
-    width: 590px;
-    padding: 25px 35px;
-    display: grid;
-    grid-template-columns: max-content 1fr max-content;
-    align-items: center;
-    cursor: pointer;
-    border-radius: 5px;
-    column-gap: 25px;
+      position: relative;
+      background-color: rgba($menu-base-color, 0.75);
+      border-radius: 8px;
+      overflow: visible;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(8px);
 
-    background: linear-gradient(to left, rgba($menu-base-color, .68) 50%, $accent-color 50%);
-    background-size: 200% 100%;
-    background-position: right bottom;
-    will-change: background-position;
-    transition: background-position .2s ease-out;
+      &:hover {
+          background-color: rgba($menu-base-color, 0.85);
+          transform: translateX(15px);
 
-    &:hover {
-      background-position: left bottom;
-
-      .icon {
-        background-color: $menu-text-color;
+          .icon {
+              background-color: $menu-text-color;
+          }
       }
-    }
+  }
+
+  .button-content {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 12px 25px;
+      gap: 25px;
+      z-index: 2;
+  }
+
+  .icon-wrapper {
+      position: relative;
+      
+      &::after {
+          content: '';
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          right: -2px;
+          bottom: -2px;
+          background: linear-gradient(135deg, $accent-color, rgba($accent-color, 0.5));
+          border-radius: 12px;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+      }
   }
 
   .icon {
-    background-color: $accent-color;
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    transition: ease background-color 0.2s;
-    position: relative;
+      width: 52px;
+      height: 52px;
+      background-color: $accent-color;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
 
-    img {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-    }
+      img {
+          width: 26px;
+          height: 26px;
+          transition: transform 0.3s ease;
+      }
   }
 
   .title {
-    font-size: 26px;
-    color: $menu-text-color;
-    font-weight: 600;
+      color: $menu-text-color;
+      font-size: 22px;
+      font-weight: 600;
+      transition: transform 0.3s ease;
+      flex: 1;
+  }
+
+  .child-wrapper {
+      position: absolute;
+      right: 25px;
+      opacity: 0;
+      transform: translateX(-15px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+
+      &.show {
+          opacity: 1;
+          transform: translateX(0);
+          pointer-events: all;
+      }
+  }
+
+  .hover-indicator {
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: $accent-color;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+
+      &.show {
+          opacity: 1;
+      }
   }
 </style>

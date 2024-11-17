@@ -4,7 +4,7 @@
 </script>
 
 <div class="header">
-    <img class="logo" src="img/lb-logo.svg" alt="logo">
+    <!-- <img class="logo" src="img/splash.png" height="98" width="98" alt="logo"> -->
 
     <Notifications />
 

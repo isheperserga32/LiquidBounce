@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+    <path d="M2 17L4.5 9L8.5 13L12 7L15.5 13L19.5 9L22 17H2Z" 
+          stroke="#FFD700" 
+          stroke-width="2" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"
+          fill="#FFD700"/>
+    <path d="M2 17H22V19C22 19.5523 21.5523 20 21 20H3C2.44772 20 2 19.5523 2 19V17Z"
+          stroke="#FFD700"
+          stroke-width="2"
+          fill="#FFD700"/>
+</svg>
